@@ -663,3 +663,10 @@ def fetch_daily_word():
             result['pronunciation_urls'] = urls
 
     return { 'data': result }
+
+__all__ = [
+    'extend_advanced_search',
+    'extend_search',
+    'extend_view',
+    'fetch_daily_word'
+]

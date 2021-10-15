@@ -208,3 +208,12 @@ def view(**kwargs):
         return extend_view(response, fetch_page, fetch_media, raise_errors)
 
     return _send_request(_VIEW_URL, kwargs)
+
+__all__ = [
+    'advanced_search',
+    'search',
+    'set_default',
+    'set_key',
+    'view',
+    'KRDictException'
+]
