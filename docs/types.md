@@ -407,7 +407,7 @@ The results of a definition search *([`search_definitions`](../functions#search_
                         "translations": [ # not required
                             {
                                 "definition": str,
-                                "word": str,
+                                "word": str, # not required
                                 "language": str
                             }
                         ]
@@ -441,7 +441,7 @@ The results of a definition search *([`search_definitions`](../functions#search_
 | definitions    | definition      | str  |    ✓     | A definition associated with<br/>an entry.                                                              |
 | definitions    | translations    | list |    ✗     | A list of translations of a<br/>definition. Not included if no<br/>translation languages are specified. |
 | translations   | definition      | str  |    ✓     | A translation of the definition.                                                                        |
-| translations   | word            | str  |    ✓     | A translation of the word.                                                                              |
+| translations   | word            | str  |    ✗     | A translation of the word.                                                                              |
 | translations   | language        | str  |    ✓     | The translation language.                                                                              |
 | -              | request_params  | dict |    ✓     | The request parameters which were<br/>sent to the KRDict API.                                           |
 
@@ -520,7 +520,7 @@ The results of an idiom/proverb search *([`search_idioms_proverbs`](../functions
                         "translations": [ # not required
                             {
                                 "definition": str,
-                                "word": str,
+                                "word": str, # not required
                                 "language": str
                             }
                         ]
@@ -554,7 +554,7 @@ The results of an idiom/proverb search *([`search_idioms_proverbs`](../functions
 | definitions    | definition      | str  |    ✓     | A definition associated with<br/>an entry.                                                              |
 | definitions    | translations    | list |    ✗     | A list of translations of a<br/>definition. Not included if no<br/>translation languages are specified. |
 | translations   | definition      | str  |    ✓     | A translation of the definition.                                                                        |
-| translations   | word            | str  |    ✓     | A translation of the word.                                                                              |
+| translations   | word            | str  |    ✗     | A translation of the idiom or proverb.                                                                  |
 | translations   | language        | str  |    ✓     | The translation language.                                                                              |
 | -              | request_params  | dict |    ✓     | The request parameters which were<br/>sent to the KRDict API.                                           |
 
@@ -589,7 +589,7 @@ The results of a word search *([`search_words`](../functions#search_words))*.
                         "translations": [ # not required
                             {
                                 "definition": str,
-                                "word": str,
+                                "word": str, # not required
                                 "language": str
                             }
                         ]
@@ -627,7 +627,7 @@ The results of a word search *([`search_words`](../functions#search_words))*.
 | definitions    | definition       | str  |    ✓     | A definition associated with<br/>an entry.                                                              |
 | definitions    | translations     | list |    ✗     | A list of translations of a<br/>definition. Not included if no<br/>translation languages are specified. |
 | translations   | definition       | str  |    ✓     | A translation of the definition.                                                                        |
-| translations   | word             | str  |    ✓     | A translation of the word.                                                                              |
+| translations   | word             | str  |    ✗     | A translation of the word.                                                                              |
 | translations   | language         | str  |    ✓     | The translation language.                                                                              |
 | -              | request_params   | dict |    ✓     | The request parameters which were<br/>sent to the KRDict API.                                           |
 
@@ -758,7 +758,7 @@ The results of a view query *([`view`](../functions#view))*.
                                     "translations": [ # not required
                                         {
                                             "definition": str,
-                                            "word": str,
+                                            "word": str, # not required
                                             "language": str
                                         }
                                     ],
@@ -811,7 +811,7 @@ The results of a view query *([`view`](../functions#view))*.
 | definition_info        | reference              | str  |    ✗     | The reference of the definition.                                                                                    |
 | definition_info        | translations           | list |    ✗     | A list of translations of a<br/>definition. Not included if no<br/>translation languages are specified.             |
 | translations           | definition             | str  |    ✓     | A translation of the definition.                                                                                    |
-| translations           | word                   | str  |    ✓     | A translation of the word.                                                                                          |
+| translations           | word                   | str  |    ✗     | A translation of the word.                                                                                          |
 | translations           | language               | str  |    ✓     | The translation language.                                                                                           |
 | definition_info        | example_info           | list |    ✗     | A list of example objects.                                                                                          |
 | example_info           | type                   | str  |    ✓     | The type of the example.                                                                                            |

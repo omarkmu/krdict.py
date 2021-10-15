@@ -414,9 +414,10 @@ class KRDictError(TypedDict):
     request_params: Dict[str, str]
     error: KRDictErrorInfo
 
-class SearchTranslation(TypedDict):
-    definition: str
+class _SearchTranslation(TypedDict, total=False):
     word: str
+class SearchTranslation(_SearchTranslation):
+    definition: str
     language: str
 
 class _BaseSearchDefinition(TypedDict, total=False):
@@ -559,7 +560,7 @@ class _ViewDefinitionInfo(TypedDict):
     pattern_info: List[ViewPatternInfo]
     related_info: List[ViewRelatedInfo]
     multimedia_info: List[ViewMultimediaInfo]
-class ViewDefinitionInfo(TypedDict):
+class ViewDefinitionInfo(_ViewDefinitionInfo):
     definition: str
 
 class _ViewWordInfo(TypedDict):
