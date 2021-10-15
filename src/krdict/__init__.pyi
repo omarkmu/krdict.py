@@ -406,6 +406,19 @@ VocabularyGrade = Literal[
     'intermediate',
     'advanced'
 ]
+Option = Literal[
+    'fetch_multimedia',
+    'fetch_page_data',
+    'raise_scraper_errors',
+    'use_scraper'
+]
+
+class OptionsDict(TypedDict, total=False):
+    use_scraper: bool
+    raise_scraper_errors: bool
+    fetch_multimedia: bool
+    fetch_page_data: bool
+
 
 class KRDictErrorInfo(TypedDict):
     error_code: int
@@ -437,6 +450,7 @@ class _WordSearchItem(TypedDict, total=False):
     origin: str
     pronunciation: str
     vocabulary_grade: str
+    pronunciation_urls: List[str]
 class WordSearchItem(_WordSearchItem, _BaseSearchItem):
     part_of_speech: str
     homograph_num: int
@@ -491,11 +505,21 @@ SearchResults = Union[
     IdiomProverbSearchResults
 ]
 
-class ViewOriginalLanguageInfo(TypedDict):
+class HanjaInfo(TypedDict):
+    hanja: str
+    radical: str
+    stroke_count: int
+    readings: List[str]
+
+class _ViewOriginalLanguageInfo(TypedDict, total=False):
+    hanja_info: List[HanjaInfo]
+class ViewOriginalLanguageInfo(_ViewOriginalLanguageInfo):
     original_language: str
     language_type: str
 
-class ViewPronunciationInfo(TypedDict):
+class _ViewPronunciationInfo(TypedDict, total=False):
+    url: str
+class ViewPronunciationInfo(_ViewPronunciationInfo):
     pronunciation: str
 
 class _ViewAbbreviationInfo(TypedDict, total=False):
@@ -532,7 +556,9 @@ class ViewExampleInfo(TypedDict):
 class ViewRelatedInfo(ViewReferenceInfo):
     type: str
 
-class ViewMultimediaInfo(TypedDict):
+class _ViewMultimediaInfo(TypedDict, total=False):
+    media_urls: List[str]
+class ViewMultimediaInfo(_ViewMultimediaInfo):
     label: str
     type: str
     link: str
@@ -619,7 +645,8 @@ def advanced_search(*,
     min_syllables: int = None,
     max_syllables: int = None,
     meaning_category: MeaningCategory | int = None,
-    subject_category: SubjectCategory | int | List[SubjectCategory | int] = None
+    subject_category: SubjectCategory | int | List[SubjectCategory | int] = None,
+    options: OptionsDict = None
 ) -> SearchResults: ...
 @overload
 def advanced_search(*,
@@ -642,7 +669,8 @@ def advanced_search(*,
     min_syllables: int = None,
     max_syllables: int = None,
     meaning_category: MeaningCategory | int = None,
-    subject_category: SubjectCategory | int | List[SubjectCategory | int] = None
+    subject_category: SubjectCategory | int | List[SubjectCategory | int] = None,
+    options: OptionsDict = None
 ) -> SearchResults | KRDictError: ...
 
 
@@ -655,7 +683,8 @@ def search(*,
     num_results: int = None,
     sort: SortMethod = None,
     search_type: SearchType = None,
-    translation_language: TranslationLanguage | List[TranslationLanguage] = None
+    translation_language: TranslationLanguage | List[TranslationLanguage] = None,
+    options: OptionsDict = None
 ) -> SearchResults: ...
 @overload
 def search(*,
@@ -666,7 +695,8 @@ def search(*,
     num_results: int = None,
     sort: SortMethod = None,
     search_type: SearchType = None,
-    translation_language: TranslationLanguage | List[TranslationLanguage] = None
+    translation_language: TranslationLanguage | List[TranslationLanguage] = None,
+    options: OptionsDict = None
 ) -> SearchResults | KRDictError: ...
 
 
@@ -744,7 +774,8 @@ def search_words(*,
     start_index: int = None,
     num_results: int = None,
     sort: SortMethod = None,
-    translation_language: TranslationLanguage | List[TranslationLanguage] = None
+    translation_language: TranslationLanguage | List[TranslationLanguage] = None,
+    options: OptionsDict = None
 ) -> WordSearchResults: ...
 @overload
 def search_words(*,
@@ -754,8 +785,12 @@ def search_words(*,
     start_index: int = None,
     num_results: int = None,
     sort: SortMethod = None,
-    translation_language: TranslationLanguage | List[TranslationLanguage] = None
+    translation_language: TranslationLanguage | List[TranslationLanguage] = None,
+    options: OptionsDict = None
 ) -> WordSearchResults | KRDictError: ...
+
+
+def set_default(name: Option, value: bool) -> None: ...
 
 
 def set_key(key: str | None) -> None: ...
@@ -767,7 +802,8 @@ def view(*,
     raise_api_errors: Literal[True],
     homograph_num: int = None,
     key: str = None,
-    translation_language: TranslationLanguage | List[TranslationLanguage] = None
+    translation_language: TranslationLanguage | List[TranslationLanguage] = None,
+    options: OptionsDict = None
 ) -> ViewResult: ...
 @overload
 def view(*,
@@ -775,7 +811,8 @@ def view(*,
     raise_api_errors: bool = False,
     homograph_num: int = None,
     key: str = None,
-    translation_language: TranslationLanguage | List[TranslationLanguage] = None
+    translation_language: TranslationLanguage | List[TranslationLanguage] = None,
+    options: OptionsDict = None
 ) -> ViewResult | KRDictError: ...
 
 @overload
@@ -783,12 +820,14 @@ def view(*,
     target_code: int,
     raise_api_errors: Literal[True],
     key: str = None,
-    translation_language: TranslationLanguage | List[TranslationLanguage] = None
+    translation_language: TranslationLanguage | List[TranslationLanguage] = None,
+    options: OptionsDict = None
 ) -> ViewResult: ...
 @overload
 def view(*,
     target_code: int,
     raise_api_errors: bool = False,
     key: str = None,
-    translation_language: TranslationLanguage | List[TranslationLanguage] = None
+    translation_language: TranslationLanguage | List[TranslationLanguage] = None,
+    options: OptionsDict = None
 ) -> ViewResult | KRDictError: ...

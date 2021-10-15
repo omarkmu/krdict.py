@@ -1,10 +1,9 @@
-# Functions
-
-A summary of provided functions and the arguments they expect.
-With the exception of [`set_key`](#set_key), all of the functions listed below expect keyword arguments.
+A summary of the provided functions in the `krdict` module and the arguments they expect.
+With the exception of [`set_key`](#set_key) and [`set_default`](#set_default),
+all of the functions listed below expect keyword arguments.
 
 ---
-### advanced_search
+## advanced_search
 
 Performs an advanced search on the Korean Learner's Dictionary API.
 
@@ -29,57 +28,59 @@ def advanced_search(*,
     min_syllables: int = None,
     max_syllables: int = None,
     meaning_category: MeaningCategory | int = None,
-    subject_category: SubjectCategory | int | List[SubjectCategory | int] = None
+    subject_category: SubjectCategory | int | List[SubjectCategory | int] = None,
+    options: OptionsDict = None
 ) -> SearchResults | KRDictError: ...
 ```
 !!! warning
     Use of any value other than `'word'` for the `search_type` parameter with advanced search is
-    undefined behavior, and incomplete or empty results will likely be returned. The parameter is
-    included for completeness, but is not recommended for usage.
+    undefined behavior. It is likely that incomplete or empty results will be returned.
+    The parameter is included for completeness, but is not recommended for usage.
 
 **Parameters:**
 
 - query: The search query.
-- raise_api_errors: Sets whether a [`KRDictException`](../types#krdictexception) will be raised if an API error occurs.
+- raise_api_errors: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
 This guarantees that the result is not an error object.
 - key: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
 - start_index: The page at which the search should start `[1, 1000]` (default `1`).
 - num_results: The maximum number of search results to return `[10, 100]` (default `10`).
-- sort ([`SortMethod`](../types#sortmethod)): The sort method which should be used (default `'alphabetical'`).
-- search_type ([`SearchType`](../types#searchtype)): The type of search to perform (default `'word'`).
-- translation_language ([`TranslationLanguage`](../types#translationlanguage)): A language to include translations for.
-- search_target ([`SearchTarget`](../types#searchtarget)): The target field of the search query (default `'headword'`).
-- target_language ([`TargetLanguage`](../types#targetlanguage)): The original language to search by. If `search_target`
+- sort ([`SortMethod`](parameters.md#sortmethod)): The sort method which should be used (default `'alphabetical'`).
+- search_type ([`SearchType`](parameters.md#searchtype)): The type of search to perform (default `'word'`).
+- translation_language ([`TranslationLanguage`](parameters.md#translationlanguage)): A language to include translations for.
+- search_target ([`SearchTarget`](parameters.md#searchtarget)): The target field of the search query (default `'headword'`).
+- target_language ([`TargetLanguage`](parameters.md#targetlanguage)): The original language to search by. If `search_target`
 is set to any value other than `'original_language'`, this parameter has no effect (default `'all'`).
-- search_method ([`SearchMethod`](../types#searchmethod)): The method used to match against the query (default `'exact'`).
+- search_method ([`SearchMethod`](parameters.md#searchmethod)): The method used to match against the query (default `'exact'`).
     - `'exact'`: Returns entries that are an exact match of the query.
     - `'include'`: Returns entries that include the query.
     - `'start'`: Returns entries that start with the query.
     - `'end'`: Returns entries that end with the query.
-- classification ([`Classification`](../types#classification)): An entry classification to filter by (default `'all'`).
-- origin_type ([`OriginType`](../types#origintype)): A word origin type to filter by (default `'all'`).
-- vocabulary_grade ([`VocabularyGrade`](../types#vocabularygrade)): A vocabulary level to filter by (default `'all'`).
-- part_of_speech ([`PartOfSpeech`](../types#partofspeech)): A part of speech to filter by (default `'all'`).
-- multimedia_info ([`MultimediaType`](../types#multimediatype)): A multimedia type to filter by (default `'all'`).
+- classification ([`Classification`](parameters.md#classification)): An entry classification to filter by (default `'all'`).
+- origin_type ([`OriginType`](parameters.md#origintype)): A word origin type to filter by (default `'all'`).
+- vocabulary_grade ([`VocabularyGrade`](parameters.md#vocabularygrade)): A vocabulary level to filter by (default `'all'`).
+- part_of_speech ([`PartOfSpeech`](parameters.md#partofspeech)): A part of speech to filter by (default `'all'`).
+- multimedia_info ([`MultimediaType`](parameters.md#multimediatype)): A multimedia type to filter by (default `'all'`).
 - min_syllables: The minimum number of syllables in result words `[1, inf)` (default `1`).
 - max_syllables: The maximum number of syllables in results words. A value of `0` denotes no maximum `[0, inf)` (default `0`).
-- meaning_category ([`MeaningCategory`](../types#meaningcategory)): The meaning category to filter by (default `'all'`).
-- subject_category ([`SubjectCategory`](../types#subjectcategory)): A subject category to filter by (default `'all'`).
+- meaning_category ([`MeaningCategory`](parameters.md#meaningcategory)): The meaning category to filter by (default `'all'`).
+- subject_category ([`SubjectCategory`](parameters.md#subjectcategory)): A subject category to filter by (default `'all'`).
+- options ([`OptionsDict`](parameters.md#optionsdict)): Additional options to apply.
 
 
 **Returns**:
 
 Depending on the value of `search_type` and whether an error occurred, returns one of:
 
-- [`WordSearchResults`](../types#wordsearchresults)
-- [`DefinitionSearchResults`](../types#definitionsearchresults)
-- [`ExampleSearchResults`](../types#examplesearchresults)
-- [`IdiomProverbSearchResults`](../types#idiomproverbsearchresults)
-- [`KRDictError`](../types#krdicterror)
+- [`WordSearchResults`](return_types.md#wordsearchresults)
+- [`DefinitionSearchResults`](return_types.md#definitionsearchresults)
+- [`ExampleSearchResults`](return_types.md#examplesearchresults)
+- [`IdiomProverbSearchResults`](return_types.md#idiomproverbsearchresults)
+- [`KRDictError`](return_types.md#krdicterror)
 
 ---
 
-### search
+## search
 
 Performs a basic search on the Korean Learner's Dictionary API.
 
@@ -92,7 +93,8 @@ def search(*,
     num_results: int = None,
     sort: SortMethod = None,
     search_type: SearchType = None,
-    translation_language: TranslationLanguage | List[TranslationLanguage] = None
+    translation_language: TranslationLanguage | List[TranslationLanguage] = None,
+    options: OptionsDict = None
 ) -> SearchResults | KRDictError: ...
 ```
 
@@ -104,29 +106,30 @@ def search(*,
 **Parameters:**
 
 - query: The search query.
-- raise_api_errors: Sets whether a [`KRDictException`](../types#krdictexception) will be raised if an API error occurs.
+- raise_api_errors: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
 This guarantees that the result is not an error object.
 - key: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
 - start_index: The page at which the search should start `[1, 1000]` (default `1`).
 - num_results: The maximum number of search results to return `[10, 100]` (default `10`).
-- sort ([`SortMethod`](../types#sortmethod)): The sort method which should be used (default `'alphabetical'`).
-- search_type ([`SearchType`](../types#searchtype)): The type of search to perform (default `'word'`).
-- translation_language ([`TranslationLanguage`](../types#translationlanguage)): A language to include translations for.
+- sort ([`SortMethod`](parameters.md#sortmethod)): The sort method which should be used (default `'alphabetical'`).
+- search_type ([`SearchType`](parameters.md#searchtype)): The type of search to perform (default `'word'`).
+- translation_language ([`TranslationLanguage`](parameters.md#translationlanguage)): A language to include translations for.
+- options ([`OptionsDict`](parameters.md#optionsdict)): Additional options to apply.
 
 
 **Returns**:
 
 Depending on the value of `search_type` and whether an error occurred, returns one of:
 
-- [`WordSearchResults`](../types#wordsearchresults)
-- [`DefinitionSearchResults`](../types#definitionsearchresults)
-- [`ExampleSearchResults`](../types#examplesearchresults)
-- [`IdiomProverbSearchResults`](../types#idiomproverbsearchresults)
-- [`KRDictError`](../types#krdicterror)
+- [`WordSearchResults`](return_types.md#wordsearchresults)
+- [`DefinitionSearchResults`](return_types.md#definitionsearchresults)
+- [`ExampleSearchResults`](return_types.md#examplesearchresults)
+- [`IdiomProverbSearchResults`](return_types.md#idiomproverbsearchresults)
+- [`KRDictError`](return_types.md#krdicterror)
 
 ---
 
-### search_definitions
+## search_definitions
 
 Performs a search for definitions on the Korean Learner's Dictionary API.  
 This function is equivalent to using `'definition'` as the argument to the `search_type`
@@ -147,23 +150,23 @@ def search_definitions(*,
 **Parameters:**
 
 - query: The search query.
-- raise_api_errors: Sets whether a [`KRDictException`](../types#krdictexception) will be raised if an API error occurs.
+- raise_api_errors: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
 This guarantees that the result is not an error object.
 - key: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
 - start_index: The page at which the search should start `[1, 1000]` (default `1`).
 - num_results: The maximum number of search results to return `[10, 100]` (default `10`).
-- sort ([`SortMethod`](../types#sortmethod)): The sort method which should be used (default `'alphabetical'`).
-- translation_language ([`TranslationLanguage`](../types#translationlanguage)): A language to include translations for.
+- sort ([`SortMethod`](parameters.md#sortmethod)): The sort method which should be used (default `'alphabetical'`).
+- translation_language ([`TranslationLanguage`](parameters.md#translationlanguage)): A language to include translations for.
 
 
 **Returns:**
 
-Depending on whether an error occurred, returns [`DefinitionSearchResults`](../types#definitionsearchresults) or
-[`KRDictError`](../types#krdicterror).
+Depending on whether an error occurred, returns [`DefinitionSearchResults`](return_types.md#definitionsearchresults) or
+[`KRDictError`](return_types.md#krdicterror).
 
 ---
 
-### search_examples
+## search_examples
 
 Performs a search for examples on the Korean Learner's Dictionary API.  
 This function is equivalent to using `'example'` as the argument to the `search_type`
@@ -184,23 +187,23 @@ def search_examples(*,
 **Parameters:**
 
 - query: The search query.
-- raise_api_errors: Sets whether a [`KRDictException`](../types#krdictexception) will be raised if an API error occurs.
+- raise_api_errors: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
 This guarantees that the result is not an error object.
 - key: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
 - start_index: The page at which the search should start `[1, 1000]` (default `1`).
 - num_results: The maximum number of search results to return `[10, 100]` (default `10`).
-- sort ([`SortMethod`](../types#sortmethod)): The sort method which should be used (default `'alphabetical'`).
-- translation_language ([`TranslationLanguage`](../types#translationlanguage)): A language to include translations for.
+- sort ([`SortMethod`](parameters.md#sortmethod)): The sort method which should be used (default `'alphabetical'`).
+- translation_language ([`TranslationLanguage`](parameters.md#translationlanguage)): A language to include translations for.
 
 
 **Returns:**
 
-Depending on whether an error occurred, returns [`ExampleSearchResults`](../types#examplesearchresults) or
-[`KRDictError`](../types#krdicterror).
+Depending on whether an error occurred, returns [`ExampleSearchResults`](return_types.md#examplesearchresults) or
+[`KRDictError`](return_types.md#krdicterror).
 
 ---
 
-### search_idioms_proverbs
+## search_idioms_proverbs
 
 Performs a search for idioms and proverbs on the Korean Learner's Dictionary API.  
 This function is equivalent to using `'idiom_proverb'` as the argument to the `search_type`
@@ -221,23 +224,23 @@ def search_idioms_proverbs(*,
 **Parameters:**
 
 - query: The search query.
-- raise_api_errors: Sets whether a [`KRDictException`](../types#krdictexception) will be raised if an API error occurs.
+- raise_api_errors: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
 This guarantees that the result is not an error object.
 - key: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
 - start_index: The page at which the search should start `[1, 1000]` (default `1`).
 - num_results: The maximum number of search results to return `[10, 100]` (default `10`).
-- sort ([`SortMethod`](../types#sortmethod)): The sort method which should be used (default `'alphabetical'`).
-- translation_language ([`TranslationLanguage`](../types#translationlanguage)): A language to include translations for.
+- sort ([`SortMethod`](parameters.md#sortmethod)): The sort method which should be used (default `'alphabetical'`).
+- translation_language ([`TranslationLanguage`](parameters.md#translationlanguage)): A language to include translations for.
 
 
 **Returns:**
 
-Depending on whether an error occurred, returns [`IdiomProverbSearchResults`](../types#idiomproverbsearchresults) or
-[`KRDictError`](../types#krdicterror).
+Depending on whether an error occurred, returns [`IdiomProverbSearchResults`](return_types.md#idiomproverbsearchresults) or
+[`KRDictError`](return_types.md#krdicterror).
 
 ---
 
-### search_words
+## search_words
 
 Performs a search for definitions on the Korean Learner's Dictionary API.  
 This function is equivalent to using `'word'` or `None` as the argument to the `search_type`
@@ -251,30 +254,51 @@ def search_words(*,
     start_index: int = None,
     num_results: int = None,
     sort: SortMethod = None,
-    translation_language: TranslationLanguage | List[TranslationLanguage] = None
+    translation_language: TranslationLanguage | List[TranslationLanguage] = None,
+    options: OptionsDict = None
 ) -> WordSearchResults | KRDictError: ...
 ```
 
 **Parameters:**
 
 - query: The search query.
-- raise_api_errors: Sets whether a [`KRDictException`](../types#krdictexception) will be raised if an API error occurs.
+- raise_api_errors: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
 This guarantees that the result is not an error object.
 - key: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
 - start_index: The page at which the search should start. `[1, 1000]` (default `1`).
 - num_results: The maximum number of search results to return. `[10, 100]` (default `10`).
-- sort ([`SortMethod`](../types#sortmethod)): The sort method which should be used (default `'alphabetical'`).
-- translation_language ([`TranslationLanguage`](../types#translationlanguage)): A language to include translations for.
+- sort ([`SortMethod`](parameters.md#sortmethod)): The sort method which should be used (default `'alphabetical'`).
+- translation_language ([`TranslationLanguage`](parameters.md#translationlanguage)): A language to include translations for.
+- options ([`OptionsDict`](parameters.md#optionsdict)): Additional options to apply.
 
 
 **Returns:**
 
-Depending on whether an error occurred, returns [`WordSearchResults`](../types#wordsearchresults) or
-[`KRDictError`](../types#krdicterror).
+Depending on whether an error occurred, returns [`WordSearchResults`](return_types.md#wordsearchresults) or
+[`KRDictError`](return_types.md#krdicterror).
 
 ---
 
-### set_key
+## set_default
+
+Sets a default value for a library [option](parameters.md#optionsdict).
+
+```python
+def set_default(name: Option, value: bool) -> None: ...
+```
+
+**Parameters:**
+
+- name: The name of the option to set. Accepted values:
+    - `'fetch_multimedia'`: Controls whether multimedia is scraped during view queries. No effect unless the `'use_scraper'` option is `True`.
+    - `'fetch_page_data'`: Controls whether pronunciation URLS and extended language information are scraped. No effect unless the `'use_scraper'` option is `True`.
+    - `'raise_scraper_errors'`: Controls whether errors which occur during scraping are raised. No effect unless the `'use_scraper'` option is `True`.
+    - `'use_scraper'`: Controls whether the scraper should be used to fetch more information.
+- value: The new default value of the option.
+
+---
+
+## set_key
 
 Sets a default API key to use, if one is not provided in a query.
 
@@ -288,7 +312,7 @@ def set_key(key: str | None) -> None: ...
 
 ---
 
-### view
+## view
 
 Performs a view query, which retrieves information about a particular entry, on the Korean Learner's Dictionary API.
 
@@ -298,30 +322,33 @@ def view(*,
     raise_api_errors: bool = False,
     homograph_num: int = None,
     key: str = None,
-    translation_language: TranslationLanguage | List[TranslationLanguage] = None
+    translation_language: TranslationLanguage | List[TranslationLanguage] = None,
+    options: OptionsDict = None
 ) -> ViewResult | KRDictError: ...
 
 def view(*,
     target_code: int,
     raise_api_errors: bool = False,
     key: str = None,
-    translation_language: TranslationLanguage | List[TranslationLanguage] = None
+    translation_language: TranslationLanguage | List[TranslationLanguage] = None,
+    options: OptionsDict = None
 ) -> ViewResult | KRDictError: ...
 ```
 
 **Parameters:**
 
 - query: The search query.
-- raise_api_errors: Sets whether a [`KRDictException`](../types#krdictexception) will be raised if an API error occurs.
+- raise_api_errors: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
 This guarantees that the result is not an error object.
 - homograph_num: The superscript number used to distinguish homographs (default `0`).
 - target_code: The target code of the desired result.
 - key: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
-- translation_language ([`TranslationLanguage`](../types#translationlanguage)): A language or list of
+- translation_language ([`TranslationLanguage`](parameters.md#translationlanguage)): A language or list of
 languages to include translations for.
+- options ([`OptionsDict`](parameters.md#optionsdict)): Additional options to apply.
 
 
 **Returns:**
 
-Depending on whether an error occurred, returns [`ViewResult`](../types#viewresult) or
-[`KRDictError`](../types#krdicterror).
+Depending on whether an error occurred, returns [`ViewResult`](return_types.md#viewresult) or
+[`KRDictError`](return_types.md#krdicterror).

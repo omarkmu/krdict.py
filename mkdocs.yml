@@ -1,4 +1,16 @@
 site_name: krdict.py
 theme: readthedocs
+extra_css: [extra.css]
+nav:
+    - Home: index.md
+    - Modules:
+        - Main: functions.md
+        - Scraper: scraper.md
+    - Types:
+        - Parameters: parameters.md
+        - Return Types: return_types.md
+        - Exceptions: exceptions.md
 markdown_extensions:
     - admonition
+    - toc:
+        permalink: True

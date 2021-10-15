@@ -1,11 +1,5 @@
-# krdict.py
-
-[![PyPI](https://img.shields.io/pypi/v/krdict.py)](https://pypi.org/project/krdict.py)
-[![Documentation](https://readthedocs.org/projects/krdictpy/badge/?version=stable)](https://krdictpy.readthedocs.io/en/stable/?badge=stable)
-
-A python module that helps to query the [API](https://krdict.korean.go.kr/openApi/openApiInfo) of the
+A module that helps to query the [API](https://krdict.korean.go.kr/openApi/openApiInfo) of the
 [Korean Learner's Dictionary](https://krdict.korean.go.kr), provided by the National Institute of Korean Language.
-Inspired by [krdict.js](https://github.com/Fox-Islam/krdict.js).
 
 ## Installation
 
@@ -61,4 +55,4 @@ Assuming an error does not occur, the output will be similar to:
 }
 ```
 
-For more information, please check the [documentation](https://krdictpy.readthedocs.io/en/stable).
+For more information, please check the [documentation](https://krdictpy.readthedocs.io/en/v1.1.0).

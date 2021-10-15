@@ -6,11 +6,16 @@ import requests
 from xmltodict import parse as parse_xml
 from .params import transform_search_params, transform_view_params
 from .results import postprocessor
+from .scraper import extend_view, extend_search, extend_advanced_search
 
 _SEARCH_URL = 'https://krdict.korean.go.kr/api/search'
 _VIEW_URL = 'https://krdict.korean.go.kr/api/view'
 _DEFAULTS = {
-    'API_KEY': None
+    'API_KEY': None,
+    'FETCH_MULTIMEDIA': False,
+    'FETCH_PAGE_DATA': True,
+    'RAISE_SCRAPER_ERRORS': False,
+    'USE_SCRAPER': False
 }
 
 class KRDictException(Exception):
@@ -32,11 +37,13 @@ class KRDictException(Exception):
 
 def _send_request(url, params):
     raise_api_errors = False
-    if not 'key' in params and _DEFAULTS['API_KEY'] is not None:
+    if 'key' not in params and _DEFAULTS['API_KEY'] is not None:
         params['key'] = _DEFAULTS['API_KEY']
     if 'raise_api_errors' in params:
         raise_api_errors = params['raise_api_errors'] is True
         del params['raise_api_errors']
+    if 'options' in params:
+        del params['options']
 
     try:
         response = requests.get(url, params=params)
@@ -67,6 +74,21 @@ def advanced_search(**kwargs):
 
     kwargs['advanced'] = 'y'
     transform_search_params(kwargs)
+
+    options = kwargs.get('options', {})
+    use_scraper = (kwargs.get('part', 'word') == 'word'
+        and options.get('use_scraper', _DEFAULTS['USE_SCRAPER'])
+        and options.get('fetch_page_data', _DEFAULTS['FETCH_PAGE_DATA']))
+
+    if use_scraper:
+        response = _send_request(_SEARCH_URL, kwargs)
+
+        if 'error' in response:
+            return response
+
+        raise_errors = options.get('raise_scraper_errors', _DEFAULTS['RAISE_SCRAPER_ERRORS'])
+        return extend_advanced_search(response, raise_errors)
+
     return _send_request(_SEARCH_URL, kwargs)
 
 def search(**kwargs):
@@ -75,6 +97,22 @@ def search(**kwargs):
     """
 
     transform_search_params(kwargs)
+
+
+    options = kwargs.get('options', {})
+    use_scraper = (kwargs.get('part', 'word') == 'word'
+        and options.get('use_scraper', _DEFAULTS['USE_SCRAPER'])
+        and options.get('fetch_page_data', _DEFAULTS['FETCH_PAGE_DATA']))
+
+    if use_scraper:
+        response = _send_request(_SEARCH_URL, kwargs)
+
+        if 'error' in response:
+            return response
+
+        raise_errors = options.get('raise_scraper_errors', _DEFAULTS['RAISE_SCRAPER_ERRORS'])
+        return extend_search(response, raise_errors)
+
     return _send_request(_SEARCH_URL, kwargs)
 
 def search_definitions(**kwargs):
@@ -112,7 +150,33 @@ def search_words(**kwargs):
     transform_search_params(kwargs)
     if 'part' in kwargs:
         del kwargs['part']
+
+    options = kwargs.get('options', {})
+    use_scraper = (options.get('use_scraper', _DEFAULTS['USE_SCRAPER'])
+        and options.get('fetch_page_data', _DEFAULTS['FETCH_PAGE_DATA']))
+
+    if use_scraper:
+        response = _send_request(_SEARCH_URL, kwargs)
+
+        if 'error' in response:
+            return response
+
+        raise_errors = options.get('raise_scraper_errors', _DEFAULTS['RAISE_SCRAPER_ERRORS'])
+        return extend_search(response, raise_errors)
+
     return _send_request(_SEARCH_URL, kwargs)
+
+def set_default(name, value):
+    """
+    Sets the default value of the given option.
+    """
+
+    name = name.upper()
+
+    if name == 'API_KEY' or name not in _DEFAULTS:
+        return
+
+    _DEFAULTS[name] = value is True
 
 def set_key(key):
     """
@@ -130,4 +194,17 @@ def view(**kwargs):
     """
 
     transform_view_params(kwargs)
+
+    options = kwargs.get('options', {})
+    if options.get('use_scraper', _DEFAULTS['USE_SCRAPER']) is True:
+        response = _send_request(_VIEW_URL, kwargs)
+
+        if 'error' in response:
+            return response
+
+        fetch_page = options.get('fetch_page_data', _DEFAULTS['FETCH_PAGE_DATA'])
+        fetch_media = options.get('fetch_multimedia', _DEFAULTS['FETCH_MULTIMEDIA'])
+        raise_errors = options.get('raise_scraper_errors', _DEFAULTS['RAISE_SCRAPER_ERRORS'])
+        return extend_view(response, fetch_page, fetch_media, raise_errors)
+
     return _send_request(_VIEW_URL, kwargs)
