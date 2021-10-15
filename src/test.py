@@ -144,6 +144,32 @@ class TestKRDict(unittest.TestCase):
             self.assertIn('pronunciation_urls', result)
             self.assertEqual(len(result['pronunciation_urls']), 1)
 
+    def test_scraper_category(self):
+        """Advanced search query using categories with scraper returns proper results"""
+        response = krdict.advanced_search(query='가',
+            raise_api_errors=True,
+            search_method='include',
+            subject_category='위치 표현하기',
+            options={
+                'use_scraper': True
+            })
+        self.assertIn('data', response)
+        data = response['data']
+
+        self.assertEqual(len(data['results']), 2)
+
+        self.assertEqual(data['results'][0]['word'], '가리키다')
+        self.assertIn('pronunciation_urls', data['results'][0])
+        self.assertEqual(data['results'][0]['pronunciation_urls'][0],
+            ('https://dicmedia.korean.go.kr/multimedia/multimedia_files/'
+            'convert/20170223/442961/SND000021293.mp3'))
+
+        self.assertEqual(data['results'][1]['word'], '가운데')
+        self.assertIn('pronunciation_urls', data['results'][1])
+        self.assertEqual(data['results'][1]['pronunciation_urls'][0],
+            ('https://dicmedia.korean.go.kr/multimedia/multimedia_files/'
+            'convert/20160913/20000/17000/307982/SND000317336.mp3'))
+
     def test_scraper_view(self):
         """Basic view query with scraper returns proper results"""
         response = krdict.view(target_code=55874, raise_api_errors=True, options={
