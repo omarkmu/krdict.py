@@ -695,6 +695,12 @@ The results of a view query *([`view`](../functions#view))*.
                             ]
                         }
                     ],
+                    "original_language_info": [ # not required
+                        {
+                            "original_language": str,
+                            "language_type": str
+                        }
+                    ],
                     "pronunciation_info": [ # not required
                         {
                             "pronunciation": str
@@ -781,87 +787,90 @@ The results of a view query *([`view`](../functions#view))*.
     }
 }
 ```
-
-| Container          | Field              | Type | Required | Description                                                                                                         |
-| ---------          | -----              | :--: | :------: | -----------                                                                                                         |
-| -                  | data               | dict |    ✓     | Container for view query results.                                                                                   |
-| data               | title              | str  |    ✓     | The title of the KRDict Open API.                                                                                   |
-| data               | link               | str  |    ✓     | The link to the KRDict Open API.                                                                                    |
-| data               | description        | str  |    ✓     | The description of the<br/>KRDict Open API.                                                                         |
-| data               | last_build_date    | str  |    ✓     | The time the view results were<br/>generated.                                                                       |
-| data               | total_results      | int  |    ✓     | The total number of results,<br/>including the returned results.                                                    |
-| data               | results            | list |    ✓     | A list of 0 or 1 view result objects.                                                                               |
-| results            | target_code        | int  |    ✓     | The entry's identification code.                                                                                    |
-| results            | word_info          | dict |    ✓     | Container for word information.                                                                                     |
-| word_info          | word               | str  |    ✓     | The entry's headword.                                                                                               |
-| word_info          | word_unit          | str  |    ✓     | The composition unit of<br/>the headword.                                                                           |
-| word_info          | word_type          | str  |    ✓     | The origin type of the headword.                                                                                    |
-| word_info          | part_of_speech     | str  |    ✓     | The Korean part of speech of<br/>the headword.                                                                      |
-| word_info          | homograph_num      | int  |    ✓     | A superscript number used to<br/>distinguish homographs.                                                            |
-| word_info          | vocabulary_grade   | str  |    ✓     | The vocabulary level of the entry.                                                                                  |
-| word_info          | allomorph          | str  |    ✗     | The allomorph of the headword.                                                                                      |
-| word_info          | definition_info    | list |    ✓     | Contains information about the<br/>entry's definitions.                                                             |
-| definition_info    | definition         | str  |    ✓     | A definition of the entry.                                                                                          |
-| definition_info    | reference          | str  |    ✗     | The reference of the definition.                                                                                    |
-| definition_info    | translations       | list |    ✗     | A list of translations of a<br/>definition. Not included if no<br/>translation languages are specified.             |
-| translations       | definition         | str  |    ✓     | A translation of the definition.                                                                                    |
-| translations       | word               | str  |    ✓     | A translation of the word.                                                                                          |
-| translations       | language           | str  |    ✓     | The translation language.                                                                                          |
-| definition_info    | example_info       | list |    ✗     | A list of example objects.                                                                                          |
-| example_info       | type               | str  |    ✓     | The type of the example.                                                                                            |
-| example_info       | example            | str  |    ✓     | An example associated with<br/>the definition.                                                                      |
-| definition_info    | pattern_info       | list |    ✗     | A list of pattern objects.                                                                                          |
-| pattern_info       | pattern            | str  |    ✓     | A pattern associated with<br/>the definition.                                                                       |
-| pattern_info       | pattern_reference  | str  |    ✗     | A reference associated with<br/>the pattern.                                                                        |
-| definition_info    | related_info       | list |    ✗     | A list of related word objects.                                                                                     |
-| related_info       | type               | str  |    ✓     | The type of the related word.                                                                                       |
-| related_info       | word               | str  |    ✓     | The related word.                                                                                                   |
-| related_info       | link               | str  |    ✓     | The link to the related word.                                                                                       |
-| related_info       | has_target_code    | bool |    ✓     | Whether a target code<br/>is included.                                                                              |
-| related_info       | link_target_code   | str  |    ✗     | The target code of<br/>the related word.                                                                            |
-| definition_info    | multimedia_info    | list |    ✗     | A list of multimedia objects.                                                                                       |
-| multimedia_info    | label              | str  |    ✓     | The label of<br/>the multimedia object.                                                                             |
-| multimedia_info    | type               | str  |    ✓     | The type of<br/>the multimedia object.                                                                              |
-| multimedia_info    | link               | str  |    ✓     | The link to<br/>the multimedia object.                                                                              |
-| word_info          | pronunciation_info | list |    ✗     | Contains information about the<br/>entry's pronunciation.                                                           |
-| pronunciation_info | pronunciation      | str  |    ✓     | The 한글 pronunciation<br/>of the entry.                                                                            |
-| word_info          | conjugation_info   | list |    ✗     | Contains information about<br/>the entry's conjugations.                                                            |
-| conjugation_info   | conjugation        | str  |    ✓     | The conjugation of the word.                                                                                        |
-| conjugation_info   | pronunciation_info | list |    ✗     | Contains information about the<br/>conjugation's pronunciation.                                                     |
-| pronunciation_info | pronunciation      | str  |    ✓     | The 한글 pronunciation<br/>of the conjugation.                                                                       |
-| conjugation_info   | abbreviation_info  | list |    ✗     | Contains information about the<br/>conjugation's abbreviations.                                                     |
-| abbreviation_info  | abbreviation       | str  |    ✓     | The abbreviation of<br/>the conjugation.                                                                            |
-| abbreviation_info  | pronunciation_info | list |    ✗     | Contains information about the<br/>abbreviation's pronunciation.                                                    |
-| pronunciation_info | pronunciation      | str  |    ✓     | The 한글 pronunciation<br/>of the abbreviation.                                                                       |
-| word_info          | derivative_info    | list |    ✗     | Contains information about<br/>the entry's derivatives.                                                             |
-| derivative_info    | word               | str  |    ✓     | The derivative word.                                                                                                |
-| derivative_info    | link               | str  |    ✓     | The link to the derivative word.                                                                                    |
-| derivative_info    | has_target_code    | bool |    ✓     | Whether a target code<br/>is included.                                                                              |
-| derivative_info    | link_target_code   | str  |    ✗     | The target code of<br/>the derivative word.                                                                         |
-| word_info          | reference_info     | list |    ✗     | Contains information about<br/>the entry's references.                                                              |
-| reference_info     | word               | str  |    ✓     | The reference word.                                                                                                 |
-| reference_info     | link               | str  |    ✓     | The link to the reference word.                                                                                     |
-| reference_info     | has_target_code    | bool |    ✓     | Whether a target code<br/>is included.                                                                              |
-| reference_info     | link_target_code   | str  |    ✗     | The target code of<br/>the reference word.                                                                          |
-| word_info          | category_info      | list |    ✗     | Contains information about<br/>the entry's categories.                                                              |
-| category_info      | type               | str  |    ✓     | The category type.                                                                                                  |
-| category_info      | written_form       | str  |    ✓     | The category name.                                                                                                  |
-| word_info          | subword_info       | list |    ✗     | Contains information about<br/>the entry's subwords.                                                                |
-| subword_info       | subword            | str  |    ✓     | The subword text.                                                                                                   |
-| subword_info       | subword_unit       | str  |    ✓     | The composition unit of<br/>the subword.                                                                            |
-| subword_info       | subdefinition_info | list |    ✓     | Contains information about<br/>the subword's definitions.                                                           |
-| subdefinition_info | definition         | str  |    ✓     | A definition of the subword.                                                                                        |
-| subdefinition_info | translations       | list |    ✗     | A list of translations of a<br/>subword definition. Not included<br/>if no translation languages<br/>are specified. |
-| translations       | definition         | str  |    ✓     | A translation of the subword<br/>definition.                                                                        |
-| translations       | word               | str  |    ✓     | A translation of the subword<br/>word.                                                                              |
-| translations       | language           | str  |    ✓     | The translation language.                                                                                          |
-| subdefinition_info | example_info       | list |    ✗     | A list of subdefinition example<br/>objects.                                                                        |
-| example_info       | type               | str  |    ✓     | The type of the example.                                                                                            |
-| example_info       | example            | str  |    ✓     | An example associated with<br/>the subword definition.                                                              |
-| subdefinition_info | related_info       | list |    ✗     | A list of related word objects.                                                                                     |
-| related_info       | type               | str  |    ✓     | The type of the related word.                                                                                       |
-| related_info       | word               | str  |    ✓     | The related word.                                                                                                   |
-| -                  | request_params     | dict |    ✓     | The request parameters which<br/>were sent to the KRDict API.                                                       |
+    
+| Container              | Field                  | Type | Required | Description                                                                                                         |
+| ---------              | -----                  | :--: | :------: | -----------                                                                                                         |
+| -                      | data                   | dict |    ✓     | Container for view query results.                                                                                   |
+| data                   | title                  | str  |    ✓     | The title of the KRDict Open API.                                                                                   |
+| data                   | link                   | str  |    ✓     | The link to the KRDict Open API.                                                                                    |
+| data                   | description            | str  |    ✓     | The description of the<br/>KRDict Open API.                                                                         |
+| data                   | last_build_date        | str  |    ✓     | The time the view results were<br/>generated.                                                                       |
+| data                   | total_results          | int  |    ✓     | The total number of results,<br/>including the returned results.                                                    |
+| data                   | results                | list |    ✓     | A list of 0 or 1 view result objects.                                                                               |
+| results                | target_code            | int  |    ✓     | The entry's identification code.                                                                                    |
+| results                | word_info              | dict |    ✓     | Container for word information.                                                                                     |
+| word_info              | word                   | str  |    ✓     | The entry's headword.                                                                                               |
+| word_info              | word_unit              | str  |    ✓     | The composition unit of<br/>the headword.                                                                           |
+| word_info              | word_type              | str  |    ✓     | The origin type of the headword.                                                                                    |
+| word_info              | part_of_speech         | str  |    ✓     | The Korean part of speech of<br/>the headword.                                                                      |
+| word_info              | homograph_num          | int  |    ✓     | A superscript number used to<br/>distinguish homographs.                                                            |
+| word_info              | vocabulary_grade       | str  |    ✓     | The vocabulary level of the entry.                                                                                  |
+| word_info              | allomorph              | str  |    ✗     | The allomorph of the headword.                                                                                      |
+| word_info              | definition_info        | list |    ✓     | Contains information about the<br/>entry's definitions.                                                             |
+| definition_info        | definition             | str  |    ✓     | A definition of the entry.                                                                                          |
+| definition_info        | reference              | str  |    ✗     | The reference of the definition.                                                                                    |
+| definition_info        | translations           | list |    ✗     | A list of translations of a<br/>definition. Not included if no<br/>translation languages are specified.             |
+| translations           | definition             | str  |    ✓     | A translation of the definition.                                                                                    |
+| translations           | word                   | str  |    ✓     | A translation of the word.                                                                                          |
+| translations           | language               | str  |    ✓     | The translation language.                                                                                           |
+| definition_info        | example_info           | list |    ✗     | A list of example objects.                                                                                          |
+| example_info           | type                   | str  |    ✓     | The type of the example.                                                                                            |
+| example_info           | example                | str  |    ✓     | An example associated with<br/>the definition.                                                                      |
+| definition_info        | pattern_info           | list |    ✗     | A list of pattern objects.                                                                                          |
+| pattern_info           | pattern                | str  |    ✓     | A pattern associated with<br/>the definition.                                                                       |
+| pattern_info           | pattern_reference      | str  |    ✗     | A reference associated with<br/>the pattern.                                                                        |
+| definition_info        | related_info           | list |    ✗     | A list of related word objects.                                                                                     |
+| related_info           | type                   | str  |    ✓     | The type of the related word.                                                                                       |
+| related_info           | word                   | str  |    ✓     | The related word.                                                                                                   |
+| related_info           | link                   | str  |    ✓     | The link to the related word.                                                                                       |
+| related_info           | has_target_code        | bool |    ✓     | Whether a target code<br/>is included.                                                                              |
+| related_info           | link_target_code       | str  |    ✗     | The target code of<br/>the related word.                                                                            |
+| definition_info        | multimedia_info        | list |    ✗     | A list of multimedia objects.                                                                                       |
+| multimedia_info        | label                  | str  |    ✓     | The label of<br/>the multimedia object.                                                                             |
+| multimedia_info        | type                   | str  |    ✓     | The type of<br/>the multimedia object.                                                                              |
+| multimedia_info        | link                   | str  |    ✓     | The link to<br/>the multimedia object.                                                                              |
+| word_info              | original_language_info | list |    ✗     | Contains information about the<br/>entry's original language.                                                       |
+| original_language_info | original_language      | str  |    ✓     | The origin of the word.                                                                                             |
+| original_language_info | language_type          | str  |    ✓     | The language type of the<br/>word origin.                                                                           |
+| word_info              | pronunciation_info     | list |    ✗     | Contains information about the<br/>entry's pronunciation.                                                           |
+| pronunciation_info     | pronunciation          | str  |    ✓     | The 한글 pronunciation<br/>of the entry.                                                                             |
+| word_info              | conjugation_info       | list |    ✗     | Contains information about<br/>the entry's conjugations.                                                            |
+| conjugation_info       | conjugation            | str  |    ✓     | The conjugation of the word.                                                                                        |
+| conjugation_info       | pronunciation_info     | list |    ✗     | Contains information about the<br/>conjugation's pronunciation.                                                     |
+| pronunciation_info     | pronunciation          | str  |    ✓     | The 한글 pronunciation<br/>of the conjugation.                                                                       |
+| conjugation_info       | abbreviation_info      | list |    ✗     | Contains information about the<br/>conjugation's abbreviations.                                                     |
+| abbreviation_info      | abbreviation           | str  |    ✓     | The abbreviation of<br/>the conjugation.                                                                            |
+| abbreviation_info      | pronunciation_info     | list |    ✗     | Contains information about the<br/>abbreviation's pronunciation.                                                    |
+| pronunciation_info     | pronunciation          | str  |    ✓     | The 한글 pronunciation<br/>of the abbreviation.                                                                       |
+| word_info              | derivative_info        | list |    ✗     | Contains information about<br/>the entry's derivatives.                                                             |
+| derivative_info        | word                   | str  |    ✓     | The derivative word.                                                                                                |
+| derivative_info        | link                   | str  |    ✓     | The link to the derivative word.                                                                                    |
+| derivative_info        | has_target_code        | bool |    ✓     | Whether a target code<br/>is included.                                                                              |
+| derivative_info        | link_target_code       | str  |    ✗     | The target code of<br/>the derivative word.                                                                         |
+| word_info              | reference_info         | list |    ✗     | Contains information about<br/>the entry's references.                                                              |
+| reference_info         | word                   | str  |    ✓     | The reference word.                                                                                                 |
+| reference_info         | link                   | str  |    ✓     | The link to the reference word.                                                                                     |
+| reference_info         | has_target_code        | bool |    ✓     | Whether a target code<br/>is included.                                                                              |
+| reference_info         | link_target_code       | str  |    ✗     | The target code of<br/>the reference word.                                                                          |
+| word_info              | category_info          | list |    ✗     | Contains information about<br/>the entry's categories.                                                              |
+| category_info          | type                   | str  |    ✓     | The category type.                                                                                                  |
+| category_info          | written_form           | str  |    ✓     | The category name.                                                                                                  |
+| word_info              | subword_info           | list |    ✗     | Contains information about<br/>the entry's subwords.                                                                |
+| subword_info           | subword                | str  |    ✓     | The subword text.                                                                                                   |
+| subword_info           | subword_unit           | str  |    ✓     | The composition unit of<br/>the subword.                                                                            |
+| subword_info           | subdefinition_info     | list |    ✓     | Contains information about<br/>the subword's definitions.                                                           |
+| subdefinition_info     | definition             | str  |    ✓     | A definition of the subword.                                                                                        |
+| subdefinition_info     | translations           | list |    ✗     | A list of translations of a<br/>subword definition. Not included<br/>if no translation languages<br/>are specified. |
+| translations           | definition             | str  |    ✓     | A translation of the subword<br/>definition.                                                                        |
+| translations           | word                   | str  |    ✓     | A translation of the subword<br/>word.                                                                              |
+| translations           | language               | str  |    ✓     | The translation language.                                                                                           |
+| subdefinition_info     | example_info           | list |    ✗     | A list of subdefinition example<br/>objects.                                                                        |
+| example_info           | type                   | str  |    ✓     | The type of the example.                                                                                            |
+| example_info           | example                | str  |    ✓     | An example associated with<br/>the subword definition.                                                              |
+| subdefinition_info     | related_info           | list |    ✗     | A list of related word objects.                                                                                     |
+| related_info           | type                   | str  |    ✓     | The type of the related word.                                                                                       |
+| related_info           | word                   | str  |    ✓     | The related word.                                                                                                   |
+| -                      | request_params         | dict |    ✓     | The request parameters which<br/>were sent to the KRDict API.                                                       |
 
 #### KRDictError
 

@@ -564,6 +564,7 @@ class ViewDefinitionInfo(TypedDict):
 
 class _ViewWordInfo(TypedDict):
     allomorph: str
+    original_language_info: List[ViewOriginalLanguageInfo]
     pronunciation_info: List[ViewPronunciationInfo]
     conjugation_info: List[ViewConjugationInfo]
     derivative_info: List[ViewReferenceInfo]
