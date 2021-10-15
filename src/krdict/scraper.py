@@ -471,10 +471,10 @@ def _send_request(url, raise_errors):
         return [False, None]
 
 def _fetch_view_images(multimedia, raise_errors):
-    if 'link' not in multimedia:
+    if 'url' not in multimedia:
         return
 
-    [success, doc] = _send_request(multimedia['link'], raise_errors)
+    [success, doc] = _send_request(multimedia['url'], raise_errors)
     if not success:
         return
 
@@ -592,7 +592,7 @@ def extend_view(response, fetch_page_data, fetch_multimedia, raise_errors):
     target_code = response['data']['results'][0]['target_code']
 
     if fetch_page_data:
-        url = response['data']['link']
+        url = response['data']['url']
 
         [success, doc] = _send_request(url, raise_errors)
         if success:
@@ -630,7 +630,7 @@ def fetch_daily_word():
         'target_code': int(target_code_text) if target_code_text is not None else 0,
         'word': sup.xpath('preceding-sibling::text()')[0].strip(),
         'definition': doc.cssselect('dl.today_word > dd')[0].text_content().strip(),
-        'link': _VIEW_URL.format(target_code_text),
+        'url': _VIEW_URL.format(target_code_text),
         'homograph_num': int(sup_text) if len(sup_text) > 0 else 0
     }
 

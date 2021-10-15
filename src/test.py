@@ -1,4 +1,3 @@
-# type: ignore
 """
 Handles testing the krdict module.
 """
@@ -7,33 +6,36 @@ import os
 import unittest
 import dotenv
 import krdict
+import krdict.scraper
 
-BASE_LINK_URL = 'https://krdict.korean.go.kr/dicSearch/SearchView'
+_BASE_VIEW_URL = 'https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo={}'
 
 dotenv.load_dotenv()
 krdict.set_key(os.getenv('KRDICT_KEY'))
 
 class TestKRDict(unittest.TestCase):
-    """Contains KRDict test cases."""
+    """Contains test cases for the main module."""
     def test_api_error(self):
         """Invalid query string results in an API error"""
         response = krdict.search(query='')
         self.assertIn('error', response)
         self.assertIn('request_params', response)
-        self.assertEqual(response['error']['error_code'], 100)
-        self.assertEqual(response['error']['message'], 'Incorrect query request')
+
+        if 'data' not in response:
+            self.assertEqual(response['error']['error_code'], 100)
+            self.assertEqual(response['error']['message'], 'Incorrect query request')
 
     def test_basic_search(self):
         """Basic search query returns proper results"""
-        response = krdict.search_words(query='나무', raise_api_errors=True)
+        response = krdict.search(query='나무', search_type='word', raise_api_errors=True)
 
         self.assertIn('data', response)
         data = response['data']
 
         self.assertEqual(len(data['results']), 10)
-        self.assertEqual(data['num_results'], 10)
+        self.assertEqual(data['per_page'], 10)
         self.assertEqual(data['total_results'], 53)
-        self.assertEqual(data['start_index'], 1)
+        self.assertEqual(data['page'], 1)
 
         expected_values = [
             (0, 32750, 3, '나무','명사'),
@@ -51,13 +53,12 @@ class TestKRDict(unittest.TestCase):
         for idx, values in enumerate(expected_values):
             [homograph_num, target_code, meaning_len, word, pos] = values
             result = data['results'][idx]
-            link = f'{BASE_LINK_URL}?ParaWordNo={target_code}'
 
             self.assertEqual(result['word'], word)
             self.assertEqual(result['part_of_speech'], pos)
             self.assertEqual(result['homograph_num'], homograph_num)
             self.assertEqual(result['target_code'], target_code)
-            self.assertEqual(result['link'], link)
+            self.assertEqual(result['url'], _BASE_VIEW_URL.format(target_code))
             self.assertEqual(len(result['definitions']), meaning_len)
 
             for index in range(meaning_len):
@@ -69,7 +70,7 @@ class TestKRDict(unittest.TestCase):
 
     def test_definition_search(self):
         """Definition search query returns proper results"""
-        response = krdict.search_definitions(query='나무', raise_api_errors=True)
+        response = krdict.search(query='나무', search_type='definition', raise_api_errors=True)
 
         self.assertIn('data', response)
         data = response['data']
@@ -85,7 +86,7 @@ class TestKRDict(unittest.TestCase):
 
     def test_example_search(self):
         """Example search query returns proper results"""
-        response = krdict.search_examples(query='나무', raise_api_errors=True)
+        response = krdict.search(query='나무', search_type='example', raise_api_errors=True)
 
         self.assertIn('data', response)
         data = response['data']
@@ -97,7 +98,7 @@ class TestKRDict(unittest.TestCase):
 
     def test_idiom_proverb_search(self):
         """Idiom/Proverb search query returns proper results"""
-        response = krdict.search_idioms_proverbs(query='나무', raise_api_errors=True)
+        response = krdict.search(query='나무', search_type='idiom_proverb', raise_api_errors=True)
 
         self.assertIn('data', response)
         data = response['data']
@@ -107,14 +108,31 @@ class TestKRDict(unittest.TestCase):
         for result in data['results']:
             self.assertIn('word', result)
 
-    def test_num_results(self):
-        """Setting num_results parameter returns correct number of results"""
-        response = krdict.search_words(query='나무', num_results=15, raise_api_errors=True)
+    def test_page(self):
+        """Setting page parameter returns proper page"""
+        response = krdict.search(
+            query='나무',
+            search_type='word',
+            page=20,
+            raise_api_errors=True)
 
         self.assertIn('data', response)
         data = response['data']
 
-        self.assertEqual(data['num_results'], 15)
+        self.assertEqual(data['page'], 20)
+
+    def test_per_page(self):
+        """Setting per_page parameter returns correct number of results"""
+        response = krdict.search(
+            query='나무',
+            search_type='word',
+            per_page=15,
+            raise_api_errors=True)
+
+        self.assertIn('data', response)
+        data = response['data']
+
+        self.assertEqual(data['per_page'], 15)
         self.assertEqual(len(data['results']), 15)
 
     def test_raise_api_errors(self):
@@ -124,140 +142,6 @@ class TestKRDict(unittest.TestCase):
         self.assertIsInstance(ctx.exception.request_params, dict)
         self.assertEqual(ctx.exception.error_code, 100)
         self.assertEqual(ctx.exception.message, 'Incorrect query request')
-
-    def test_scraper_advanced(self):
-        """Advanced search query with scraper returns proper results"""
-        response = krdict.advanced_search(query='나무',
-            raise_api_errors=True,
-            search_method='include',
-            sort='popular',
-            options={
-                'use_scraper': True
-            })
-
-        self.assertIn('data', response)
-        data = response['data']
-
-        self.assertEqual(len(data['results']), 10)
-
-        for result in data['results']:
-            self.assertIn('pronunciation_urls', result)
-            self.assertEqual(len(result['pronunciation_urls']), 1)
-
-    def test_scraper_category(self):
-        """Advanced search query using categories with scraper returns proper results"""
-        response = krdict.advanced_search(query='가',
-            raise_api_errors=True,
-            search_method='include',
-            subject_category='위치 표현하기',
-            options={
-                'use_scraper': True
-            })
-        self.assertIn('data', response)
-        data = response['data']
-
-        self.assertEqual(len(data['results']), 2)
-
-        self.assertEqual(data['results'][0]['word'], '가리키다')
-        self.assertIn('pronunciation_urls', data['results'][0])
-        self.assertEqual(data['results'][0]['pronunciation_urls'][0],
-            ('https://dicmedia.korean.go.kr/multimedia/multimedia_files/'
-            'convert/20170223/442961/SND000021293.mp3'))
-
-        self.assertEqual(data['results'][1]['word'], '가운데')
-        self.assertIn('pronunciation_urls', data['results'][1])
-        self.assertEqual(data['results'][1]['pronunciation_urls'][0],
-            ('https://dicmedia.korean.go.kr/multimedia/multimedia_files/'
-            'convert/20160913/20000/17000/307982/SND000317336.mp3'))
-
-    def test_scraper_view(self):
-        """Basic view query with scraper returns proper results"""
-        response = krdict.view(target_code=55874, raise_api_errors=True, options={
-            'use_scraper': True
-        })
-
-        self.assertIn('data', response)
-        self.assertEqual(len(response['data']['results']), 1)
-        result = response['data']['results'][0]
-
-        self.assertIn('word_info', result)
-        self.assertIn('pronunciation_info', result['word_info'])
-        self.assertIn('original_language_info', result['word_info'])
-
-        self.assertEqual(len(result['word_info']['pronunciation_info']), 1)
-        self.assertIn('url', result['word_info']['pronunciation_info'][0])
-
-        self.assertEqual(len(result['word_info']['original_language_info']), 1)
-        orig_info = result['word_info']['original_language_info'][0]
-
-        self.assertIn('pronunciation_info', result['word_info'])
-        self.assertEqual(len(result['word_info']['pronunciation_info']), 1)
-        self.assertIn('url', result['word_info']['pronunciation_info'][0])
-
-        self.assertEqual(orig_info['original_language'], '木曜日')
-        self.assertEqual(orig_info['language_type'], '한자')
-        self.assertEqual(len(orig_info['hanja_info']), 3)
-
-        hanja_1 = orig_info['hanja_info'][0]
-        self.assertEqual(hanja_1['hanja'], '木')
-        self.assertEqual(hanja_1['radical'], '木')
-        self.assertEqual(hanja_1['stroke_count'], 4)
-        self.assertEqual(len(hanja_1['readings']), 2)
-
-        self.assertEqual(hanja_1['readings'][0], '나무 목')
-        self.assertEqual(hanja_1['readings'][1], '모과 모')
-
-        hanja_2 = orig_info['hanja_info'][1]
-        self.assertEqual(hanja_2['hanja'], '曜')
-        self.assertEqual(hanja_2['radical'], '日')
-        self.assertEqual(hanja_2['stroke_count'], 18)
-        self.assertEqual(len(hanja_2['readings']), 1)
-
-        self.assertEqual(hanja_2['readings'][0], '빛날 요')
-
-        hanja_3 = orig_info['hanja_info'][2]
-        self.assertEqual(hanja_3['hanja'], '日')
-        self.assertEqual(hanja_3['radical'], '日')
-        self.assertEqual(hanja_3['stroke_count'], 4)
-        self.assertEqual(len(hanja_3['readings']), 1)
-
-        self.assertEqual(hanja_3['readings'][0], '날 일')
-
-    def test_scraper_view_multimedia(self):
-        """Basic view query with multimedia scraper returns proper results"""
-        response = krdict.view(target_code=14997, raise_api_errors=True, options={
-            'use_scraper': True,
-            'fetch_page_data': False,
-            'fetch_multimedia': True
-        })
-
-        self.assertIn('data', response)
-        self.assertEqual(len(response['data']['results']), 1)
-        result = response['data']['results'][0]
-
-        self.assertIn('word_info', result)
-        self.assertIn('definition_info', result['word_info'])
-        self.assertIn('multimedia_info', result['word_info']['definition_info'][0])
-        media_info = result['word_info']['definition_info'][0]['multimedia_info']
-
-        for info in media_info:
-            self.assertIn('media_urls', info)
-            self.assertEqual(len(info['media_urls']), 1)
-
-    def test_scraper_word(self):
-        """Basic search query with scraper returns proper results"""
-        response = krdict.search_words(query='나무', raise_api_errors=True, options={
-            'use_scraper': True
-        })
-
-        self.assertIn('data', response)
-        data = response['data']
-
-        self.assertEqual(len(data['results']), 10)
-
-        for result in data['results']:
-            self.assertIn('pronunciation_urls', result)
-            self.assertEqual(len(result['pronunciation_urls']), 1)
 
     def test_search_method(self):
         """Advanced search method with various search methods returns proper results"""
@@ -276,7 +160,11 @@ class TestKRDict(unittest.TestCase):
 
     def test_sort(self):
         """Setting sort parameter to popular returns sorted results"""
-        response = krdict.search_words(query='나무', sort='popular', raise_api_errors=True)
+        response = krdict.search(
+            query='나무',
+            search_type='word',
+            sort='popular',
+            raise_api_errors=True)
 
         self.assertIn('data', response)
         data = response['data']
@@ -285,19 +173,11 @@ class TestKRDict(unittest.TestCase):
         self.assertEqual(data['results'][1]['target_code'], 38842)
         self.assertEqual(data['results'][2]['target_code'], 38847)
 
-    def test_start_index(self):
-        """Setting start_index parameter returns proper start_index"""
-        response = krdict.search_words(query='나무', start_index=20, raise_api_errors=True)
-
-        self.assertIn('data', response)
-        data = response['data']
-
-        self.assertEqual(data['start_index'], 20)
-
     def test_translation(self):
         """Setting translation_language parameter returns results with translations"""
-        response = krdict.search_words(
+        response = krdict.search(
             query='나무',
+            search_type='word',
             raise_api_errors=True,
             translation_language=['english', 'japanese'])
 
@@ -310,6 +190,9 @@ class TestKRDict(unittest.TestCase):
 
             for def_info in result['definitions']:
                 self.assertIn('translations', def_info)
+                if 'translations' not in def_info:
+                    return
+
                 self.assertIsInstance(def_info['translations'], list)
 
                 eng_translation = def_info['translations'][0]
@@ -357,6 +240,165 @@ class TestKRDict(unittest.TestCase):
         self.assertEqual(data['total_results'], 1)
         self.assertEqual(data['results'][0]['target_code'], 32750)
 
+class TestKRDictScraper(unittest.TestCase):
+    """Contains test cases for the scraper module."""
+    def test_scraper_advanced(self):
+        """Advanced search query with scraper returns proper results"""
+        response = krdict.advanced_search(query='나무',
+            raise_api_errors=True,
+            search_type='word',
+            search_method='include',
+            sort='popular',
+            options={'use_scraper': True})
+
+        self.assertIn('data', response)
+        data = response['data']
+
+        self.assertEqual(len(data['results']), 10)
+
+        for result in data['results']:
+            self.assertIn('pronunciation_urls', result)
+            if 'pronunciation_urls' in result:
+                self.assertEqual(len(result['pronunciation_urls']), 1)
+
+    def test_scraper_category(self):
+        """Advanced search query using categories with scraper returns proper results"""
+        response = krdict.advanced_search(query='가',
+            raise_api_errors=True,
+            search_method='include',
+            subject_category='위치 표현하기',
+            search_type='word',
+            options={
+                'use_scraper': True
+            })
+        self.assertIn('data', response)
+        data = response['data']
+
+        self.assertEqual(len(data['results']), 2)
+
+        self.assertEqual(data['results'][0]['word'], '가리키다')
+        self.assertIn('pronunciation_urls', data['results'][0])
+        if 'pronunciation_urls' in data['results'][0]:
+            self.assertEqual(data['results'][0]['pronunciation_urls'][0],
+                ('https://dicmedia.korean.go.kr/multimedia/multimedia_files/'
+                'convert/20170223/442961/SND000021293.mp3'))
+
+        if 'pronunciation_urls' in data['results'][1]:
+            self.assertEqual(data['results'][1]['word'], '가운데')
+            self.assertIn('pronunciation_urls', data['results'][1])
+            self.assertEqual(data['results'][1]['pronunciation_urls'][0],
+                ('https://dicmedia.korean.go.kr/multimedia/multimedia_files/'
+                'convert/20160913/20000/17000/307982/SND000317336.mp3'))
+
+    def test_scraper_view(self):
+        """Basic view query with scraper returns proper results"""
+        response = krdict.view(target_code=55874,
+            raise_api_errors=True,
+            options={'use_scraper': True})
+
+        self.assertIn('data', response)
+        self.assertEqual(len(response['data']['results']), 1)
+        result = response['data']['results'][0]
+
+        self.assertIn('word_info', result)
+        self.assertIn('pronunciation_info', result['word_info'])
+        self.assertIn('original_language_info', result['word_info'])
+
+        self.assertEqual(len(result['word_info']['pronunciation_info']), 1)
+        self.assertIn('url', result['word_info']['pronunciation_info'][0])
+
+        self.assertEqual(len(result['word_info']['original_language_info']), 1)
+        orig_info = result['word_info']['original_language_info'][0]
+
+        self.assertIn('pronunciation_info', result['word_info'])
+        self.assertEqual(len(result['word_info']['pronunciation_info']), 1)
+        self.assertIn('url', result['word_info']['pronunciation_info'][0])
+
+        self.assertEqual(orig_info['original_language'], '木曜日')
+        self.assertEqual(orig_info['language_type'], '한자')
+
+        if 'hanja_info' not in orig_info:
+            return
+
+        self.assertEqual(len(orig_info['hanja_info']), 3)
+
+        hanja_1 = orig_info['hanja_info'][0]
+        self.assertEqual(hanja_1['hanja'], '木')
+        self.assertEqual(hanja_1['radical'], '木')
+        self.assertEqual(hanja_1['stroke_count'], 4)
+        self.assertEqual(len(hanja_1['readings']), 2)
+
+        self.assertEqual(hanja_1['readings'][0], '나무 목')
+        self.assertEqual(hanja_1['readings'][1], '모과 모')
+
+        hanja_2 = orig_info['hanja_info'][1]
+        self.assertEqual(hanja_2['hanja'], '曜')
+        self.assertEqual(hanja_2['radical'], '日')
+        self.assertEqual(hanja_2['stroke_count'], 18)
+        self.assertEqual(len(hanja_2['readings']), 1)
+
+        self.assertEqual(hanja_2['readings'][0], '빛날 요')
+
+        hanja_3 = orig_info['hanja_info'][2]
+        self.assertEqual(hanja_3['hanja'], '日')
+        self.assertEqual(hanja_3['radical'], '日')
+        self.assertEqual(hanja_3['stroke_count'], 4)
+        self.assertEqual(len(hanja_3['readings']), 1)
+
+        self.assertEqual(hanja_3['readings'][0], '날 일')
+
+    def test_scraper_view_multimedia(self):
+        """Basic view query with multimedia scraper returns proper results"""
+        response = krdict.view(target_code=14997, raise_api_errors=True, options={
+            'use_scraper': True,
+            'fetch_page_data': False,
+            'fetch_multimedia': True
+        })
+
+        self.assertIn('data', response)
+        self.assertEqual(len(response['data']['results']), 1)
+        result = response['data']['results'][0]
+
+        self.assertIn('word_info', result)
+        self.assertIn('definition_info', result['word_info'])
+        self.assertIn('multimedia_info', result['word_info']['definition_info'][0])
+        media_info = result['word_info']['definition_info'][0]['multimedia_info']
+
+        for info in media_info:
+            self.assertIn('media_urls', info)
+            if 'media_urls' in info:
+                self.assertEqual(len(info['media_urls']), 1)
+
+    def test_scraper_word(self):
+        """Basic search query with scraper returns proper results"""
+        response = krdict.search(
+            query='나무',
+            raise_api_errors=True,
+            search_type='word',
+            options={'use_scraper': True})
+
+        self.assertIn('data', response)
+        data = response['data']
+
+        self.assertEqual(len(data['results']), 10)
+
+        for result in data['results']:
+            self.assertIn('pronunciation_urls', result)
+            if 'pronunciation_urls' in result:
+                self.assertEqual(len(result['pronunciation_urls']), 1)
+
+    def test_scraper_fetch_daily_word(self):
+        """Fetching word of the day with scraper returns proper results"""
+        response = krdict.scraper.fetch_daily_word()
+
+        self.assertIn('data', response)
+        data = response['data']
+
+        self.assertIn('target_code', data)
+        self.assertIn('word', data)
+        self.assertIn('definition', data)
+        self.assertIn('url', data)
+        self.assertIn('homograph_num', data)
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

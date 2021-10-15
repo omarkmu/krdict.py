@@ -35,7 +35,7 @@ class KRDictException(Exception):
     def __reduce__(self):
         return (KRDictException, (self.message, self.error_code, self.request_params))
 
-def _send_request(url, params):
+def _send_request(url, params, search_type):
     raise_api_errors = False
     if 'key' not in params and _DEFAULTS['API_KEY'] is not None:
         params['key'] = _DEFAULTS['API_KEY']
@@ -59,6 +59,9 @@ def _send_request(url, params):
             raise KRDictException(error['message'], error['error_code'], params)
 
         result['request_params'] = params
+
+        if search_type:
+            result['response_type'] = search_type if 'error' not in result else 'error'
         if 'data' in result and 'results' not in result['data']:
             result['data']['results'] = []
 
@@ -73,6 +76,7 @@ def advanced_search(**kwargs):
     """
 
     kwargs['advanced'] = 'y'
+    search_type = kwargs.get('search_type', 'word')
     transform_search_params(kwargs)
 
     options = kwargs.get('options', {})
@@ -81,7 +85,7 @@ def advanced_search(**kwargs):
         and options.get('fetch_page_data', _DEFAULTS['FETCH_PAGE_DATA']))
 
     if use_scraper:
-        response = _send_request(_SEARCH_URL, kwargs)
+        response = _send_request(_SEARCH_URL, kwargs, search_type)
 
         if 'error' in response:
             return response
@@ -89,15 +93,15 @@ def advanced_search(**kwargs):
         raise_errors = options.get('raise_scraper_errors', _DEFAULTS['RAISE_SCRAPER_ERRORS'])
         return extend_advanced_search(response, raise_errors)
 
-    return _send_request(_SEARCH_URL, kwargs)
+    return _send_request(_SEARCH_URL, kwargs, search_type)
 
 def search(**kwargs):
     """
     Performs a search on the Korean Learner's Dict API.
     """
 
+    search_type = kwargs.get('search_type', 'word')
     transform_search_params(kwargs)
-
 
     options = kwargs.get('options', {})
     use_scraper = (kwargs.get('part', 'word') == 'word'
@@ -105,7 +109,7 @@ def search(**kwargs):
         and options.get('fetch_page_data', _DEFAULTS['FETCH_PAGE_DATA']))
 
     if use_scraper:
-        response = _send_request(_SEARCH_URL, kwargs)
+        response = _send_request(_SEARCH_URL, kwargs, search_type)
 
         if 'error' in response:
             return response
@@ -113,58 +117,7 @@ def search(**kwargs):
         raise_errors = options.get('raise_scraper_errors', _DEFAULTS['RAISE_SCRAPER_ERRORS'])
         return extend_search(response, raise_errors)
 
-    return _send_request(_SEARCH_URL, kwargs)
-
-def search_definitions(**kwargs):
-    """
-    Performs a definition search on the Korean Learner's Dict API.
-    """
-
-    transform_search_params(kwargs)
-    kwargs['part'] = 'dfn'
-    return _send_request(_SEARCH_URL, kwargs)
-
-def search_examples(**kwargs):
-    """
-    Performs an example search on the Korean Learner's Dict API.
-    """
-
-    transform_search_params(kwargs)
-    kwargs['part'] = 'exam'
-    return _send_request(_SEARCH_URL, kwargs)
-
-def search_idioms_proverbs(**kwargs):
-    """
-    Performs a search for idioms and proverbs on the Korean Learner's Dict API.
-    """
-
-    transform_search_params(kwargs)
-    kwargs['part'] = 'ip'
-    return _send_request(_SEARCH_URL, kwargs)
-
-def search_words(**kwargs):
-    """
-    Performs a search for words on the Korean Learner's Dict API.
-    """
-
-    transform_search_params(kwargs)
-    if 'part' in kwargs:
-        del kwargs['part']
-
-    options = kwargs.get('options', {})
-    use_scraper = (options.get('use_scraper', _DEFAULTS['USE_SCRAPER'])
-        and options.get('fetch_page_data', _DEFAULTS['FETCH_PAGE_DATA']))
-
-    if use_scraper:
-        response = _send_request(_SEARCH_URL, kwargs)
-
-        if 'error' in response:
-            return response
-
-        raise_errors = options.get('raise_scraper_errors', _DEFAULTS['RAISE_SCRAPER_ERRORS'])
-        return extend_search(response, raise_errors)
-
-    return _send_request(_SEARCH_URL, kwargs)
+    return _send_request(_SEARCH_URL, kwargs, search_type)
 
 def set_default(name, value):
     """
@@ -197,7 +150,7 @@ def view(**kwargs):
 
     options = kwargs.get('options', {})
     if options.get('use_scraper', _DEFAULTS['USE_SCRAPER']) is True:
-        response = _send_request(_VIEW_URL, kwargs)
+        response = _send_request(_VIEW_URL, kwargs, None)
 
         if 'error' in response:
             return response
@@ -207,7 +160,7 @@ def view(**kwargs):
         raise_errors = options.get('raise_scraper_errors', _DEFAULTS['RAISE_SCRAPER_ERRORS'])
         return extend_view(response, fetch_page, fetch_media, raise_errors)
 
-    return _send_request(_VIEW_URL, kwargs)
+    return _send_request(_VIEW_URL, kwargs, None)
 
 __all__ = [
     'advanced_search',

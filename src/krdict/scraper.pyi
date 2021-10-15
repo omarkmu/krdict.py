@@ -1,5 +1,5 @@
 from typing import List, TypedDict
-from . import WordSearchResults, ViewResult
+from . import WordSearchResponse, ViewResponse
 
 class _DailyWordData(TypedDict, total=False):
     part_of_speech: str
@@ -11,27 +11,27 @@ class DailyWordData(_DailyWordData):
     target_code: int
     word: str
     definition: str
-    link: str
+    url: str
     homograph_num: int
 
 class DailyWordResponse(TypedDict):
     data: DailyWordData
 
 def extend_advanced_search(
-    response: WordSearchResults,
+    response: WordSearchResponse,
     raise_errors: bool
-) -> WordSearchResults: ...
+) -> WordSearchResponse: ...
 
 def extend_search(
-    response: WordSearchResults,
+    response: WordSearchResponse,
     raise_errors: bool
-) -> WordSearchResults: ...
+) -> WordSearchResponse: ...
 
 def extend_view(
-    response: ViewResult,
+    response: ViewResponse,
     fetch_page_data: bool,
     fetch_multimedia: bool,
     raise_errors: bool
-) -> ViewResult: ...
+) -> ViewResponse: ...
 
 def fetch_daily_word() -> DailyWordResponse: ...
