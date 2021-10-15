@@ -4,8 +4,10 @@ If you encounter any other type of error, or an unexpected error, please submit 
 
 ## KRDictException
 
-An exception that contains information about a KRDict API error. This only occurs if the argument passed to the
-`raise_api_errors` parameter of a query function is `True`.
+An exception that contains information about an API error. This only occurs if the argument passed to the
+`raise_api_errors` parameter of a query function is `True`.  
+For a list of error codes, please see the
+[API reference](https://krdict.korean.go.kr/openApi/openApiInfo).
 
 ```python
 class KRDictException(Exception):

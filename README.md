@@ -26,7 +26,7 @@ import json
 import krdict
 
 krdict.set_key(os.getenv('KRDICT_KEY'))
-response = krdict.search_words(query='나무', raise_api_errors=True)
+response = krdict.search(query='나무', raise_api_errors=True)
 
 print(json.dumps(response, indent=2, ensure_ascii=False))
 ```

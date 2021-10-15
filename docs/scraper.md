@@ -11,9 +11,9 @@ Extends advanced word search results with pronunciation URLs.
 
 ```python
 def extend_advanced_search(
-    response: WordSearchResults,
+    response: WordSearchResponse,
     raise_errors: bool
-) -> WordSearchResults: ...
+) -> WordSearchResponse: ...
 ```
 
 **Parameters:**
@@ -23,18 +23,18 @@ def extend_advanced_search(
 
 **Returns:**
 
-Returns an extended [`WordSearchResults`](return_types.md#wordsearchresults) object.
+Returns an extended [`WordSearchResponse`](return_types.md#wordsearchresponse) object.
 
 ---
 ## extend_search
 
-Extends advanced word search results with pronunciation URLs.
+Extends word search results with pronunciation URLs.
 
 ```python
 def extend_search(
-    response: WordSearchResults,
+    response: WordSearchResponse,
     raise_errors: bool
-) -> WordSearchResults: ...
+) -> WordSearchResponse: ...
 ```
 
 **Parameters:**
@@ -44,7 +44,7 @@ def extend_search(
 
 **Returns:**
 
-Returns an extended [`WordSearchResults`](return_types.md#wordsearchresults) object.
+Returns an extended [`WordSearchResponse`](return_types.md#wordsearchresponse) object.
 
 ---
 ## extend_view
@@ -54,11 +54,11 @@ information.
 
 ```python
 def extend_view(
-    response: ViewResult,
+    response: ViewResponse,
     fetch_page_data: bool,
     fetch_multimedia: bool,
     raise_errors: bool
-) -> ViewResult: ...
+) -> ViewResponse: ...
 ```
 
 **Parameters:**
@@ -70,7 +70,7 @@ def extend_view(
 
 **Returns:**
 
-Returns an extended [`ViewResult`](return_types.md#viewresult) object.
+Returns an extended [`ViewResponse`](return_types.md#viewresponse) object.
 
 ---
 ## fetch_daily_word
