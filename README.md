@@ -1,7 +1,7 @@
 # krdict.py
 
 [![PyPI](https://img.shields.io/pypi/v/krdict.py)](https://pypi.org/project/krdict.py)
-[![Documentation](https://readthedocs.org/projects/krdictpy/badge/?version=latest)](https://krdictpy.readthedocs.io/en/latest/?badge=latest)
+[![Documentation](https://readthedocs.org/projects/krdictpy/badge/?version=stable)](https://krdictpy.readthedocs.io/en/stable/?badge=stable)
 
 A python module which helps to query the [API](https://krdict.korean.go.kr/openApi/openApiInfo) of the
 [Korean Learner's Dictionary](https://krdict.korean.go.kr), provided by the National Institute of Korean Language.
@@ -61,4 +61,4 @@ Assuming an error does not occur, the output will be similar to:
 }
 ```
 
-For more information, please check the [documentation](https://krdictpy.readthedocs.io/en/latest).
+For more information, please check the [documentation](https://krdictpy.readthedocs.io/en/stable).

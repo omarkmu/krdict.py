@@ -429,7 +429,7 @@ The results of a definition search *([`search_definitions`](../functions#search_
 | data           | link            | str  |    ✓     | The link to the KRDict Open API.                                                                        |
 | data           | description     | str  |    ✓     | The description of the<br/>KRDict Open API.                                                             |
 | data           | last_build_date | str  |    ✓     | The time the search results were<br/>generated.                                                         |
-| data           | start_index     | int  |    ✓     | The index at which the search<br/>results begin.                                                        |
+| data           | start_index     | int  |    ✓     | The page at which the search<br/>results begin.                                                         |
 | data           | num_results     | int  |    ✓     | The number of results requested.<br/>Does not necessarily correspond<br/>to the length of `results`.    |
 | data           | total_results   | int  |    ✓     | The total number of results,<br/>including the returned results.                                        |
 | data           | results         | list |    ✓     | A list of search result objects.                                                                        |
@@ -482,7 +482,7 @@ The results of an example search *([`search_examples`](../functions#search_examp
 | data       | link            | str  |    ✓     | The link to the KRDict Open API.                                                                     |
 | data       | description     | str  |    ✓     | The description of the<br/>KRDict Open API.                                                          |
 | data       | last_build_date | str  |    ✓     | The time the search results were<br/>generated.                                                      |
-| data       | start_index     | int  |    ✓     | The index at which the search<br/>results begin.                                                     |
+| data       | start_index     | int  |    ✓     | The page at which the search<br/>results begin.                                                      |
 | data       | num_results     | int  |    ✓     | The number of results requested.<br/>Does not necessarily correspond<br/>to the length of `results`. |
 | data       | total_results   | int  |    ✓     | The total number of results,<br/>including the returned results.                                     |
 | data       | results         | list |    ✓     | A list of search result objects.                                                                     |
@@ -542,7 +542,7 @@ The results of an idiom/proverb search *([`search_idioms_proverbs`](../functions
 | data           | link            | str  |    ✓     | The link to the KRDict Open API.                                                                        |
 | data           | description     | str  |    ✓     | The description of the<br/>KRDict Open API.                                                             |
 | data           | last_build_date | str  |    ✓     | The time the search results were<br/>generated.                                                         |
-| data           | start_index     | int  |    ✓     | The index at which the search<br/>results begin.                                                        |
+| data           | start_index     | int  |    ✓     | The page at which the search<br/>results begin.                                                         |
 | data           | num_results     | int  |    ✓     | The number of results requested.<br/>Does not necessarily correspond<br/>to the length of `results`.    |
 | data           | total_results   | int  |    ✓     | The total number of results,<br/>including the returned results.                                        |
 | data           | results         | list |    ✓     | A list of search result objects.                                                                        |
@@ -611,7 +611,7 @@ The results of a word search *([`search_words`](../functions#search_words))*.
 | data           | link             | str  |    ✓     | The link to the KRDict Open API.                                                                        |
 | data           | description      | str  |    ✓     | The description of the<br/>KRDict Open API.                                                             |
 | data           | last_build_date  | str  |    ✓     | The time the search results were<br/>generated.                                                         |
-| data           | start_index      | int  |    ✓     | The index at which the search<br/>results begin.                                                        |
+| data           | start_index      | int  |    ✓     | The page at which the search<br/>results begin.                                                         |
 | data           | num_results      | int  |    ✓     | The number of results requested.<br/>Does not necessarily correspond<br/>to the length of `results`.    |
 | data           | total_results    | int  |    ✓     | The total number of results,<br/>including the returned results.                                        |
 | data           | results          | list |    ✓     | A list of search result objects.                                                                        |

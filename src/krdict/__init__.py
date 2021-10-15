@@ -52,6 +52,9 @@ def _send_request(url, params):
             raise KRDictException(error['message'], error['error_code'], params)
 
         result['request_params'] = params
+        if 'data' in result and 'results' not in result['data']:
+            result['data']['results'] = []
+
         return result
     except requests.exceptions.RequestException as exc:
         raise exc

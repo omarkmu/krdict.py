@@ -43,7 +43,7 @@ def advanced_search(*,
 - raise_api_errors: Sets whether a [`KRDictException`](../types#krdictexception) will be raised if an API error occurs.
 This guarantees that the result is not an error object.
 - key: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
-- start_index: The index at which the search should start `[1, 1000]` (default `1`).
+- start_index: The page at which the search should start `[1, 1000]` (default `1`).
 - num_results: The maximum number of search results to return `[10, 100]` (default `10`).
 - sort ([`SortMethod`](../types#sortmethod)): The sort method which should be used (default `'alphabetical'`).
 - search_type ([`SearchType`](../types#searchtype)): The type of search to perform (default `'word'`).
@@ -107,7 +107,7 @@ def search(*,
 - raise_api_errors: Sets whether a [`KRDictException`](../types#krdictexception) will be raised if an API error occurs.
 This guarantees that the result is not an error object.
 - key: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
-- start_index: The index at which the search should start `[1, 1000]` (default `1`).
+- start_index: The page at which the search should start `[1, 1000]` (default `1`).
 - num_results: The maximum number of search results to return `[10, 100]` (default `10`).
 - sort ([`SortMethod`](../types#sortmethod)): The sort method which should be used (default `'alphabetical'`).
 - search_type ([`SearchType`](../types#searchtype)): The type of search to perform (default `'word'`).
@@ -150,7 +150,7 @@ def search_definitions(*,
 - raise_api_errors: Sets whether a [`KRDictException`](../types#krdictexception) will be raised if an API error occurs.
 This guarantees that the result is not an error object.
 - key: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
-- start_index: The index at which the search should start `[1, 1000]` (default `1`).
+- start_index: The page at which the search should start `[1, 1000]` (default `1`).
 - num_results: The maximum number of search results to return `[10, 100]` (default `10`).
 - sort ([`SortMethod`](../types#sortmethod)): The sort method which should be used (default `'alphabetical'`).
 - translation_language ([`TranslationLanguage`](../types#translationlanguage)): A language to include translations for.
@@ -187,7 +187,7 @@ def search_examples(*,
 - raise_api_errors: Sets whether a [`KRDictException`](../types#krdictexception) will be raised if an API error occurs.
 This guarantees that the result is not an error object.
 - key: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
-- start_index: The index at which the search should start `[1, 1000]` (default `1`).
+- start_index: The page at which the search should start `[1, 1000]` (default `1`).
 - num_results: The maximum number of search results to return `[10, 100]` (default `10`).
 - sort ([`SortMethod`](../types#sortmethod)): The sort method which should be used (default `'alphabetical'`).
 - translation_language ([`TranslationLanguage`](../types#translationlanguage)): A language to include translations for.
@@ -224,7 +224,7 @@ def search_idioms_proverbs(*,
 - raise_api_errors: Sets whether a [`KRDictException`](../types#krdictexception) will be raised if an API error occurs.
 This guarantees that the result is not an error object.
 - key: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
-- start_index: The index at which the search should start `[1, 1000]` (default `1`).
+- start_index: The page at which the search should start `[1, 1000]` (default `1`).
 - num_results: The maximum number of search results to return `[10, 100]` (default `10`).
 - sort ([`SortMethod`](../types#sortmethod)): The sort method which should be used (default `'alphabetical'`).
 - translation_language ([`TranslationLanguage`](../types#translationlanguage)): A language to include translations for.
@@ -261,7 +261,7 @@ def search_words(*,
 - raise_api_errors: Sets whether a [`KRDictException`](../types#krdictexception) will be raised if an API error occurs.
 This guarantees that the result is not an error object.
 - key: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
-- start_index: The index at which the search should start. `[1, 1000]` (default `1`).
+- start_index: The page at which the search should start. `[1, 1000]` (default `1`).
 - num_results: The maximum number of search results to return. `[10, 100]` (default `10`).
 - sort ([`SortMethod`](../types#sortmethod)): The sort method which should be used (default `'alphabetical'`).
 - translation_language ([`TranslationLanguage`](../types#translationlanguage)): A language to include translations for.
