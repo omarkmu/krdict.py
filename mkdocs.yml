@@ -1,0 +1,4 @@
+site_name: krdict.py
+theme: readthedocs
+markdown_extensions:
+    - admonition
