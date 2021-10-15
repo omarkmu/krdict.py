@@ -4,8 +4,8 @@ Provides functions which query the Korean Learner's Dictionary API.
 
 import requests
 from xmltodict import parse as parse_xml
-from .params import transform_search_params, transform_view_params
-from .results import postprocessor
+from ._params import transform_search_params, transform_view_params
+from ._results import postprocessor
 from .scraper import extend_view, extend_search, extend_advanced_search
 
 _SEARCH_URL = 'https://krdict.korean.go.kr/api/search'

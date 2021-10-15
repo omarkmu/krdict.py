@@ -49,10 +49,9 @@ _CONVERT_LIST = [
 ]
 _CONVERT_NUM = [
     'error_code',
-    'num_results',
-    'link_target_code',
+    'per_page',
     'order',
-    'start_index',
+    'page',
     'homograph_num',
     'target_code',
     'total_results'
@@ -70,8 +69,10 @@ _REMAPS = {
     'der_info': 'derivative_info',
     'item': 'results',
     'lastBuildDate': 'last_build_date',
+    'link': 'url',
+    'link_target_code': 'target_code',
     'link_type': 'has_target_code',
-    'num': 'num_results',
+    'num': 'per_page',
     'ref_info': 'reference_info',
     'rel_info': 'related_info',
     'sup_no': 'homograph_num',
@@ -80,13 +81,14 @@ _REMAPS = {
     'sense_order': 'order',
     'subsense_info': 'subdefinition_info',
     'pos': 'part_of_speech',
-    'start': 'start_index',
+    'start': 'page',
     'word_grade': 'vocabulary_grade',
     'translation': 'translations',
     'trans_lang': 'language',
     'trans_word': 'word',
     'trans_dfn': 'definition',
-    'total': 'total_results'
+    'total': 'total_results',
+    'written_form': 'name'
 }
 
 def postprocessor(_, key: str, value: Any):
