@@ -25,8 +25,8 @@ def extend_advanced_search(
 
 **Parameters:**
 
-- response: The word search results to extend.
-- raise_errors: Whether errors that occur during scraping should be raised or ignored.
+- `response`: The word search results to extend.
+- `raise_errors`: Whether errors that occur during scraping should be raised or ignored.
 
 **Returns:**
 
@@ -46,8 +46,8 @@ def extend_search(
 
 **Parameters:**
 
-- response: The word search results to extend.
-- raise_errors: Whether errors that occur during scraping should be raised or ignored.
+- `response`: The word search results to extend.
+- `raise_errors`: Whether errors that occur during scraping should be raised or ignored.
 
 **Returns:**
 
@@ -70,10 +70,10 @@ def extend_view(
 
 **Parameters:**
 
-- response: The word search results to extend.
-- fetch_page_data: Whether page data (URLs and hanja information) should be scraped.
-- fetch_multimedia: Whether multimedia URLs should be scraped.
-- raise_errors: Whether errors that occur during scraping should be raised or ignored.
+- `response`: The word search results to extend.
+- `fetch_page_data`: Whether page data (URLs and hanja information) should be scraped.
+- `fetch_multimedia`: Whether multimedia URLs should be scraped.
+- `raise_errors`: Whether errors that occur during scraping should be raised or ignored.
 
 **Returns:**
 
@@ -85,8 +85,14 @@ Returns an extended [`ViewResponse`](return_types.md#viewresponse) object.
 Fetches the Korean word of the day by scraping the dictionary website.
 
 ```python
-def fetch_today_word() -> WordOfTheDayResponse: ...
+def fetch_today_word(
+    translation_language: ScraperTranslationLanguage = None
+) -> WordOfTheDayResponse: ...
 ```
+
+**Parameters:**
+
+- `translation_language` ([`ScraperTranslationLanguage`](parameters.md#scrapertranslationlanguage)): A language to include a translation for.
 
 **Returns:**
 
@@ -100,9 +106,9 @@ Fetches words that belong to the provided meaning category.
 ```python
 def fetch_meaning_category_words(*,
     category: MeaningCategory | int,
-    page: int = None,
-    per_page: int = None,
-    sort: SortMethod = None,
+    page: int = 1,
+    per_page: int = 10,
+    sort: SortMethod = 'alphabetical',
     translation_language: ScraperTranslationLanguage = None
 ) -> ScrapedWordSearchResponse: ...
 ```
@@ -112,11 +118,11 @@ def fetch_meaning_category_words(*,
 
 **Parameters:**
 
-- category: The meaning category to fetch.
-- page: The page at which the search should start `[1, 1000]` (default `1`).
-- per_page: The maximum number of search results to return `[10, 100]` (default `10`).
-- sort ([`SortMethod`](parameters.md#sortmethod)): The sort method that should be used (default `'alphabetical'`).
-- translation_language ([`ScraperTranslationLanguage`](parameters.md#scrapertranslationlanguage)): A language to include translations for.
+- `category`: The meaning category to fetch.
+- `page`: The page at which the search should start `[1, 1000]`.
+- `per_page`: The maximum number of search results to return `[10, 100]`.
+- `sort` ([`SortMethod`](parameters.md#sortmethod)): The sort method that should be used.
+- `translation_language` ([`ScraperTranslationLanguage`](parameters.md#scrapertranslationlanguage)): A language to include translations for.
 
 **Returns:**
 
@@ -130,20 +136,20 @@ Fetches words that belong to one of the provided subject categories.
 ```python
 def fetch_subject_category_words(*,
     category: SubjectCategory | int | List[SubjectCategory | int],
-    page: int = None,
-    per_page: int = None,
-    sort: SortMethod = None,
+    page: int = 1,
+    per_page: int = 0,
+    sort: SortMethod = 'alphabetical',
     translation_language: ScraperTranslationLanguage = None
 ) -> ScrapedWordSearchResponse: ...
 ```
 
 **Parameters:**
 
-- category: The subject category to fetch.
-- page: The page at which the search should start `[1, 1000]` (default `1`).
-- per_page: The maximum number of search results to return `[10, 100]` (default `10`).
-- sort ([`SortMethod`](parameters.md#sortmethod)): The sort method that should be used (default `'alphabetical'`).
-- translation_language ([`ScraperTranslationLanguage`](parameters.md#scrapertranslationlanguage)): A language to include translations for.
+- `category`: The subject category to fetch.
+- `page`: The page at which the search should start `[1, 1000]`.
+- `per_page`: The maximum number of search results to return `[10, 100]`.
+- `sort` ([`SortMethod`](parameters.md#sortmethod)): The sort method that should be used.
+- `translation_language` ([`ScraperTranslationLanguage`](parameters.md#scrapertranslationlanguage)): A language to include translations for.
 
 **Returns:**
 

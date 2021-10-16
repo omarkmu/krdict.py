@@ -2,7 +2,7 @@ A summary of return types of various [functions](functions.md).
 
 ## DefinitionSearchResponse
 
-The results of a [definition search](functions.md#search).
+The results of a definition [search](functions.md#search).
 
 ```python
 {
@@ -66,7 +66,7 @@ The results of a [definition search](functions.md#search).
 
 ## ExampleSearchResponse
 
-The results of an [example search](functions.md#search).
+The results of an example [search](functions.md#search).
 
 ```python
 {
@@ -115,7 +115,7 @@ The results of an [example search](functions.md#search).
 
 ## IdiomProverbSearchResponse
 
-The results of an [idiom/proverb search](functions.md#search).
+The results of an idiom/proverb [search](functions.md#search).
 
 ```python
 {
@@ -180,7 +180,7 @@ The results of an [idiom/proverb search](functions.md#search).
 
 ## WordSearchResponse
 
-The results of a [word search](functions.md#search).
+The results of a word [search](functions.md#search).
 
 ```python
 {
@@ -256,7 +256,7 @@ The results of a [word search](functions.md#search).
 
 ## ViewResponse
 
-The results of a [view query](functions.md#view).
+The results of a [view](functions.md#view) query.
 
 ```python
 {
@@ -542,7 +542,7 @@ Information about an API error. For a list of error codes, please see the
 
 ## WordOfTheDayResponse
 
-Information about the word of the day.
+Information about the [word of the day](scraper.md#fetch_today_word).
 
 ```python
 {
@@ -556,23 +556,33 @@ Information about the word of the day.
         "vocabulary_grade": str, # not required
         "origin": str, # not required
         "pronunciation": str, # not required
-        "pronunciation_urls": List[str] # not required
+        "pronunciation_urls": List[str], # not required
+        "translation": { # not required
+            "definition": str,
+            "word": str, # not required
+            "language": str
+        }
     }
 }
 ```
 
-| Field              | Type | Required | Description
-| -----              | :--: | :------: | -----------
-| target_code        | int  |    ✓     | The entry's identification code.
-| word               | str  |    ✓     | The entry's headword.
-| definition         | str  |    ✓     | A definition of the entry.
-| url                | str  |    ✓     | The URL of the dictionary entry.
-| homograph_num      | int  |    ✓     | A superscript number used to distinguish homographs.
-| part_of_speech     | str  |    ✗     | The Korean part of speech of the headword.
-| vocabulary_grade   | str  |    ✗     | The vocabulary level of the entry.
-| origin             | str  |    ✗     | The origin (original language) of the word.
-| pronunciation      | str  |    ✗     | The 한글 pronunciation of the entry.
-| pronunciation_urls | list |    ✗     | A list of pronunciation audio URLs. Included only if scraping is enabled and URLs are available.
+| Container   | Field              | Type | Required | Description
+| ---------   | -----              | :--: | :------: | -----------
+| -           | data               | dict |    ✓     | Container for results.
+| data        | target_code        | int  |    ✓     | The entry's identification code.
+| data        | word               | str  |    ✓     | The entry's headword.
+| data        | definition         | str  |    ✓     | A definition of the entry.
+| data        | url                | str  |    ✓     | The URL of the dictionary entry.
+| data        | homograph_num      | int  |    ✓     | A superscript number used to distinguish homographs.
+| data        | part_of_speech     | str  |    ✗     | The Korean part of speech of the headword.
+| data        | vocabulary_grade   | str  |    ✗     | The vocabulary level of the entry.
+| data        | origin             | str  |    ✗     | The origin (original language) of the word.
+| data        | pronunciation      | str  |    ✗     | The 한글 pronunciation of the entry.
+| data        | pronunciation_urls | list |    ✗     | A list of pronunciation audio URLs.
+| data        | translation        | dict |    ✗     | Container for a translation of a definition. Not included if a translation language is not specified.
+| translation | definition         | str  |    ✓     | A translation of the definition.
+| translation | word               | str  |    ✗     | A translation of the word.
+| translation | language           | str  |    ✓     | The translation language.
 
 ## ScrapedWordSearchResponse
 
@@ -633,7 +643,7 @@ The results of a word search retrieved via scraping.
 | results     | definitions        | list |    ✓     | A list of definitions associated with an entry.
 | definitions | definition         | str  |    ✓     | A definition associated with an entry.
 | definitions | order              | int  |    ✓     | The order of a definition in the list.
-| definitions | translation        | dict |    ✗     | A translation of a definition. Not included if a translation languages is not specified.
+| definitions | translation        | dict |    ✗     | Container for a translation of a definition. Not included if a translation language is not specified.
 | translation | definition         | str  |    ✓     | A translation of the definition.
 | translation | word               | str  |    ✗     | A translation of the word.
 | translation | language           | str  |    ✓     | The translation language.
