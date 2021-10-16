@@ -1,8 +1,15 @@
-In addition to API bindings, krdict.py provides a scraper module that extends
-the results of word search queries, advanced search queries, and view queries.
+In addition to API bindings, krdict.py provides a scraper module that offers functions that
+fetch information from the dictionary website and extend the results of word search queries,
+advanced search queries, and view queries.
 
 These extensions can be applied directly to results during query calls with the `use_scraper`
 [option](parameters.md#optionsdict), but are also accessible via the `krdict.scraper` module.
+
+!!! warning
+    Because this module utilizes scraping, the reliability of results cannot be guaranteed.
+    At any time, functions may break entirely and remain broken until a patch is released. If there
+    are errors or improper results, please submit an
+    [issue](https://github.com/omarkmu/krdict.py/issues/new).
 
 ---
 ## extend_advanced_search
@@ -100,8 +107,8 @@ def fetch_meaning_category_words(*,
 ) -> ScrapedWordSearchResponse: ...
 ```
 
-!!! note
-    The `'전체'` MeaningCategory option is **not supported** and will return zero results.
+!!! warning
+    The `'전체'` or `0` MeaningCategory option is **not supported** and will return zero results.
 
 **Parameters:**
 
