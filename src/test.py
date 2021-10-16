@@ -290,6 +290,155 @@ class TestKRDictScraper(unittest.TestCase):
                 ('https://dicmedia.korean.go.kr/multimedia/multimedia_files/'
                 'convert/20160913/20000/17000/307982/SND000317336.mp3'))
 
+    def test_scraper_fetch_today_word(self):
+        """Fetching word of the day with scraper returns proper results"""
+        response = krdict.scraper.fetch_today_word()
+
+        self.assertIn('data', response)
+        data = response['data']
+
+        self.assertIn('target_code', data)
+        self.assertIn('word', data)
+        self.assertIn('definition', data)
+        self.assertIn('url', data)
+        self.assertIn('homograph_num', data)
+
+    def test_scraper_fetch_today_word_translation(self):
+        """Fetching word of the day with translation with scraper returns proper results"""
+        response = krdict.scraper.fetch_today_word('english')
+
+        self.assertIn('data', response)
+        data = response['data']
+
+        self.assertIn('target_code', data)
+        self.assertIn('word', data)
+        self.assertIn('definition', data)
+        self.assertIn('url', data)
+        self.assertIn('homograph_num', data)
+
+        self.assertIn('translation', data)
+        self.assertIn('definition', data['translation'])
+        self.assertIn('language', data['translation'])
+
+    def test_scraper_fetch_meaning_category_words(self):
+        """Fetching meaning category words with scraper returns proper results"""
+        response = krdict.scraper.fetch_meaning_category_words(category=3, per_page=15)
+
+        self.assertIn('data', response)
+        data = response['data']
+
+        self.assertIn('search_url', data)
+        self.assertIn('page', data)
+        self.assertIn('per_page', data)
+        self.assertIn('total_results', data)
+        self.assertIn('results', data)
+
+        self.assertEqual(data['search_url'],
+            ('https://krdict.korean.go.kr/dicSearchDetail/'
+            'searchDetailSenseCategoryResult?searchFlag=Y&currentPage=1&blockCount=15&sort=W'
+            '&lgCategoryCode=1&miCategoryCode=1003'))
+        self.assertEqual(data['page'], 1)
+        self.assertEqual(data['per_page'], 15)
+        self.assertEqual(len(data['results']), 15)
+        self.assertEqual(data['total_results'], 113)
+
+    def test_scraper_fetch_meaning_category_words_translation(self):
+        """Fetching meaning category words with translation with scraper returns proper results"""
+        response = krdict.scraper.fetch_meaning_category_words(
+            category=3,
+            per_page=15,
+            translation_language='english')
+
+        self.assertIn('data', response)
+        data = response['data']
+
+        self.assertIn('search_url', data)
+        self.assertIn('page', data)
+        self.assertIn('per_page', data)
+        self.assertIn('total_results', data)
+        self.assertIn('results', data)
+
+        self.assertEqual(data['search_url'],
+            ('https://krdict.korean.go.kr/eng/dicSearchDetail/'
+            'searchDetailSenseCategoryResult?searchFlag=Y&nation=eng&nationCode=6'
+            '&currentPage=1&blockCount=15&sort=W&lgCategoryCode=1&miCategoryCode=1003'))
+        self.assertEqual(data['page'], 1)
+        self.assertEqual(data['per_page'], 15)
+        self.assertEqual(len(data['results']), 15)
+        self.assertEqual(data['total_results'], 113)
+
+        for result in data['results']:
+            self.assertIn('definitions', result)
+            for dfn in result['definitions']:
+                self.assertIn('definition', dfn)
+                self.assertIn('order', dfn)
+                self.assertIn('translation', dfn)
+
+                if 'translation' in dfn:
+                    self.assertIn('definition', dfn['translation'])
+                    self.assertIn('word', dfn['translation'])
+                    self.assertIn('language', dfn['translation'])
+                    self.assertEqual(dfn['translation']['language'], '영어')
+
+    def test_scraper_fetch_subject_category_words(self):
+        """Fetching meaning category words with scraper returns proper results"""
+        response = krdict.scraper.fetch_subject_category_words(category=1, per_page=15)
+
+        self.assertIn('data', response)
+        data = response['data']
+
+        self.assertIn('search_url', data)
+        self.assertIn('page', data)
+        self.assertIn('per_page', data)
+        self.assertIn('total_results', data)
+        self.assertIn('results', data)
+
+        self.assertEqual(data['search_url'],
+            ('https://krdict.korean.go.kr/dicSearchDetail/searchDetailActCategoryResult?'
+            'searchFlag=Y&currentPage=1&blockCount=15&sort=W&actCategory=20001'))
+        self.assertEqual(data['page'], 1)
+        self.assertEqual(data['per_page'], 15)
+        self.assertEqual(len(data['results']), 15)
+        self.assertEqual(data['total_results'], 17)
+
+    def test_scraper_fetch_subject_category_words_translation(self):
+        """Fetching meaning category words with translation with scraper returns proper results"""
+        response = krdict.scraper.fetch_subject_category_words(
+            category=1,
+            per_page=15,
+            translation_language='english')
+
+        self.assertIn('data', response)
+        data = response['data']
+
+        self.assertIn('search_url', data)
+        self.assertIn('page', data)
+        self.assertIn('per_page', data)
+        self.assertIn('total_results', data)
+        self.assertIn('results', data)
+
+        self.assertEqual(data['search_url'],
+            ('https://krdict.korean.go.kr/eng/dicSearchDetail/searchDetailActCategoryResult?'
+            'searchFlag=Y&nation=eng&nationCode=6'
+            '&currentPage=1&blockCount=15&sort=W&actCategory=20001'))
+        self.assertEqual(data['page'], 1)
+        self.assertEqual(data['per_page'], 15)
+        self.assertEqual(len(data['results']), 15)
+        self.assertEqual(data['total_results'], 17)
+
+        for result in data['results']:
+            self.assertIn('definitions', result)
+            for dfn in result['definitions']:
+                self.assertIn('definition', dfn)
+                self.assertIn('order', dfn)
+                self.assertIn('translation', dfn)
+
+                if 'translation' in dfn:
+                    self.assertIn('definition', dfn['translation'])
+                    self.assertIn('word', dfn['translation'])
+                    self.assertIn('language', dfn['translation'])
+                    self.assertEqual(dfn['translation']['language'], '영어')
+
     def test_scraper_view(self):
         """Basic view query with scraper returns proper results"""
         response = krdict.view(target_code=55874,
@@ -386,19 +535,6 @@ class TestKRDictScraper(unittest.TestCase):
             self.assertIn('pronunciation_urls', result)
             if 'pronunciation_urls' in result:
                 self.assertEqual(len(result['pronunciation_urls']), 1)
-
-    def test_scraper_fetch_today_word(self):
-        """Fetching word of the day with scraper returns proper results"""
-        response = krdict.scraper.fetch_today_word()
-
-        self.assertIn('data', response)
-        data = response['data']
-
-        self.assertIn('target_code', data)
-        self.assertIn('word', data)
-        self.assertIn('definition', data)
-        self.assertIn('url', data)
-        self.assertIn('homograph_num', data)
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

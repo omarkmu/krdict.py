@@ -15,28 +15,31 @@ ScraperTranslationLanguage = Literal[
     'russian'
 ]
 
-class _DailyWordData(TypedDict, total=False):
-    part_of_speech: str
-    vocabulary_grade: str
-    origin: str
-    pronunciation: str
-    pronunciation_urls: List[str]
-class DailyWordData(_DailyWordData):
-    target_code: int
-    word: str
-    definition: str
-    url: str
-    homograph_num: int
-
-class WordOfTheDayResponse(TypedDict):
-    data: DailyWordData
-
 
 class _ScrapedSearchTranslation(TypedDict, total=False):
     word: str
 class ScrapedSearchTranslation(_ScrapedSearchTranslation):
     definition: str
     language: str
+
+
+class _WordOfTheDayData(TypedDict, total=False):
+    part_of_speech: str
+    vocabulary_grade: str
+    origin: str
+    pronunciation: str
+    pronunciation_urls: List[str]
+class WordOfTheDayData(_WordOfTheDayData):
+    target_code: int
+    word: str
+    definition: str
+    url: str
+    homograph_num: int
+    translation: ScrapedSearchTranslation
+
+class WordOfTheDayResponse(TypedDict):
+    data: WordOfTheDayData
+
 
 class _ScrapedSearchDefinition(TypedDict, total=False):
     translation: ScrapedSearchTranslation
@@ -56,6 +59,7 @@ class ScrapedSearchItem(_ScrapedSearchItem):
     definitions: List[ScrapedSearchDefinition]
 
 class ScrapedWordSearchData(TypedDict):
+    search_url: str
     page: int
     per_page: int
     total_results: int
