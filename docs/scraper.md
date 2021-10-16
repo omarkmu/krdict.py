@@ -78,9 +78,9 @@ Returns an extended [`ViewResponse`](return_types.md#viewresponse) object.
 Fetches the Korean word of the day by scraping the dictionary website.
 
 ```python
-def fetch_daily_word() -> DailyWordResponse: ...
+def fetch_daily_word() -> WordOfTheDayResponse: ...
 ```
 
 **Returns:**
 
-Returns a [`DailyWordResponse`](return_types.md#dailywordresponse) object.
+Returns a [`WordOfTheDayResponse`](return_types.md#wordofthedayresponse) object.

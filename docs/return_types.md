@@ -538,7 +538,7 @@ Information about an API error. For a list of error codes, please see the
 | error     | message        | str  |    ✓     | The error message supplied by the API.
 | -         | request_params | dict |    ✓     | The request parameters which were sent to the API.
 
-## DailyWordResponse
+## WordOfTheDayResponse
 
 Information about the word of the day.
 

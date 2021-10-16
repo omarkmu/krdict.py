@@ -28,7 +28,7 @@ class DailyWordData(_DailyWordData):
     url: str
     homograph_num: int
 
-class DailyWordResponse(TypedDict):
+class WordOfTheDayResponse(TypedDict):
     data: DailyWordData
 
 
@@ -82,7 +82,7 @@ def extend_view(
     raise_errors: bool
 ) -> ViewResponse: ...
 
-def fetch_daily_word() -> DailyWordResponse: ...
+def fetch_daily_word() -> WordOfTheDayResponse: ...
 
 def fetch_subject_category_words(*,
     category: SubjectCategory | int | List[SubjectCategory | int],
