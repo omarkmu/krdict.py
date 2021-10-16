@@ -433,6 +433,16 @@ def _get_advanced_map_value(adv_mapper, value):
 
     return value
 
+def _get_vocabulary_grade(elem):
+    grade = len(elem.cssselect('i.ri-star-s-fill'))
+    if grade == 1:
+        return '고급'
+    if grade == 2:
+        return '중급'
+    if grade == 3:
+        return '초급'
+
+    return ''
 
 def _read_conju_pronunciation(arr, urls, idx):
     if idx == -1:
@@ -531,14 +541,7 @@ def _read_search_header(elem, parent_elem):
         result['origin'] = hanja_elem[0].text.strip()[1:-1]
 
     if len(star_elem) > 0:
-        grade = len(star_elem[0].cssselect('i.ri-star-s-fill'))
-
-        if grade == 1:
-            result['vocabulary_grade'] = '고급'
-        elif grade == 2:
-            result['vocabulary_grade'] = '중급'
-        elif grade == 3:
-            result['vocabulary_grade'] = '초급'
+        result['vocabulary_grade'] = _get_vocabulary_grade(star_elem[0])
 
     if len(pronunciation) > 0 or len(pronunciation_urls) > 0:
         result['pronunciation'] = result['word'] if len(pronunciation) == 0 else pronunciation
@@ -681,3 +684,44 @@ def _read_view_original_language(doc, word_info):
 
         for dl_elem in td_elements[0].cssselect('dl'):
             _read_view_hanja_info(cur, dl_elem)
+
+def _read_wotd_details(result, dt_elem, dd_elems, nation, exonym):
+    em_elem = dt_elem.cssselect('em')
+    grade_elem = dt_elem.cssselect('span.star')
+
+    if len(em_elem) == 1:
+        result['part_of_speech'] = em_elem[0].text_content()
+    if len(grade_elem) == 1:
+        result['vocabulary_grade'] =  _get_vocabulary_grade(grade_elem[0])
+
+    for detail_elem in dt_elem.cssselect('span:not(.star)'):
+        text = detail_elem.text_content().strip()
+
+        if text.startswith('('):
+            result['origin'] = text[1:-1]
+            continue
+        if not text.startswith('['):
+            continue
+
+        urls = []
+        for sound in detail_elem.cssselect('a.sound'):
+            url = _extract_url(sound)
+
+            if url is not None:
+                urls.append(url)
+
+        result['pronunciation'] = detail_elem.text.strip()[1:]
+        if len(urls) > 0:
+            result['pronunciation_urls'] = urls
+
+    if nation and len(dd_elems) == 3:
+        word_trns = dd_elems[0].text.strip()
+        dfn_trns = dd_elems[2].text.strip()
+
+        if len(dfn_trns) > 0:
+            result['translation'] = {'definition': dfn_trns}
+
+            if len(word_trns) > 0:
+                result['translation']['word'] = word_trns
+
+            result['translation']['language'] = exonym

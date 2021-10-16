@@ -13,8 +13,8 @@ from ._scraper_utils import (
     _read_search_results,
     _read_view_pronunciation,
     _read_view_original_language,
-    _send_request,
-    _VIEW_URL
+    _read_wotd_details,
+    _send_request
 )
 
 _BASE_URL = 'https://krdict.korean.go.kr/{}mainAction'
@@ -28,6 +28,7 @@ _SENSE_URL = (
     'https://krdict.korean.go.kr/{}dicSearchDetail/searchDetailSenseCategoryResult?'
     'searchFlag=Y{}&currentPage={}&blockCount={}&sort={}{}'
 )
+_TRANSLATED_VIEW_URL = 'https://krdict.korean.go.kr/{}dicSearch/SearchView?ParaWordNo={}{}'
 
 
 def extend_advanced_search(response, raise_errors):
@@ -144,7 +145,7 @@ def fetch_today_word(translation_language=None):
     scraping the dictionary website.
     """
 
-    [_, nation, exonym] = _build_language_query(translation_language)
+    [lang_query, nation, exonym] = _build_language_query(translation_language)
     [_, doc] = _send_request(_BASE_URL.format(nation), True)
 
     dt_elem = doc.cssselect('dl.today_word > dt')[0]
@@ -160,48 +161,10 @@ def fetch_today_word(translation_language=None):
         'definition': dd_elems[dfn_idx].text_content().strip()
     }
 
-    result['url'] = _VIEW_URL.format(result['target_code'])
+    result['url'] = _TRANSLATED_VIEW_URL.format(nation, result['target_code'], lang_query)
     result['homograph_num'] = int(sup_elems[0].text_content() or 0 if len(sup_elems) > 0 else 0)
 
-    em_elem = dt_elem.cssselect('em')
-    grade_elem = dt_elem.cssselect('span.star')
-
-    if len(em_elem) == 1:
-        result['part_of_speech'] = em_elem[0].text_content()
-    if len(grade_elem) == 1:
-        result['vocabulary_grade'] = grade_elem[0].get('title')
-
-    for detail_elem in dt_elem.cssselect('span:not(.star)'):
-        text = detail_elem.text_content().strip()
-
-        if text.startswith('('):
-            result['origin'] = text[1:-1]
-            continue
-        if not text.startswith('['):
-            continue
-
-        urls = []
-        for sound in detail_elem.cssselect('a.sound'):
-            url = _extract_url(sound)
-
-            if url is not None:
-                urls.append(url)
-
-        result['pronunciation'] = detail_elem.text.strip()[1:]
-        if len(urls) > 0:
-            result['pronunciation_urls'] = urls
-
-    if nation and len(dd_elems) == 3:
-        word_trns = dd_elems[0].text.strip()
-        dfn_trns = dd_elems[2].text.strip()
-
-        if len(dfn_trns) > 0:
-            result['translation'] = {'definition': dfn_trns}
-
-            if len(word_trns) > 0:
-                result['translation']['word'] = word_trns
-
-            result['translation']['language'] = exonym
+    _read_wotd_details(result, dt_elem, dd_elems, nation, exonym)
 
     return {'data': result}
 
