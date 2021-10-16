@@ -1,4 +1,4 @@
-Exceptions which should be expected to be thrown from the library.  
+Exceptions that should be expected to be thrown from the library.  
 If you encounter any other type of error, or an unexpected error, please submit an
 [issue](https://github.com/omarkmu/krdict.py/issues/new)!
 
@@ -20,7 +20,7 @@ class KRDictException(Exception):
 | -----          | :--: | -----------
 | error_code     | int  | The error code supplied by the API.
 | message        | str  | The error message supplied by the API.
-| request_params | dict | The request parameters which were sent to the API.
+| request_params | dict | The request parameters that were sent to the API.
 
 ## RequestException
 

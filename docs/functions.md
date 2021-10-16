@@ -45,7 +45,7 @@ This guarantees that the result is not an error object.
 - key: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
 - page: The page at which the search should start `[1, 1000]` (default `1`).
 - per_page: The maximum number of search results to return `[10, 100]` (default `10`).
-- sort ([`SortMethod`](parameters.md#sortmethod)): The sort method which should be used (default `'alphabetical'`).
+- sort ([`SortMethod`](parameters.md#sortmethod)): The sort method that should be used (default `'alphabetical'`).
 - search_type ([`SearchType`](parameters.md#searchtype)): The type of search to perform (default `'word'`).
 - translation_language ([`TranslationLanguage`](parameters.md#translationlanguage)): A language to include translations for.
 - search_target ([`SearchTarget`](parameters.md#searchtarget)): The target field of the search query (default `'headword'`).
@@ -106,7 +106,7 @@ This guarantees that the result is not an error object.
 - key: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
 - page: The page at which the search should start `[1, 1000]` (default `1`).
 - per_page: The maximum number of search results to return `[10, 100]` (default `10`).
-- sort ([`SortMethod`](parameters.md#sortmethod)): The sort method which should be used (default `'alphabetical'`).
+- sort ([`SortMethod`](parameters.md#sortmethod)): The sort method that should be used (default `'alphabetical'`).
 - search_type ([`SearchType`](parameters.md#searchtype)): The type of search to perform (default `'word'`).
 - translation_language ([`TranslationLanguage`](parameters.md#translationlanguage)): A language to include translations for.
 - options ([`OptionsDict`](parameters.md#optionsdict)): Additional options to apply.
@@ -137,7 +137,7 @@ def set_default(name: Option, value: bool) -> None: ...
 - name: The name of the option to set. Accepted values:
     - `'fetch_multimedia'`: Controls whether multimedia is scraped during view queries. No effect unless the `'use_scraper'` option is `True`.
     - `'fetch_page_data'`: Controls whether pronunciation URLS and extended language information are scraped. No effect unless the `'use_scraper'` option is `True`.
-    - `'raise_scraper_errors'`: Controls whether errors which occur during scraping are raised. No effect unless the `'use_scraper'` option is `True`.
+    - `'raise_scraper_errors'`: Controls whether errors that occur during scraping are raised. No effect unless the `'use_scraper'` option is `True`.
     - `'use_scraper'`: Controls whether the scraper should be used to fetch more information.
 - value: The new default value of the option.
 

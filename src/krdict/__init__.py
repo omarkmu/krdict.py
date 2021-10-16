@@ -1,5 +1,5 @@
 """
-Provides functions which query the Korean Learner's Dictionary API.
+Provides functions that query the Korean Learner's Dictionary API.
 """
 
 import requests
