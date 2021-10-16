@@ -387,9 +387,9 @@ class TestKRDictScraper(unittest.TestCase):
             if 'pronunciation_urls' in result:
                 self.assertEqual(len(result['pronunciation_urls']), 1)
 
-    def test_scraper_fetch_daily_word(self):
+    def test_scraper_fetch_today_word(self):
         """Fetching word of the day with scraper returns proper results"""
-        response = krdict.scraper.fetch_daily_word()
+        response = krdict.scraper.fetch_today_word()
 
         self.assertIn('data', response)
         data = response['data']

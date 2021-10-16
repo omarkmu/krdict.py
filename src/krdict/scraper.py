@@ -138,7 +138,7 @@ def extend_view(response, fetch_page_data, fetch_multimedia, raise_errors):
 
     return response
 
-def fetch_daily_word():
+def fetch_today_word():
     """
     Fetches the Korean word of the day by
     scraping the dictionary website.
@@ -254,7 +254,7 @@ __all__ = [
     'extend_advanced_search',
     'extend_search',
     'extend_view',
-    'fetch_daily_word',
+    'fetch_today_word',
     'fetch_meaning_category_words',
     'fetch_subject_category_words'
 ]

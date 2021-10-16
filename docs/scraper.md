@@ -73,12 +73,12 @@ def extend_view(
 Returns an extended [`ViewResponse`](return_types.md#viewresponse) object.
 
 ---
-## fetch_daily_word
+## fetch_today_word
 
 Fetches the Korean word of the day by scraping the dictionary website.
 
 ```python
-def fetch_daily_word() -> WordOfTheDayResponse: ...
+def fetch_today_word() -> WordOfTheDayResponse: ...
 ```
 
 **Returns:**
