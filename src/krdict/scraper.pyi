@@ -84,16 +84,16 @@ def extend_view(
 
 def fetch_daily_word() -> WordOfTheDayResponse: ...
 
-def fetch_subject_category_words(*,
-    category: SubjectCategory | int | List[SubjectCategory | int],
+def fetch_meaning_category_words(*,
+    category: MeaningCategory | int,
     page: int = None,
     per_page: int = None,
     sort: SortMethod = None,
     translation_language: ScraperTranslationLanguage = None
 ) -> ScrapedWordSearchResponse: ...
 
-def fetch_meaning_category_words(*,
-    category: MeaningCategory | int,
+def fetch_subject_category_words(*,
+    category: SubjectCategory | int | List[SubjectCategory | int],
     page: int = None,
     per_page: int = None,
     sort: SortMethod = None,

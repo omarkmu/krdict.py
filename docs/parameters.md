@@ -64,6 +64,23 @@ A Korean part of speech.
 | 'none'
 ```
 
+## ScraperTranslationLanguage
+
+A language to include translations for during a scraper fetch.
+```bash
+| 'chinese'
+| 'english'
+| 'japanese'
+| 'french'
+| 'spanish'
+| 'arabic'
+| 'mongolian'
+| 'vietnamese'
+| 'thai'
+| 'indonesian'
+| 'russian'
+```
+
 ## SearchMethod
 
 The method to use when searching.

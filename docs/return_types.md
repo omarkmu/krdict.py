@@ -572,4 +572,68 @@ Information about the word of the day.
 | pronunciation      | str  |    ✗     | The 한글 pronunciation of the entry.
 | pronunciation_urls | list |    ✗     | A list of pronunciation audio URLs. Included only if scraping is enabled and URLs are available.
 
+## ScrapedWordSearchResponse
+
+The results of a word search retrieved via scraping.
+
+```python
+{
+    "data": {
+        "search_url": str,
+        "page": int,
+        "per_page": int,
+        "total_results": int,
+        "results": [
+            {
+                "target_code": int,
+                "word": str,
+                "url": str,
+                "part_of_speech": str, # not required
+                "homograph_num": str,
+                "origin": str, # not required
+                "vocabulary_grade": str, # not required
+                "pronunciation": str, # not required
+                "pronunciation_urls": List[str], # not required
+                "definitions": [
+                    {
+                        "definition": str,
+                        "order": int,
+                        "translation": { # not required
+                            "definition": str,
+                            "word": str, # not required
+                            "language": str
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}
+```
+
+| Container   | Field              | Type | Required | Description
+| ---------   | -----              | :--: | :------: | -----------
+| -           | data               | dict |    ✓     | Container for search results.
+| data        | search_url         | str  |    ✓     | The Korean Learner's Dictionary URL that can be used to view these results.
+| data        | page               | int  |    ✓     | The page at which the search results begin.
+| data        | per_page           | int  |    ✓     | The number of results per page. Does not necessarily correspond to the length of `results`.
+| data        | total_results      | int  |    ✓     | The total number of results, including the returned results.
+| data        | results            | list |    ✓     | A list of search result objects.
+| results     | target_code        | int  |    ✓     | An entry's identification code.
+| results     | word               | str  |    ✓     | An entry's headword.
+| results     | url                | str  |    ✓     | A URL of a dictionary entry.
+| results     | part_of_speech     | str  |    ✗     | The Korean part of speech of the entry.
+| results     | homograph_num      | int  |    ✓     | A superscript number used to distinguish homographs.
+| results     | origin             | str  |    ✗     | The origin (original language) of the entry.
+| results     | vocabulary_grade   | str  |    ✗     | The vocabulary level of the entry.
+| results     | pronunciation      | str  |    ✗     | The 한글 pronunciation of the entry.
+| results     | pronunciation_urls | list |    ✗     | A list of pronunciation audio URLs.
+| results     | definitions        | list |    ✓     | A list of definitions associated with an entry.
+| definitions | definition         | str  |    ✓     | A definition associated with an entry.
+| definitions | order              | int  |    ✓     | The order of a definition in the list.
+| definitions | translation        | dict |    ✗     | A translation of a definition. Not included if a translation languages is not specified.
+| translation | definition         | str  |    ✓     | A translation of the definition.
+| translation | word               | str  |    ✗     | A translation of the word.
+| translation | language           | str  |    ✓     | The translation language.
+
 ---

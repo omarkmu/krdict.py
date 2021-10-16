@@ -479,10 +479,11 @@ def _read_search_definitions(elem_list, translation_lang):
 
             if len(dfn_trns) > 0:
                 translation = {}
+                translation['definition'] = dfn_trns
+
                 if len(word_trns) > 0:
                     translation['word'] = word_trns.strip()
 
-                translation['definition'] = dfn_trns
                 translation['language'] = translation_lang
 
         strong_elem = dfn_elem.cssselect('strong')

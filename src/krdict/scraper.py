@@ -212,10 +212,10 @@ def fetch_meaning_category_words(**kwargs):
 
     return {
         'data': {
+            'search_url': url,
             'page': int(page),
             'per_page': int(per_page),
             'total_results': total,
-            'search_url': url,
             'results': results
         }
     }
@@ -242,10 +242,10 @@ def fetch_subject_category_words(**kwargs):
 
     return {
         'data': {
+            'search_url': url,
             'page': int(page),
             'per_page': int(per_page),
             'total_results': total,
-            'search_url': url,
             'results': results
         }
     }
