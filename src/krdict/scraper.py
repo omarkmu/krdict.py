@@ -3,20 +3,31 @@ Retrieves information from the krdict website via scraping.
 """
 
 from ._scraper_utils import (
-    _build_advanced_search_link,
+    _build_advanced_search_url,
+    _build_language_query,
     _extract_url,
     _fetch_view_images,
     _fetch_view_videos,
+    _build_sense_category_query,
+    _build_subject_category_query,
+    _read_search_results,
     _read_view_pronunciation,
     _read_view_original_language,
-    _send_request
+    _send_request,
+    _VIEW_URL
 )
 
 _BASE_URL = 'https://krdict.korean.go.kr/mainAction'
 _SEARCH_URL = (
     'https://krdict.korean.go.kr/dicSearch/search?'
     'mainSearchWord={}&currentPage={}&blockCount={}&sort={}')
-_VIEW_URL = 'https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo={}'
+_SUBJECT_URL = (
+    'https://krdict.korean.go.kr/{}dicSearchDetail/searchDetailActCategoryResult?'
+    'searchFlag=Y{}&currentPage={}&blockCount={}&sort={}{}')
+_SENSE_URL = (
+    'https://krdict.korean.go.kr/{}dicSearchDetail/searchDetailSenseCategoryResult?'
+    'searchFlag=Y{}&currentPage={}&blockCount={}&sort={}{}'
+)
 
 
 def extend_advanced_search(response, raise_errors):
@@ -32,7 +43,7 @@ def extend_advanced_search(response, raise_errors):
     if int(response['request_params'].get('letter_e', -1)) == 0:
         return response
 
-    url = _build_advanced_search_link(response['request_params'])
+    url = _build_advanced_search_url(response['request_params'])
     [success, doc] = _send_request(url, raise_errors)
     if not success:
         return response
@@ -179,9 +190,71 @@ def fetch_daily_word():
 
     return { 'data': result }
 
+def fetch_meaning_category_words(**kwargs):
+    """
+    Fetches words that belong to the
+    provided meaning category.
+    """
+
+    page = kwargs.get('page', 1)
+    per_page = kwargs.get('per_page', 10)
+    [lang, nation, exonym] = _build_language_query(kwargs.get('translation_language', ''))
+    url = _SENSE_URL.format(
+        nation,
+        lang,
+        page,
+        per_page,
+        'C' if kwargs.get('sort') == 'popular' else 'W',
+        _build_sense_category_query(kwargs.get('category', 0)))
+
+    [_, doc] = _send_request(url, True)
+    [results, total] = _read_search_results(doc, exonym)
+
+    return {
+        'data': {
+            'page': int(page),
+            'per_page': int(per_page),
+            'total_results': total,
+            'search_url': url,
+            'results': results
+        }
+    }
+
+def fetch_subject_category_words(**kwargs):
+    """
+    Fetches words that belong to one of the
+    provided subject categories.
+    """
+
+    page = kwargs.get('page', 1)
+    per_page = kwargs.get('per_page', 10)
+    [lang, nation, exonym] = _build_language_query(kwargs.get('translation_language', ''))
+    url = _SUBJECT_URL.format(
+        nation,
+        lang,
+        page,
+        per_page,
+        'C' if kwargs.get('sort') == 'popular' else 'W',
+        _build_subject_category_query(kwargs.get('category', 0)))
+
+    [_, doc] = _send_request(url, True)
+    [results, total] = _read_search_results(doc, exonym)
+
+    return {
+        'data': {
+            'page': int(page),
+            'per_page': int(per_page),
+            'total_results': total,
+            'search_url': url,
+            'results': results
+        }
+    }
+
 __all__ = [
     'extend_advanced_search',
     'extend_search',
     'extend_view',
-    'fetch_daily_word'
+    'fetch_daily_word',
+    'fetch_meaning_category_words',
+    'fetch_subject_category_words'
 ]

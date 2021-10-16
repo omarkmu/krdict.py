@@ -14,8 +14,22 @@ _VIDEO_URL = (
     'https://krdict.korean.go.kr/dicSearch/viewMovieConfirm?'
     'searchKindValue=video&ParaWordNo={}&ParaSenseSeq={}&multiMediaSeq={}'
 )
+_VIEW_URL = 'https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo={}'
 
 
+_LANG_INFO = {
+    'mongolian': ['mon', 1, '몽골어'],
+    'vietnamese': ['vie', 2, '베트남어'],
+    'thai': ['tha', 3, '타이어'],
+    'indonesian': ['ind', 4, '인도네시아어'],
+    'russian': ['rus', 5, '러시아어'],
+    'english': ['eng', 6, '영어'],
+    'japanese': ['jpn', 7, '일본어'],
+    'french': ['fra', 8, '프랑스어'],
+    'spanish': ['spa', 9, '스페인어'],
+    'arabic': ['ara', 10, '아랍어'],
+    'chinese': ['chn', 11, '중국어']
+}
 _LANG_MAP = {
     '0': 'all',
     '1': '0',
@@ -57,6 +71,7 @@ _SENSE_CAT_MAX = [
     153
 ]
 _SUBJECT_MAP = _PARAM_MAPS['subject_category']['value']
+_SENSE_MAP = _PARAM_MAPS['meaning_category']['value']
 
 
 def _convert_sense_cat(value):
@@ -234,7 +249,7 @@ def _send_request(url, raise_errors):
         return [False, None]
 
 
-def _build_advanced_search_link(params):
+def _build_advanced_search_url(params):
     url = _ADVANCED_SEARCH_URL
 
     for adv_key in list(_ADVANCED_PARAM_MAP.keys()):
@@ -276,6 +291,62 @@ def _build_advanced_search_link(params):
 
     return url
 
+def _build_language_query(lang):
+    [nation, code, exo] = _LANG_INFO.get(lang, ['', 0, ''])
+
+    if code == 0:
+        return '', '', None
+
+    return f'&nation={nation}&nationCode={code}', f'{nation}/', exo
+
+def _build_sense_category_query(category):
+    category = int(_SENSE_MAP.get(category, category))
+
+    if category <= 0 or category > 153:
+        return '&lgCategoryCode=0&miCategoryCode=-1'
+
+    if category == 1:
+        return '&lgCategoryCode=1&miCategoryCode=-1'
+
+    code_large = 0
+    code_mid = 1000 + category if category < 129 else 1100 + category
+
+    for idx, cat_max in enumerate(_SENSE_CAT_MAX):
+        if category == cat_max + 1:
+            code_large = idx + 2
+            code_mid = -1
+            break
+
+        if category <= cat_max:
+            code_large = idx + 1
+            break
+
+    return f'&lgCategoryCode={code_large}&miCategoryCode={code_mid}'
+
+def _build_subject_category_query(category):
+    if isinstance(category, list):
+        value = ''
+
+        for cat in category:
+            cat_value = str(_SUBJECT_MAP.get(cat, cat))
+            if cat_value == '0':
+                return _build_subject_category_query(0)
+
+            value += f'&actCategory={_convert_subject_cat(cat)}'
+
+        return value
+
+    category = str(_SUBJECT_MAP.get(category, category))
+    if category == '0':
+        value = ''
+
+        for i in range(1, 107):
+            value += f'&actCategory={_convert_subject_cat(i)}'
+
+        return value
+
+    return f'&actCategory={_convert_subject_cat(category)}'
+
 
 def _extract_between(string, sep):
     sep_1 = string.find(sep)
@@ -285,6 +356,15 @@ def _extract_between(string, sep):
         return None
 
     return string[sep_1 + 1:sep_2]
+
+def _extract_digits(text):
+    value = ''
+
+    for char in text:
+        if char.isdigit():
+            value += char
+
+    return int(value) if len(value) > 0 else 0
 
 def _extract_url(elem):
     href = elem.get('href', '')
@@ -380,6 +460,129 @@ def _read_page_pronunciation(word_info, sounds):
 
     if 'pronunciation_info' not in word_info:
         word_info['pronunciation_info'] = pronunciation_info
+
+def _read_search_definitions(elem_list, translation_lang):
+    definitions = []
+    step = 3 if translation_lang else 1
+    order = 1
+
+    for idx in range(0, len(elem_list), step):
+        dfn_elem = elem_list[idx]
+
+        translation = None
+        if translation_lang:
+            strong_elem = dfn_elem.cssselect('strong')
+            word_trns = strong_elem[0].tail.strip()[2:] if strong_elem else dfn_elem.text.strip()
+
+            dfn_elem = elem_list[idx + 1]
+            dfn_trns = elem_list[idx + 2].text.strip()
+
+            if len(dfn_trns) > 0:
+                translation = {}
+                if len(word_trns) > 0:
+                    translation['word'] = word_trns.strip()
+
+                translation['definition'] = dfn_trns
+                translation['language'] = translation_lang
+
+        strong_elem = dfn_elem.cssselect('strong')
+        dfn = strong_elem[0].tail.strip()[2:] if strong_elem else dfn_elem.text.strip()
+
+        dfn_obj = {
+            'definition': dfn.strip(),
+            'order': order
+        }
+
+        if translation is not None:
+            dfn_obj['translation'] = translation
+
+        definitions.append(dfn_obj)
+        order += 1
+
+    return definitions
+
+def _read_search_header(elem, parent_elem):
+    a_elem = elem.cssselect('a')[0]
+
+    headword_elem = a_elem.cssselect('span')[0]
+    sup_elem = headword_elem.cssselect('sup')
+
+    pos_elem = elem.cssselect('span.word_att_type1')
+    details_elem = elem.cssselect('span.search_sub')[0]
+    star_elem = details_elem.cssselect('span.star')
+    hanja_elem = parent_elem.cssselect('dt > span:not(.word_att_type1):not(.search_sub)')
+
+    target_code = int(_extract_url(a_elem) or 0)
+    result = {
+        'target_code': target_code,
+        'word': headword_elem.text.strip(),
+        'url': _VIEW_URL.format(target_code)
+    }
+
+    [pronunciation_urls, pronunciation] = _read_search_pronunciation(details_elem)
+
+    if len(pos_elem) > 0:
+        result['part_of_speech'] = pos_elem[0].text.strip()[1:-1]
+
+    result['homograph_num'] = int(sup_elem[0].text.strip() if len(sup_elem) > 0 else 0)
+
+    if len(hanja_elem) > 0:
+        result['origin'] = hanja_elem[0].text.strip()[1:-1]
+
+    if len(star_elem) > 0:
+        grade = len(star_elem[0].cssselect('i.ri-star-s-fill'))
+
+        if grade == 1:
+            result['vocabulary_grade'] = '고급'
+        elif grade == 2:
+            result['vocabulary_grade'] = '중급'
+        elif grade == 3:
+            result['vocabulary_grade'] = '초급'
+
+    if len(pronunciation) > 0 or len(pronunciation_urls) > 0:
+        result['pronunciation'] = result['word'] if len(pronunciation) == 0 else pronunciation
+    if len(pronunciation_urls) > 0:
+        result['pronunciation_urls'] = pronunciation_urls
+
+    return result
+
+def _read_search_pronunciation(elem):
+    urls = []
+    pronunciation = elem.text.strip()
+
+    for sound in elem.cssselect('a.sound'):
+        url = _extract_url(sound)
+
+        if url is not None:
+            urls.append(url)
+
+        pronunciation += sound.tail.strip()
+
+    if pronunciation.startswith('['):
+        pronunciation = pronunciation[1:]
+    if pronunciation.endswith(']'):
+        pronunciation = pronunciation[:-1]
+
+    return urls, pronunciation
+
+def _read_search_results(doc, translation_lang):
+    results = []
+    search_results = doc.cssselect('div.search_result > dl')
+    total_text = doc.cssselect('span.search_tit > em')
+
+    for result_elem in search_results:
+        dt_elem = result_elem.cssselect('dt')
+        dd_elem = result_elem.cssselect('dd')
+
+        if len(dt_elem) == 0 or len(dd_elem) == 0:
+            continue
+
+        result = _read_search_header(dt_elem[0], result_elem)
+        result['definitions'] = _read_search_definitions(dd_elem, translation_lang)
+        results.append(result)
+
+    total = _extract_digits(total_text[0].text) if len(total_text) > 0 else 0
+    return results, total
 
 def _read_view_hanja_info(cur_obj, dl_elem):
     dt_element = dl_elem.cssselect('dt')
