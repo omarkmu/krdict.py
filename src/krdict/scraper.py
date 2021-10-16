@@ -17,7 +17,7 @@ from ._scraper_utils import (
     _VIEW_URL
 )
 
-_BASE_URL = 'https://krdict.korean.go.kr/mainAction'
+_BASE_URL = 'https://krdict.korean.go.kr/{}mainAction'
 _SEARCH_URL = (
     'https://krdict.korean.go.kr/dicSearch/search?'
     'mainSearchWord={}&currentPage={}&blockCount={}&sort={}')
@@ -138,27 +138,30 @@ def extend_view(response, fetch_page_data, fetch_multimedia, raise_errors):
 
     return response
 
-def fetch_today_word():
+def fetch_today_word(translation_language=None):
     """
     Fetches the Korean word of the day by
     scraping the dictionary website.
     """
 
-    [_, doc] = _send_request(_BASE_URL, True)
+    [_, nation, exonym] = _build_language_query(translation_language)
+    [_, doc] = _send_request(_BASE_URL.format(nation), True)
 
     dt_elem = doc.cssselect('dl.today_word > dt')[0]
+    dd_elems = doc.cssselect('dl.today_word > dd')
     word_elem = dt_elem.cssselect('a')[0]
-    sup = word_elem.cssselect('strong > sup')[0]
-    sup_text = sup.text_content()
-    target_code_text = _extract_url(word_elem)
+    strong_elem = word_elem.cssselect('strong')[0]
+    sup_elems = word_elem.cssselect('strong > sup')
 
+    dfn_idx = 0 if not nation and len(dd_elems) < 3 else 1
     result = {
-        'target_code': int(target_code_text) if target_code_text is not None else 0,
-        'word': sup.xpath('preceding-sibling::text()')[0].strip(),
-        'definition': doc.cssselect('dl.today_word > dd')[0].text_content().strip(),
-        'url': _VIEW_URL.format(target_code_text),
-        'homograph_num': int(sup_text) if len(sup_text) > 0 else 0
+        'target_code': int(_extract_url(word_elem) or 0),
+        'word': strong_elem.text.strip(),
+        'definition': dd_elems[dfn_idx].text_content().strip()
     }
+
+    result['url'] = _VIEW_URL.format(result['target_code'])
+    result['homograph_num'] = int(sup_elems[0].text_content() or 0 if len(sup_elems) > 0 else 0)
 
     em_elem = dt_elem.cssselect('em')
     grade_elem = dt_elem.cssselect('span.star')
@@ -172,7 +175,7 @@ def fetch_today_word():
         text = detail_elem.text_content().strip()
 
         if text.startswith('('):
-            result['original_language'] = text[1:-1]
+            result['origin'] = text[1:-1]
             continue
         if not text.startswith('['):
             continue
@@ -188,7 +191,19 @@ def fetch_today_word():
         if len(urls) > 0:
             result['pronunciation_urls'] = urls
 
-    return { 'data': result }
+    if nation and len(dd_elems) == 3:
+        word_trns = dd_elems[0].text.strip()
+        dfn_trns = dd_elems[2].text.strip()
+
+        if len(dfn_trns) > 0:
+            result['translation'] = {'definition': dfn_trns}
+
+            if len(word_trns) > 0:
+                result['translation']['word'] = word_trns
+
+            result['translation']['language'] = exonym
+
+    return {'data': result}
 
 def fetch_meaning_category_words(**kwargs):
     """

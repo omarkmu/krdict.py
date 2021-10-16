@@ -554,7 +554,7 @@ Information about the word of the day.
         "homograph_num": int,
         "part_of_speech": str, # not required
         "vocabulary_grade": str, # not required
-        "original_language": str, # not required
+        "origin": str, # not required
         "pronunciation": str, # not required
         "pronunciation_urls": List[str] # not required
     }
@@ -570,7 +570,7 @@ Information about the word of the day.
 | homograph_num      | int  |    ✓     | A superscript number used to distinguish homographs.
 | part_of_speech     | str  |    ✗     | The Korean part of speech of the headword.
 | vocabulary_grade   | str  |    ✗     | The vocabulary level of the entry.
-| original_language  | str  |    ✗     | The origin of the word.
+| origin             | str  |    ✗     | The origin (original language) of the word.
 | pronunciation      | str  |    ✗     | The 한글 pronunciation of the entry.
 | pronunciation_urls | list |    ✗     | A list of pronunciation audio URLs. Included only if scraping is enabled and URLs are available.
 

@@ -18,7 +18,7 @@ ScraperTranslationLanguage = Literal[
 class _DailyWordData(TypedDict, total=False):
     part_of_speech: str
     vocabulary_grade: str
-    original_language: str
+    origin: str
     pronunciation: str
     pronunciation_urls: List[str]
 class DailyWordData(_DailyWordData):
@@ -82,7 +82,9 @@ def extend_view(
     raise_errors: bool
 ) -> ViewResponse: ...
 
-def fetch_today_word() -> WordOfTheDayResponse: ...
+def fetch_today_word(
+    translation_language: ScraperTranslationLanguage = None
+) -> WordOfTheDayResponse: ...
 
 def fetch_meaning_category_words(*,
     category: MeaningCategory | int,
