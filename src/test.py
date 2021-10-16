@@ -254,6 +254,7 @@ class TestKRDictScraper(unittest.TestCase):
         self.assertIn('data', response)
         data = response['data']
 
+        self.assertIn('search_url', data)
         self.assertEqual(len(data['results']), 10)
 
         for result in data['results']:
@@ -529,6 +530,7 @@ class TestKRDictScraper(unittest.TestCase):
         self.assertIn('data', response)
         data = response['data']
 
+        self.assertIn('search_url', data)
         self.assertEqual(len(data['results']), 10)
 
         for result in data['results']:

@@ -16,7 +16,14 @@ _VIDEO_URL = (
 )
 _VIEW_URL = 'https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo={}'
 
-
+_AFTER_SEARCH_URL = [
+    'description',
+    'last_build_date',
+    'total_results',
+    'page',
+    'per_page',
+    'results'
+]
 _LANG_INFO = {
     'mongolian': ['mon', 1, '몽골어'],
     'vietnamese': ['vie', 2, '베트남어'],
@@ -443,6 +450,22 @@ def _get_vocabulary_grade(elem):
         return '초급'
 
     return ''
+
+
+def _insert_search_url(response, url):
+    if 'error' in response:
+        return
+
+    values = []
+    data = response['data']
+    for field in _AFTER_SEARCH_URL:
+        values.append(data[field])
+        del data[field]
+
+    data['search_url'] = url
+    for idx, field in enumerate(_AFTER_SEARCH_URL):
+        data[field] = values[idx]
+
 
 def _read_conju_pronunciation(arr, urls, idx):
     if idx == -1:

@@ -187,6 +187,7 @@ The results of a word [search](functions.md#search).
     "data": {
         "title": str,
         "url": str,
+        "search_url": str, # not required
         "description": str,
         "last_build_date": str,
         "page": int,
@@ -230,6 +231,7 @@ The results of a word [search](functions.md#search).
 | -              | data               | dict |    ✓     | Container for search results.
 | data           | title              | str  |    ✓     | The title of the Korean Learner's Dictionary Open API (constant).
 | data           | url                | str  |    ✓     | The URL of the Korean Learner's Dictionary (constant).
+| data           | search_url         | str  |    ✗     | The URL of the search result. Only present if scraping is enabled and the URL is available.
 | data           | description        | str  |    ✓     | The description of the Korean Learner's Dictionary Open API (constant).
 | data           | last_build_date    | str  |    ✓     | The time the search results were generated.
 | data           | page               | int  |    ✓     | The page at which the search results begin.

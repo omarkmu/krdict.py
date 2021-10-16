@@ -5,11 +5,12 @@ Retrieves information from the krdict website via scraping.
 from ._scraper_utils import (
     _build_advanced_search_url,
     _build_language_query,
+    _build_sense_category_query,
+    _build_subject_category_query,
     _extract_url,
     _fetch_view_images,
     _fetch_view_videos,
-    _build_sense_category_query,
-    _build_subject_category_query,
+    _insert_search_url,
     _read_search_results,
     _read_view_pronunciation,
     _read_view_original_language,
@@ -65,6 +66,7 @@ def extend_advanced_search(response, raise_errors):
         if len(urls) > 0:
             result['pronunciation_urls'] = urls
 
+    _insert_search_url(response, url)
     return response
 
 def extend_search(response, raise_errors):
@@ -103,6 +105,7 @@ def extend_search(response, raise_errors):
         if len(urls) > 0:
             result['pronunciation_urls'] = urls
 
+    _insert_search_url(response, url)
     return response
 
 def extend_view(response, fetch_page_data, fetch_multimedia, raise_errors):
