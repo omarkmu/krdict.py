@@ -61,8 +61,8 @@ is set to any value other than `'original_language'`, this parameter has no effe
 - `vocabulary_grade` ([`VocabularyGrade`](parameters.md#vocabularygrade)): A vocabulary level to filter by.
 - `part_of_speech` ([`PartOfSpeech`](parameters.md#partofspeech)): A part of speech to filter by.
 - `multimedia_info` ([`MultimediaType`](parameters.md#multimediatype)): A multimedia type to filter by.
-- `min_syllables`: The minimum number of syllables in result words `[1, inf)`.
-- `max_syllables`: The maximum number of syllables in results words. A value of `0` denotes no maximum `[0, inf)`.
+- `min_syllables`: The minimum number of syllables in result words `[1, 80]`.
+- `max_syllables`: The maximum number of syllables in results words. A value of `0` denotes no maximum `[0, 80]`.
 - `meaning_category` ([`MeaningCategory`](parameters.md#meaningcategory)): The meaning category to filter by.
 - `subject_category` ([`SubjectCategory`](parameters.md#subjectcategory)): A subject category to filter by.
 - `options` ([`OptionsDict`](parameters.md#optionsdict)): Additional options to apply.
@@ -73,9 +73,9 @@ is set to any value other than `'original_language'`, this parameter has no effe
 Depending on the value of `search_type` and whether an error occurred, returns one of:
 
 - [`WordSearchResponse`](return_types.md#wordsearchresponse)
-- [`DefinitionSearchResponse`](return_types.md#definitionsearchresponse)
-- [`ExampleSearchResponse`](return_types.md#examplesearchresponse)
-- [`IdiomProverbSearchResponse`](return_types.md#idiomproverbsearchresponse)
+- [`DefinitionSearchResponse`](return_types.md#definitionsearchresponse) **(potentially empty or incomplete)**
+- [`ExampleSearchResponse`](return_types.md#examplesearchresponse) **(potentially empty or incomplete)**
+- [`IdiomProverbSearchResponse`](return_types.md#idiomproverbsearchresponse) **(potentially empty or incomplete)**
 - [`KRDictError`](return_types.md#krdicterror)
 
 ---

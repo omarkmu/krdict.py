@@ -7,9 +7,9 @@ The results of a definition [search](functions.md#search).
 ```python
 {
     "data": {
-        "title": str,
-        "url": str,
-        "description": str,
+        "title": "한국어기초사전 오픈 API - 사전 검색",
+        "url": "https://krdict.korean.go.kr",
+        "description": "한국어기초사전 오픈 API – 사전 검색 결과",
         "last_build_date": str,
         "page": int,
         "per_page": int,
@@ -35,9 +35,8 @@ The results of a definition [search](functions.md#search).
             }
         ]
     },
-    "request_params": {
-        ...
-    }
+    "request_params": { ... },
+    "response_type": "definition"
 }
 ```
 
@@ -63,6 +62,7 @@ The results of a definition [search](functions.md#search).
 | translations   | word            | str  |    ✗     | A translation of the word.
 | translations   | language        | str  |    ✓     | The translation language.
 | -              | request_params  | dict |    ✓     | The request parameters which were sent to the API.
+| -              | response_type   | str  |    ✓     | The identifying value of the response. (constant)
 
 ## ExampleSearchResponse
 
@@ -71,9 +71,9 @@ The results of an example [search](functions.md#search).
 ```python
 {
     "data": {
-        "title": str,
-        "url": str,
-        "description": str,
+        "title": "한국어기초사전 오픈 API - 사전 검색",
+        "url": "https://krdict.korean.go.kr",
+        "description": "한국어기초사전 오픈 API – 사전 검색 결과",
         "last_build_date": str,
         "page": int,
         "per_page": int,
@@ -88,9 +88,8 @@ The results of an example [search](functions.md#search).
             }
         ]
     },
-    "request_params": {
-        ...
-    }
+    "request_params": { ... },
+    "response_type": "example"
 }
 ```
 
@@ -111,6 +110,7 @@ The results of an example [search](functions.md#search).
 | results    | homograph_num   | int  |    ✓     | A superscript number used to distinguish homographs.
 | results    | example         | str  |    ✓     | An entry's example.
 | -          | request_params  | dict |    ✓     | The request parameters which were sent to the API.
+| -          | response_type   | str  |    ✓     | The identifying value of the response. (constant)
 
 
 ## IdiomProverbSearchResponse
@@ -120,9 +120,9 @@ The results of an idiom/proverb [search](functions.md#search).
 ```python
 {
     "data": {
-        "title": str,
-        "url": str,
-        "description": str,
+        "title": "한국어기초사전 오픈 API - 사전 검색",
+        "url": "https://krdict.korean.go.kr",
+        "description": "한국어기초사전 오픈 API – 사전 검색 결과",
         "last_build_date": str,
         "page": int,
         "per_page": int,
@@ -148,9 +148,8 @@ The results of an idiom/proverb [search](functions.md#search).
             }
         ]
     },
-    "request_params": {
-        ...
-    }
+    "request_params": { ... },
+    "response_type": "idiom_proverb"
 }
 ```
 
@@ -177,6 +176,7 @@ The results of an idiom/proverb [search](functions.md#search).
 | translations   | word            | str  |    ✗     | A translation of the idiom or proverb.
 | translations   | language        | str  |    ✓     | The translation language.
 | -              | request_params  | dict |    ✓     | The request parameters which were sent to the API.
+| -              | response_type   | str  |    ✓     | The identifying value of the response. (constant)
 
 ## WordSearchResponse
 
@@ -185,10 +185,10 @@ The results of a word [search](functions.md#search).
 ```python
 {
     "data": {
-        "title": str,
-        "url": str,
+        "title": "한국어기초사전 오픈 API - 사전 검색",
+        "url": "https://krdict.korean.go.kr",
         "search_url": str, # not required
-        "description": str,
+        "description": "한국어기초사전 오픈 API – 사전 검색 결과",
         "last_build_date": str,
         "page": int,
         "per_page": int,
@@ -220,9 +220,8 @@ The results of a word [search](functions.md#search).
             }
         ]
     },
-    "request_params": {
-        ...
-    }
+    "request_params": { ... },
+    "response_type": "word"
 }
 ```
 
@@ -255,6 +254,7 @@ The results of a word [search](functions.md#search).
 | translations   | word               | str  |    ✗     | A translation of the word.
 | translations   | language           | str  |    ✓     | The translation language.
 | -              | request_params     | dict |    ✓     | The request parameters which were sent to the API.
+| -              | response_type      | str  |    ✓     | The identifying value of the response. (constant)
 
 ## ViewResponse
 
@@ -263,9 +263,9 @@ The results of a [view](functions.md#view) query.
 ```python
 {
     "data": {
-        "title": str,
+        "title": "한국어기초사전 오픈 API - 사전 검색",
         "url": str,
-        "description": str,
+        "description": "한국어기초사전 오픈 API – 사전 검색 결과",
         "last_build_date": str,
         "total_results": int,
         "results": [ # contains 0 or 1 result
@@ -419,9 +419,8 @@ The results of a [view](functions.md#view) query.
             }
         ]
     },
-    "request_params": {
-        ...
-    }
+    "request_params": { ... },
+    "response_type": "view"
 }
 ```
 
@@ -517,6 +516,7 @@ The results of a [view](functions.md#view) query.
 | related_info           | type                   | str  |    ✓     | The type of the related word.
 | related_info           | word                   | str  |    ✓     | The related word.
 | -                      | request_params         | dict |    ✓     | The request parameters which were sent to the API.
+| -                      | response_type          | str  |    ✓     | The identifying value of the response. (constant)
 
 ## KRDictError
 
@@ -529,9 +529,8 @@ Information about an API error. For a list of error codes, please see the
         "error_code": int,
         "message": str
     },
-    "request_params": {
-        ...
-    }
+    "request_params": { ... },
+    "response_type": "error"
 }
 ```
 
@@ -541,6 +540,7 @@ Information about an API error. For a list of error codes, please see the
 | error     | error_code     | int  |    ✓     | The error code supplied by the API.
 | error     | message        | str  |    ✓     | The error message supplied by the API.
 | -         | request_params | dict |    ✓     | The request parameters which were sent to the API.
+| -         | response_type  | str  |    ✓     | The identifying value of the response. (constant)
 
 ## WordOfTheDayResponse
 
@@ -564,7 +564,8 @@ Information about the [word of the day](scraper.md#fetch_today_word).
             "word": str, # not required
             "language": str
         }
-    }
+    },
+    "response_type": "word_of_the_day"
 }
 ```
 
@@ -585,6 +586,7 @@ Information about the [word of the day](scraper.md#fetch_today_word).
 | translation | definition         | str  |    ✓     | A translation of the definition.
 | translation | word               | str  |    ✗     | A translation of the word.
 | translation | language           | str  |    ✓     | The translation language.
+| -           | response_type      | str  |    ✓     | The identifying value of the response. (constant)
 
 ## ScrapedWordSearchResponse
 
@@ -621,14 +623,15 @@ The results of a word search retrieved via scraping.
                 ]
             }
         ]
-    }
+    },
+    "response_type": "scraped_word"
 }
 ```
 
 | Container   | Field              | Type | Required | Description
 | ---------   | -----              | :--: | :------: | -----------
 | -           | data               | dict |    ✓     | Container for search results.
-| data        | search_url         | str  |    ✓     | The Korean Learner's Dictionary URL that can be used to view these results.
+| data        | search_url         | str  |    ✓     | The Korean Learner's Dictionary URL that can be used to view the results.
 | data        | page               | int  |    ✓     | The page at which the search results begin.
 | data        | per_page           | int  |    ✓     | The number of results per page. Does not necessarily correspond to the length of `results`.
 | data        | total_results      | int  |    ✓     | The total number of results, including the returned results.
@@ -649,5 +652,6 @@ The results of a word search retrieved via scraping.
 | translation | definition         | str  |    ✓     | A translation of the definition.
 | translation | word               | str  |    ✗     | A translation of the word.
 | translation | language           | str  |    ✓     | The translation language.
+| -           | response_type      | str  |    ✓     | The identifying value of the response. (constant)
 
 ---
