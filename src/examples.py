@@ -24,6 +24,7 @@ def _display_results(response):
 
         # note: get is used instead of indexing because 'origin' is not a required key.
         # the same is true for the below calls to get.
+        # this can be avoided using the guarantee_keys parameter (see example 12).
         origin = result.get('origin')
         origin_info = f' ({origin})' if origin else ''
         print(f'{idx + 1}. {result["word"]}{origin_info}: {first_dfn["definition"]}')
@@ -82,6 +83,7 @@ def _display_view_results(response):
                 print('   ► ...')
                 break
 
+            # only present if scraping is enabled and the fetch_multimedia option is set to True.
             if 'media_urls' in multimedia:
                 print(f'   ► {",".join(multimedia["media_urls"])} ({multimedia["type"]})')
             else:
@@ -347,6 +349,43 @@ def guarantee_keys():
     # "url", and "media_urls".
     print(json.dumps(response['data']['results'][0]['word_info'], indent=2, ensure_ascii=False))
 
+# Example 13
+def hanja_info():
+    """
+    Displays information about hanja in an
+    extended view response.
+    """
+
+    response = krdict.view(
+        query='가감승제',
+        homograph_num=0,
+        raise_api_errors=True,
+        guarantee_keys=True,
+        options={'use_scraper': True}
+    )
+
+    # without guarantee_keys, a check for original_language_info would be necessary.
+    # the length of response['data']['results'] should also be checked in careful code.
+    lang_info = response['data']['results'][0]['word_info']['original_language_info']
+
+    idx = 0
+    for info in lang_info:
+        # filter out non-한자
+        if info['language_type'] != '한자':
+            continue
+
+        for h_info in info['hanja_info']:
+            print(f'Hanja {idx + 1}: {h_info["hanja"]}')
+            print(f'Radical: {h_info["radical"]}')
+            print(f'Stroke Count: {h_info["stroke_count"]}')
+            print('Readings:')
+
+            for reading in h_info['readings']:
+                print(f'   {reading}')
+
+            print()
+            idx += 1
+
 
 _EXAMPLE_FUNCS = [
     pagination,
@@ -360,7 +399,8 @@ _EXAMPLE_FUNCS = [
     word_of_the_day,
     fetch_meaning_category,
     fetch_subject_category,
-    guarantee_keys
+    guarantee_keys,
+    hanja_info
 ]
 
 def _run_examples():

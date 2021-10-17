@@ -638,3 +638,66 @@ With guarantee_keys:
   "subword_info": []
 }
 ```
+---
+## 13. Get Hanja Information
+
+Displays information about the hanja characters in a [`view`](functions.md#view)
+response using the scraper.
+
+```python
+response = krdict.view(
+    query='가감승제',
+    homograph_num=0,
+    raise_api_errors=True,
+    guarantee_keys=True,
+    options={'use_scraper': True}
+)
+
+# without guarantee_keys, a check for original_language_info would be necessary.
+# the length of response['data']['results'] should also be checked in careful code.
+lang_info = response['data']['results'][0]['word_info']['original_language_info']
+
+idx = 0
+for info in lang_info:
+    # filter out non-한자
+    if info['language_type'] != '한자':
+        continue
+
+    for h_info in info['hanja_info']:
+        print(f'Hanja {idx + 1}: {h_info["hanja"]}')
+        print(f'Radical: {h_info["radical"]}')
+        print(f'Stroke Count: {h_info["stroke_count"]}')
+        print('Readings:')
+
+        for reading in h_info['readings']:
+            print(f'   {reading}')
+
+        print()
+        idx += 1
+```
+```md
+Hanja 1: 加
+Radical: 力     
+Stroke Count: 5 
+Readings:       
+   더할 가      
+
+Hanja 2: 減     
+Radical: 水     
+Stroke Count: 12
+Readings:       
+   덜 감        
+
+Hanja 3: 乘     
+Radical: 丿     
+Stroke Count: 10
+Readings:
+   탈 승
+
+Hanja 4: 除
+Radical: 阜
+Stroke Count: 10
+Readings:
+   덜 제
+   사월 여
+```
