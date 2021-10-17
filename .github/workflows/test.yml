@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  setup:
-    name: Set up python and dependencies
+  test:
+    name: Run tests
     runs-on: ubuntu-latest
 
     steps:
@@ -21,24 +21,12 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-  test:
-    name: Run tests
-    runs-on: ubuntu-latest
-    needs: setup
-
-    steps:
     - name: Test with unittest
       working-directory: ./src
       env:
         KRDICT_KEY: ${{ secrets.KRDICT_KEY }}
       run: |
         python -m unittest -v
-  examples:
-    name: Run examples
-    runs-on: ubuntu-latest
-    needs: setup
-
-    steps:
     - name: Test examples
       working-directory: ./src
       env:
