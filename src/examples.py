@@ -32,7 +32,7 @@ def _display_results(response):
         for translation in first_dfn.get('translations', []):
             print(f'   {translation.get("word")}: {translation["definition"]}')
 
-        # ScrapedWordResponses return only one translation.
+        # scraped word responses (e.g. from category scraping) return only one translation.
         if 'translation' in first_dfn:
             translation = first_dfn['translation']
             print(f'   {translation.get("word")}: {translation["definition"]}')
@@ -64,6 +64,7 @@ def _display_view_results(response):
     for idx, dfn in enumerate(result['word_info']['definition_info']):
         lines = dfn['definition']
 
+        # present if at least one translation language is specified.
         if 'translations' in dfn:
             translation = dfn['translations'][0]
             lines = translation['word'] if 'word' in translation else ''
@@ -83,7 +84,7 @@ def _display_view_results(response):
                 print('   ► ...')
                 break
 
-            # only present if scraping is enabled and the fetch_multimedia option is set to True.
+            # present if scraping is enabled and the fetch_multimedia option is set to True.
             if 'media_urls' in multimedia:
                 print(f'   ► {",".join(multimedia["media_urls"])} ({multimedia["type"]})')
             else:
