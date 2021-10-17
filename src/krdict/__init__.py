@@ -8,6 +8,7 @@ from ._params import transform_search_params, transform_view_params
 from ._results import postprocessor
 from .scraper import extend_view, extend_search, extend_advanced_search
 
+
 _SEARCH_URL = 'https://krdict.korean.go.kr/api/search'
 _VIEW_URL = 'https://krdict.korean.go.kr/api/view'
 _DEFAULTS = {
@@ -17,6 +18,7 @@ _DEFAULTS = {
     'RAISE_SCRAPER_ERRORS': False,
     'USE_SCRAPER': False
 }
+
 
 class KRDictException(Exception):
     """
@@ -41,13 +43,18 @@ class KRDictException(Exception):
     def __reduce__(self):
         return (KRDictException, (self.message, self.error_code, self.request_params))
 
+
 def _send_request(url, params, search_type):
     raise_api_errors = False
+    guarantee = False
     if 'key' not in params and _DEFAULTS['API_KEY'] is not None:
         params['key'] = _DEFAULTS['API_KEY']
     if 'raise_api_errors' in params:
         raise_api_errors = params['raise_api_errors'] is True
         del params['raise_api_errors']
+    if 'guarantee_keys' in params:
+        guarantee = params['guarantee_keys'] is True
+        del params['guarantee_keys']
     if 'options' in params:
         del params['options']
 
@@ -57,7 +64,7 @@ def _send_request(url, params, search_type):
         result = parse_xml(
             response.text,
             dict_constructor=dict,
-            postprocessor=postprocessor
+            postprocessor=lambda _, k, v: postprocessor(k, v, search_type, guarantee)
         )
 
         if raise_api_errors and 'error' in result:
@@ -86,7 +93,13 @@ def advanced_search(**kwargs):
 
     - ``query``: The search query.
     - ``raise_api_errors``: Sets whether a ``KRDictException`` will be raised if an API error
-    occurs. This guarantees that the result is not an error object.
+    occurs. A value of ``True`` guarantees that the result is not an error object.
+    - ``guarantee_keys``: Sets whether keys that are missing from the response should be inserted
+    with default values. A value of ``True`` guarantees that every key that is not required
+    is included, including keys set by the scraper. Default values:
+        - The empty string `""` for string values.
+        - Zero `0` for integer values.
+        - An empty list `[]` for list values.
     - ``key``: The API key. If a key was set with ``set_key``, this can be omitted.
     - ``page``: The page at which the search should start ``[1, 1000]``.
     - ``per_page``: The maximum number of search results to return ``[10, 100]``.
@@ -164,7 +177,13 @@ def search(**kwargs):
 
     - ``query``: The search query.
     - ``raise_api_errors``: Sets whether a ``KRDictException`` will be raised if an API error
-    occurs. This guarantees that the result is not an error object.
+    occurs. A value of ``True`` guarantees that the result is not an error object.
+    - ``guarantee_keys``: Sets whether keys that are missing from the response should be inserted
+    with default values. A value of ``True`` guarantees that every key that is not required
+    is included, including keys set by the scraper. Default values:
+        - The empty string `""` for string values.
+        - Zero `0` for integer values.
+        - An empty list `[]` for list values.
     - ``key``: The API key. If a key was set with ``set_key``, this can be omitted.
     - ``page``: The page at which the search should start ``[1, 1000]``.
     - ``per_page``: The maximum number of search results to return ``[10, 100]``.
@@ -206,7 +225,7 @@ def set_default(name, value):
     - ``name``: The name of the option to set.
         - ``'fetch_multimedia'``: Controls whether multimedia is scraped during view queries.
         No effect unless the 'use_scraper' option is True.
-        - ``'fetch_page_data'``: Controls whether pronunciation URLS and extended language
+        - ``'fetch_page_data'``: Controls whether pronunciation URLs and extended language
         information are scraped. No effect unless the 'use_scraper' option is True.
         - ``'raise_scraper_errors'``: Controls whether errors that occur during scraping are raised.
         No effect unless the 'use_scraper' option is True.
@@ -245,7 +264,13 @@ def view(**kwargs):
     - ``homograph_num``: The superscript number used to distinguish homographs.
     - ``target_code``: The target code of the desired result.
     - ``raise_api_errors``: Sets whether a KRDictException will be raised if an API error occurs.
-    This guarantees that the result is not an error object.
+    A value of ``True`` guarantees that the result is not an error object.
+    - ``guarantee_keys``: Sets whether keys that are missing from the response should be inserted
+    with default values. A value of ``True`` guarantees that every key that is not required
+    is included, including keys set by the scraper. Default values:
+        - The empty string `""` for string values.
+        - Zero `0` for integer values.
+        - An empty list `[]` for list values.
     - ``key``: The API key. If a key was set with set_key, this can be omitted.
     - ``translation_language``: A language or list of languages to include translations for.
     See the
@@ -271,6 +296,7 @@ def view(**kwargs):
         return extend_view(response, fetch_page, fetch_media, raise_errors)
 
     return _send_request(_VIEW_URL, kwargs, 'view')
+
 
 __all__ = [
     'advanced_search',

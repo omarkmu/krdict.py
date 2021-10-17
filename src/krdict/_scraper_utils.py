@@ -79,6 +79,14 @@ _SENSE_CAT_MAX = [
 ]
 _SUBJECT_MAP = _PARAM_MAPS['subject_category']['value']
 _SENSE_MAP = _PARAM_MAPS['meaning_category']['value']
+_WOTD_NOT_REQUIRED = [
+    ('part_of_speech', str),
+    ('vocabulary_grade', str),
+    ('origin', str),
+    ('pronunciation', str),
+    ('pronunciation_urls', list),
+    ('translation', dict)
+]
 
 
 def _convert_sense_cat(value):
@@ -494,7 +502,7 @@ def _read_page_pronunciation(word_info, sounds):
     if 'pronunciation_info' not in word_info:
         word_info['pronunciation_info'] = pronunciation_info
 
-def _read_search_definitions(elem_list, translation_lang):
+def _read_search_definitions(elem_list, translation_lang, guarantee_keys):
     definitions = []
     step = 3 if translation_lang else 1
     order = 1
@@ -516,6 +524,8 @@ def _read_search_definitions(elem_list, translation_lang):
 
                 if len(word_trns) > 0:
                     translation['word'] = word_trns.strip()
+                elif guarantee_keys:
+                    translation['word'] = None
 
                 translation['language'] = translation_lang
 
@@ -529,13 +539,15 @@ def _read_search_definitions(elem_list, translation_lang):
 
         if translation is not None:
             dfn_obj['translation'] = translation
+        elif guarantee_keys:
+            dfn_obj['translation'] = None
 
         definitions.append(dfn_obj)
         order += 1
 
     return definitions
 
-def _read_search_header(elem, parent_elem):
+def _read_search_header(elem, parent_elem, guarantee_keys):
     a_elem = elem.cssselect('a')[0]
 
     headword_elem = a_elem.cssselect('span')[0]
@@ -557,19 +569,30 @@ def _read_search_header(elem, parent_elem):
 
     if len(pos_elem) > 0:
         result['part_of_speech'] = pos_elem[0].text.strip()[1:-1]
+    elif guarantee_keys:
+        result['part_of_speech'] = ''
 
     result['homograph_num'] = int(sup_elem[0].text.strip() if len(sup_elem) > 0 else 0)
 
     if len(hanja_elem) > 0:
         result['origin'] = hanja_elem[0].text.strip()[1:-1]
+    elif guarantee_keys:
+        result['origin'] = ''
 
     if len(star_elem) > 0:
         result['vocabulary_grade'] = _get_vocabulary_grade(star_elem[0])
+    elif guarantee_keys:
+        result['vocabulary_grade'] = ''
 
     if len(pronunciation) > 0 or len(pronunciation_urls) > 0:
         result['pronunciation'] = result['word'] if len(pronunciation) == 0 else pronunciation
+    elif guarantee_keys:
+        result['pronunciation'] = ''
+
     if len(pronunciation_urls) > 0:
         result['pronunciation_urls'] = pronunciation_urls
+    elif guarantee_keys:
+        result['pronunciation_urls'] = []
 
     return result
 
@@ -592,7 +615,7 @@ def _read_search_pronunciation(elem):
 
     return urls, pronunciation
 
-def _read_search_results(doc, translation_lang):
+def _read_search_results(doc, translation_lang, guarantee_keys):
     results = []
     search_results = doc.cssselect('div.search_result > dl')
     total_text = doc.cssselect('span.search_tit > em')
@@ -604,8 +627,8 @@ def _read_search_results(doc, translation_lang):
         if len(dt_elem) == 0 or len(dd_elem) == 0:
             continue
 
-        result = _read_search_header(dt_elem[0], result_elem)
-        result['definitions'] = _read_search_definitions(dd_elem, translation_lang)
+        result = _read_search_header(dt_elem[0], result_elem, guarantee_keys)
+        result['definitions'] = _read_search_definitions(dd_elem, translation_lang, guarantee_keys)
         results.append(result)
 
     total = _extract_digits(total_text[0].text) if len(total_text) > 0 else 0
@@ -708,12 +731,13 @@ def _read_view_original_language(doc, word_info):
         for dl_elem in td_elements[0].cssselect('dl'):
             _read_view_hanja_info(cur, dl_elem)
 
-def _read_wotd_details(result, dt_elem, dd_elems, nation, exonym):
+def _read_wotd_details(result, dt_elem, dd_elems, exonym, guarantee_keys):
     em_elem = dt_elem.cssselect('em')
     grade_elem = dt_elem.cssselect('span.star')
 
     if len(em_elem) == 1:
         result['part_of_speech'] = em_elem[0].text_content()
+
     if len(grade_elem) == 1:
         result['vocabulary_grade'] =  _get_vocabulary_grade(grade_elem[0])
 
@@ -737,7 +761,7 @@ def _read_wotd_details(result, dt_elem, dd_elems, nation, exonym):
         if len(urls) > 0:
             result['pronunciation_urls'] = urls
 
-    if nation and len(dd_elems) == 3:
+    if len(dd_elems) == 3:
         word_trns = dd_elems[0].text.strip()
         dfn_trns = dd_elems[2].text.strip()
 
@@ -748,3 +772,13 @@ def _read_wotd_details(result, dt_elem, dd_elems, nation, exonym):
                 result['translation']['word'] = word_trns
 
             result['translation']['language'] = exonym
+
+    if guarantee_keys:
+        for key, key_type in _WOTD_NOT_REQUIRED:
+            if key in result:
+                continue
+
+            result[key] = '' if key == str else ([] if key_type == list else None)
+
+        if result['translation'] and 'word' not in result['translation']:
+            result['translation']['word'] = ''

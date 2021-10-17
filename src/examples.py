@@ -4,6 +4,7 @@ Contains potential usage examples of the library.
 
 import os
 import sys
+import json
 from requests import RequestException
 from dotenv import load_dotenv
 
@@ -255,7 +256,7 @@ def word_of_the_day():
     about the word of the day using the result.
     """
 
-    wotd_response = krdict.scraper.fetch_today_word('english')
+    wotd_response = krdict.scraper.fetch_today_word(translation_language='english')
     wotd_translation = ''
 
     if 'translation' in wotd_response['data']:
@@ -317,6 +318,35 @@ def fetch_subject_category():
 
     _display_results(response)
 
+# Example 12
+def guarantee_keys():
+    """
+    Compares results without and with guaranteed keys.
+    """
+
+    print('Default word_info:')
+    response = krdict.view(
+        target_code=57557,
+        raise_api_errors=True
+    )
+
+    # prints a result with plenty of "not required" keys missing.
+    print(json.dumps(response['data']['results'][0]['word_info'], indent=2, ensure_ascii=False))
+
+
+    print('\nWith guarantee_keys:')
+    # same call as above, with guarantee_keys set to True.
+    response = krdict.view(
+        target_code=57557,
+        guarantee_keys=True,
+        raise_api_errors=True
+    )
+
+    # prints a result with all "not required" keys included as default values,
+    # including keys which can only be obtained from scraping, such as "hanja_info",
+    # "url", and "media_urls".
+    print(json.dumps(response['data']['results'][0]['word_info'], indent=2, ensure_ascii=False))
+
 
 _EXAMPLE_FUNCS = [
     pagination,
@@ -329,7 +359,8 @@ _EXAMPLE_FUNCS = [
     view_query_enhanced,
     word_of_the_day,
     fetch_meaning_category,
-    fetch_subject_category
+    fetch_subject_category,
+    guarantee_keys
 ]
 
 def _run_examples():
