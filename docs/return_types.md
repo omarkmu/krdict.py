@@ -316,7 +316,7 @@ The results of a [view](functions.md#view) query.
                                     "label": str,
                                     "type": str,
                                     "url": str,
-                                    "media_urls": List[str]
+                                    "media_urls": List[str] # not required
                                 }
                             ]
                         }

@@ -3,6 +3,7 @@ theme: readthedocs
 extra_css: [extra.css]
 nav:
     - Home: index.md
+    - Usage Examples: examples.md
     - Modules:
         - Main: functions.md
         - Scraper: scraper.md
