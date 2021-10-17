@@ -1,5 +1,5 @@
 from typing import List, Literal, TypedDict
-from . import MeaningCategory, SortMethod, SubjectCategory, WordSearchResponse, ViewResponse
+from . import MeaningCategory, SearchTranslation, SortMethod, SubjectCategory, WordSearchResponse, ViewResponse
 
 ScraperTranslationLanguage = Literal[
     'chinese',
@@ -16,13 +16,6 @@ ScraperTranslationLanguage = Literal[
 ]
 
 
-class _ScrapedSearchTranslation(TypedDict, total=False):
-    word: str
-class ScrapedSearchTranslation(_ScrapedSearchTranslation):
-    definition: str
-    language: str
-
-
 class _WordOfTheDayData(TypedDict, total=False):
     part_of_speech: str
     vocabulary_grade: str
@@ -35,14 +28,15 @@ class WordOfTheDayData(_WordOfTheDayData):
     definition: str
     url: str
     homograph_num: int
-    translation: ScrapedSearchTranslation
+    translation: SearchTranslation
 
 class WordOfTheDayResponse(TypedDict):
+    response_type: Literal['word_of_the_day']
     data: WordOfTheDayData
 
 
 class _ScrapedSearchDefinition(TypedDict, total=False):
-    translation: ScrapedSearchTranslation
+    translation: SearchTranslation
 class ScrapedSearchDefinition(_ScrapedSearchDefinition):
     definition: str
     order: int
@@ -66,6 +60,7 @@ class ScrapedWordSearchData(TypedDict):
     results: List[ScrapedSearchItem]
 
 class ScrapedWordSearchResponse(TypedDict):
+    response_type: Literal['scraped_word']
     data: ScrapedWordSearchData
 
 

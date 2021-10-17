@@ -625,6 +625,7 @@ class ViewResponseData(TypedDict):
     results: List[ViewItem]
 
 class ViewResponse(TypedDict):
+    response_type: Literal['view']
     data: ViewResponseData
     request_params: Dict[str, str]
 
@@ -643,7 +644,7 @@ def advanced_search(*,
     page: int = None,
     per_page: int = None,
     sort: SortMethod = None,
-    search_type: Literal['word'] | None,
+    search_type: Literal['word'],
     translation_language: TranslationLanguage | List[TranslationLanguage] = None,
     search_target: SearchTarget = None,
     target_language: TargetLanguage = None,

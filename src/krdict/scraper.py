@@ -27,15 +27,22 @@ _SUBJECT_URL = (
     'searchFlag=Y{}&currentPage={}&blockCount={}&sort={}{}')
 _SENSE_URL = (
     'https://krdict.korean.go.kr/{}dicSearchDetail/searchDetailSenseCategoryResult?'
-    'searchFlag=Y{}&currentPage={}&blockCount={}&sort={}{}'
-)
+    'searchFlag=Y{}&currentPage={}&blockCount={}&sort={}{}')
 _TRANSLATED_VIEW_URL = 'https://krdict.korean.go.kr/{}dicSearch/SearchView?ParaWordNo={}{}'
 
 
 def extend_advanced_search(response, raise_errors):
     """
-    Extends word search results with pronunciation URLs
-    by scraping the dictionary website.
+    Extends word search results with pronunciation URLs by scraping the dictionary website.
+    This function modifies the response in-place, and returns the modified object.
+
+    See the
+    [documentation](https://krdictpy.readthedocs.io/en/stable/return_types/#wordsearchresponse)
+    for details about return types.
+
+    - ``response``: The word search results to extend.
+    - ``raise_errors``: Whether errors that occur during scraping should be raised or ignored.
+
     """
 
     if len(response['data']['results']) == 0:
@@ -71,8 +78,16 @@ def extend_advanced_search(response, raise_errors):
 
 def extend_search(response, raise_errors):
     """
-    Extends word search results with pronunciation URLs
-    by scraping the dictionary website.
+    Extends word search results with pronunciation URLs by scraping the dictionary website.
+    This function modifies the response in-place, and returns the modified object.
+
+    See the
+    [documentation](https://krdictpy.readthedocs.io/en/stable/return_types/#wordsearchresponse)
+    for details about return types.
+
+    - ``response``: The word search results to extend.
+    - ``raise_errors``: Whether errors that occur during scraping should be raised or ignored.
+
     """
 
     if len(response['data']['results']) == 0:
@@ -110,9 +125,18 @@ def extend_search(response, raise_errors):
 
 def extend_view(response, fetch_page_data, fetch_multimedia, raise_errors):
     """
-    Extends view query results with pronunciation URLs,
-    multimedia URLs, and extended original language information
-    by scraping the dictionary website.
+    Extends view query results with pronunciation URLs, multimedia URLs, and extended hanja
+    information by scraping the dictionary website.
+    This function modifies the response in-place, and returns the modified object.
+
+    See the [documentation](https://krdictpy.readthedocs.io/en/stable/return_types/#viewresponse)
+    for details about return types.
+
+    - ``response``: The word search results to extend.
+    - ``fetch_page_data``: Whether page data (URLs and hanja information) should be scraped.
+    - ``fetch_multimedia``: Whether multimedia URLs should be scraped.
+    - ``raise_errors``: Whether errors that occur during scraping should be raised or ignored.
+
     """
 
     if len(response['data']['results']) == 0:
@@ -144,8 +168,25 @@ def extend_view(response, fetch_page_data, fetch_multimedia, raise_errors):
 
 def fetch_today_word(translation_language=None):
     """
-    Fetches the Korean word of the day by
-    scraping the dictionary website.
+    Fetches information about the word of the day by scraping the dictionary website.
+
+    See the
+    [documentation](https://krdictpy.readthedocs.io/en/stable/return_types/#wordofthedayresponse)
+    for details about return types.
+
+    - ``translation_language``: A language to include a translation for. Possible values:
+        - ``'chinese'``
+        - ``'english'``
+        - ``'japanese'``
+        - ``'french'``
+        - ``'spanish'``
+        - ``'arabic'``
+        - ``'mongolian'``
+        - ``'vietnamese'``
+        - ``'thai'``
+        - ``'indonesian'``
+        - ``'russian'``
+
     """
 
     [lang_query, nation, exonym] = _build_language_query(translation_language)
@@ -169,17 +210,27 @@ def fetch_today_word(translation_language=None):
 
     _read_wotd_details(result, dt_elem, dd_elems, nation, exonym)
 
-    return {'data': result}
+    return {'data': result, 'response_type': 'word_of_the_day'}
 
 def fetch_meaning_category_words(**kwargs):
     """
-    Fetches words that belong to the
-    provided meaning category.
+    Fetches words that belong to the provided meaning category.
+
+    See the
+    [documentation](https://krdictpy.readthedocs.io/en/stable/scraper/#fetch_meaning_category_words)
+    for details.
+
+    - ``category``: The meaning category to fetch.
+    - ``page``: The page at which the search should start ``[1, 1000]``.
+    - ``per_page``: The maximum number of search results to return ``[10, 100]``.
+    - ``sort``: The sort method that should be used.
+    - ``translation_language``: A language to include translations for.
+
     """
 
     page = kwargs.get('page', 1)
     per_page = kwargs.get('per_page', 10)
-    [lang, nation, exonym] = _build_language_query(kwargs.get('translation_language', ''))
+    [lang, nation, exonym] = _build_language_query(kwargs.get('translation_language'))
     url = _SENSE_URL.format(
         nation,
         lang,
@@ -198,18 +249,29 @@ def fetch_meaning_category_words(**kwargs):
             'per_page': int(per_page),
             'total_results': total,
             'results': results
-        }
+        },
+        'response_type': 'scraped_word'
     }
 
 def fetch_subject_category_words(**kwargs):
     """
-    Fetches words that belong to one of the
-    provided subject categories.
+    Fetches words that belong to one of the provided subject categories.
+
+    See the
+    [documentation](https://krdictpy.readthedocs.io/en/stable/scraper/#fetch_subject_category_words)
+    for details.
+
+    - ``category``: The subject category to fetch.
+    - ``page``: The page at which the search should start ``[1, 1000]``.
+    - ``per_page``: The maximum number of search results to return ``[10, 100]``.
+    - ``sort``: The sort method that should be used.
+    - ``translation_language``: A language to include translations for.
+
     """
 
     page = kwargs.get('page', 1)
     per_page = kwargs.get('per_page', 10)
-    [lang, nation, exonym] = _build_language_query(kwargs.get('translation_language', ''))
+    [lang, nation, exonym] = _build_language_query(kwargs.get('translation_language'))
     url = _SUBJECT_URL.format(
         nation,
         lang,
@@ -228,7 +290,8 @@ def fetch_subject_category_words(**kwargs):
             'per_page': int(per_page),
             'total_results': total,
             'results': results
-        }
+        },
+        'response_type': 'scraped_word'
     }
 
 __all__ = [

@@ -22,7 +22,13 @@ class KRDictException(Exception):
     """
     Contains information about an API error.
     This exception is only thrown if the argument passed to the
-    `raise_api_errors` parameter is True.
+    ``raise_api_errors`` parameter is True.
+
+    - ``message``: The error message associated with the error.
+    - ``error_code``: The error code returned by the API.
+    - ``request_params``: A dict containing the transformed parameters
+    that were sent to the API.
+
     """
 
     def __init__(self, message, error_code, params):
@@ -59,9 +65,8 @@ def _send_request(url, params, search_type):
             raise KRDictException(error['message'], error['error_code'], params)
 
         result['request_params'] = params
+        result['response_type'] = search_type if 'error' not in result else 'error'
 
-        if search_type:
-            result['response_type'] = search_type if 'error' not in result else 'error'
         if 'data' in result and 'results' not in result['data']:
             result['data']['results'] = []
 
@@ -73,6 +78,59 @@ def _send_request(url, params, search_type):
 def advanced_search(**kwargs):
     """
     Performs an advanced search on the Korean Learner's Dict API.
+    Returns a dict with contents dependent on the value of the ``search_type``
+    parameter and whether an error occurred.
+
+    See the [documentation](https://krdictpy.readthedocs.io/en/stable/return_types/)
+    for details about return types.
+
+    - ``query``: The search query.
+    - ``raise_api_errors``: Sets whether a ``KRDictException`` will be raised if an API error
+    occurs. This guarantees that the result is not an error object.
+    - ``key``: The API key. If a key was set with ``set_key``, this can be omitted.
+    - ``page``: The page at which the search should start ``[1, 1000]``.
+    - ``per_page``: The maximum number of search results to return ``[10, 100]``.
+    - ``sort``: The sort method that should be used ``'alphabetical' | 'dict'``.
+    - ``search_type``: The type of search to perform
+    ``'word' | 'idiom_proverb' | 'definition' | 'example'``.
+        - Note: Values other than ``'word'`` are unsupported and not recommended for use.
+    - ``translation_language``: A language or list of languages to include translations for.
+    See the
+    [documentation](https://krdictpy.readthedocs.io/en/stable/parameters/#translationlanguage).
+    - ``search_target``: The target field of the search query.
+    See the
+    [documentation](https://krdictpy.readthedocs.io/en/stable/parameters/#searchtarget).
+    - ``target_language``: The original language to search by. If ``search_target``
+    is set to any value other than ``'original_language'``, this parameter has no effect.
+    See the
+    [documentation](https://krdictpy.readthedocs.io/en/stable/parameters/#targetlanguage).
+    - ``search_method``: The method used to match against the query.
+    ``'exact' |'include' |'start' |'end'``
+    - ``classification``: An entry classification to filter by.
+    ``'all' | 'word' | 'phrase' | 'expression'``
+    - ``origin_type``: A word origin type to filter by.
+    ``'all' | 'native' | 'hanja' | 'loanword' | 'hybrid'``
+    - ``vocabulary_grade``: A vocabulary level to filter by.
+    ``'all' | 'beginner' | 'intermediate' | 'advanced'``
+    - ``part_of_speech``: A part of speech to filter by.
+    See the
+    [documentation](https://krdictpy.readthedocs.io/en/stable/parameters/#partofspeech).
+    - ``multimedia_info``: A multimedia type to filter by.
+    See the
+    [documentation](https://krdictpy.readthedocs.io/en/stable/parameters/#multimediatype).
+    - ``min_syllables``: The minimum number of syllables in result words ``[1, 80]``.
+    - ``max_syllables``: The maximum number of syllables in results words. A value of ``0`` denotes
+    no maximum ``[0, 80]``.
+    - ``meaning_category``: The meaning category to filter by.
+    See the
+    [documentation](https://krdictpy.readthedocs.io/en/stable/parameters/#meaningcategory).
+    - ``subject_category``: A subject category to filter by.
+    See the
+    [documentation](https://krdictpy.readthedocs.io/en/stable/parameters/#subjectcategory).
+    - ``options``: Additional options to apply.
+    See the
+    [documentation](https://krdictpy.readthedocs.io/en/stable/parameters/#optionsdict).
+
     """
 
     kwargs['advanced'] = 'y'
@@ -98,6 +156,28 @@ def advanced_search(**kwargs):
 def search(**kwargs):
     """
     Performs a search on the Korean Learner's Dict API.
+    Returns a dict with contents dependent on the value of the ``search_type``
+    parameter and whether an error occurred.
+
+    See the [documentation](https://krdictpy.readthedocs.io/en/stable/return_types/)
+    for details about return types.
+
+    - ``query``: The search query.
+    - ``raise_api_errors``: Sets whether a ``KRDictException`` will be raised if an API error
+    occurs. This guarantees that the result is not an error object.
+    - ``key``: The API key. If a key was set with ``set_key``, this can be omitted.
+    - ``page``: The page at which the search should start ``[1, 1000]``.
+    - ``per_page``: The maximum number of search results to return ``[10, 100]``.
+    - ``sort``: The sort method that should be used ``'alphabetical' | 'dict'``.
+    - ``search_type``: The type of search to perform
+    ``'word' | 'idiom_proverb' | 'definition' | 'example'``.
+    - ``translation_language``: A language or list of languages to include translations for.
+    See the
+    [documentation](https://krdictpy.readthedocs.io/en/stable/parameters/#translationlanguage).
+    - ``options``: Additional options to apply.
+    See the
+    [documentation](https://krdictpy.readthedocs.io/en/stable/parameters/#optionsdict).
+
     """
 
     search_type = kwargs.get('search_type', 'word')
@@ -122,6 +202,17 @@ def search(**kwargs):
 def set_default(name, value):
     """
     Sets the default value of the given option.
+
+    - ``name``: The name of the option to set.
+        - ``'fetch_multimedia'``: Controls whether multimedia is scraped during view queries.
+        No effect unless the 'use_scraper' option is True.
+        - ``'fetch_page_data'``: Controls whether pronunciation URLS and extended language
+        information are scraped. No effect unless the 'use_scraper' option is True.
+        - ``'raise_scraper_errors'``: Controls whether errors that occur during scraping are raised.
+        No effect unless the 'use_scraper' option is True.
+        - ``'use_scraper'``: Controls whether the scraper should be used to fetch more information.
+    - ``value``: Boolean value; sets or unsets a default value.
+
     """
 
     name = name.upper()
@@ -135,8 +226,8 @@ def set_key(key):
     """
     Sets the API key to use when a key is not specified in a request.
 
-    Args:
-        key: The API key to use, or None to unset the key.
+    - ``key``: The API key to use, or None to unset the key.
+
     """
 
     _DEFAULTS['API_KEY'] = key
@@ -144,13 +235,32 @@ def set_key(key):
 def view(**kwargs):
     """
     Performs a view query on the Korean Learner's Dict API.
+    Returns either a dict with information about a dictionary entry, or an error object
+    if an error occurred.
+
+    See the [documentation](https://krdictpy.readthedocs.io/en/stable/return_types/)
+    for details about return types.
+
+    - ``query``: The search query.
+    - ``homograph_num``: The superscript number used to distinguish homographs.
+    - ``target_code``: The target code of the desired result.
+    - ``raise_api_errors``: Sets whether a KRDictException will be raised if an API error occurs.
+    This guarantees that the result is not an error object.
+    - ``key``: The API key. If a key was set with set_key, this can be omitted.
+    - ``translation_language``: A language or list of languages to include translations for.
+    See the
+    [documentation](https://krdictpy.readthedocs.io/en/stable/parameters/#translationlanguage).
+    - ``options``: Additional options to apply.
+    See the
+    [documentation](https://krdictpy.readthedocs.io/en/stable/parameters/#optionsdict).
+
     """
 
     transform_view_params(kwargs)
 
     options = kwargs.get('options', {})
     if options.get('use_scraper', _DEFAULTS['USE_SCRAPER']) is True:
-        response = _send_request(_VIEW_URL, kwargs, None)
+        response = _send_request(_VIEW_URL, kwargs, 'view')
 
         if 'error' in response:
             return response
@@ -160,7 +270,7 @@ def view(**kwargs):
         raise_errors = options.get('raise_scraper_errors', _DEFAULTS['RAISE_SCRAPER_ERRORS'])
         return extend_view(response, fetch_page, fetch_media, raise_errors)
 
-    return _send_request(_VIEW_URL, kwargs, None)
+    return _send_request(_VIEW_URL, kwargs, 'view')
 
 __all__ = [
     'advanced_search',
