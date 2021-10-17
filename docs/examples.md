@@ -4,6 +4,7 @@ the following setup code has run:
 
 ```python
 import os
+import json
 from dotenv import load_dotenv
 
 import krdict
@@ -293,7 +294,7 @@ response = krdict.view(
 
 _display_view_results(response)
 ```
-```text
+```t
 단풍나무 「명사」 (丹丹楓나무) [단풍나무]
 https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=42075
 1. maple tree
@@ -330,7 +331,7 @@ response = krdict.view(
 
 _display_view_results(response)
 ```
-```text
+```t
 단풍나무 「명사」 (丹楓나무) [단풍나무 (https://dicmedia.korean.go.kr/multimedia/multimedia_files/convert/20120209/23784/SND000012487.mp3)]
 https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=42075
 1. maple tree
@@ -352,7 +353,7 @@ then fetches extended information about the word of the day
 using the [`view`](functions.md#view) function.
 
 ```python
-wotd_response = krdict.scraper.fetch_today_word('english')
+wotd_response = krdict.scraper.fetch_today_word(translation_language='english')
 wotd_translation = ''
 
 if 'translation' in wotd_response['data']:
@@ -374,7 +375,7 @@ response = krdict.view(
 print('\nExtended Info:')
 _display_view_results(response)
 ```
-```text
+```t
 Word of the Day: 걱정거리 (cause of worry)
 걱정이 되는 일.
 https://krdict.korean.go.kr/eng/dicSearch/SearchView?ParaWordNo=21608&nation=eng&nationCode=6
@@ -436,7 +437,7 @@ Total Results: 113
    body: The entire length of the human or animal body from the head to the feet, or its state.
 ```
 ---
-## 11. Fetch Words in Meaning Category
+## 11. Fetch Words in Subject Category
 
 Fetches words in the 인사하기 subject category
 using the [`fetch_subject_category_words`](scraper.md#fetch_subject_category_words) function.
@@ -479,4 +480,161 @@ Total Results: 17
    being after a long time: A state in which a long time has passed since something happened.
 10. 오래되다: 무엇이 시작되거나 생긴 후 지나간 시간이 길다.
    old; ancient: Marked by a long duration of time since the start or formation of something.
+```
+---
+## 12. Using The `guarantee_keys` Parameter
+
+Demonstrates the use of the `guarantee_keys` keyword argument of
+the [`view`](functions.md#view) function.
+
+A similar parameter exists for [`advanced_search`](functions.md#advanced_search),
+[`search`](functions.md#search),
+[`fetch_today_word`](scraper.md#fetch_today_word),
+[`fetch_meaning_category_words`](scraper.md#fetch_meaning_category_words), and
+[`fetch_subject_category_words`](scraper.md#fetch_subject_category_words).
+
+```python
+print('Default word_info:')
+response = krdict.view(
+    target_code=57557,
+    raise_api_errors=True
+)
+
+# prints a result with plenty of "not required" keys missing.
+print(json.dumps(response['data']['results'][0]['word_info'], indent=2, ensure_ascii=False))
+
+
+print('\nWith guarantee_keys:')
+# same call as above, with guarantee_keys set to True.
+response = krdict.view(
+    target_code=57557,
+    guarantee_keys=True,
+    raise_api_errors=True
+)
+
+# prints a result with all "not required" keys included as default values,
+# including keys which can only be obtained from scraping, such as "hanja_info",
+# "url", and "media_urls".
+print(json.dumps(response['data']['results'][0]['word_info'], indent=2, ensure_ascii=False))
+```
+```t
+Default word_info:
+{
+  "word": "바위산",
+  "homograph_num": 0,
+  "word_unit": "단어",
+  "part_of_speech": "명사",       
+  "word_type": "혼종어",
+  "original_language_info": [     
+    {
+      "original_language": "바위",
+      "language_type": "고유어"   
+    },
+    {
+      "original_language": "山",  
+      "language_type": "한자"     
+    }
+  ],
+  "pronunciation_info": [
+    {
+      "pronunciation": "바위산"
+    }
+  ],
+  "vocabulary_grade": "없음",
+  "definition_info": [
+    {
+      "definition": "바위가 많아 풀과 나무가 자라지 못하는 산.",
+      "example_info": [
+        {
+          "type": "문장",
+          "example": "풀 한 포기 자라지 않는 바위산에 수도원을 지은 옛 사람들의 수고와 노력에 절로 머리가 숙여졌다."
+        },
+        {
+          "type": "문장",
+          "example": "깎아지른 듯 높은 바위산을 연결한 철교가 멋스럽게 펼쳐지자, 사람들은 철교를 보기 위해 위험을 무릅쓰고 바위 위에 올라섰다."
+        },
+        {
+          "type": "구",
+          "example": "거친 바위산."
+        },
+        {
+          "type": "구",
+          "example": "바위산에 오르다."
+        }
+      ],
+      "multimedia_info": [
+        {
+          "label": "바위산",
+          "type": "사진",
+          "url": "http://dicmedia.korean.go.kr:8899/front/search/searchResultView.do?file_no=104901"
+        }
+      ]
+    }
+  ]
+}
+
+With guarantee_keys:
+{
+  "word": "바위산",
+  "homograph_num": 0,
+  "word_unit": "단어",
+  "part_of_speech": "명사",
+  "word_type": "혼종어",
+  "original_language_info": [
+    {
+      "original_language": "바위",
+      "language_type": "고유어",
+      "hanja_info": []
+    },
+    {
+      "original_language": "山",
+      "language_type": "한자",
+      "hanja_info": []
+    }
+  ],
+  "pronunciation_info": [
+    {
+      "pronunciation": "바위산",
+      "url": ""
+    }
+  ],
+  "vocabulary_grade": "없음",
+  "definition_info": [
+    {
+      "definition": "바위가 많아 풀과 나무가 자라지 못하는 산.",
+      "example_info": [
+        {
+          "type": "문장",
+          "example": "풀 한 포기 자라지 않는 바위산에 수도원을 지은 옛 사람들의 수고와 노력에 절로 머리가 숙여졌다."
+        },
+        {
+          "type": "문장",
+          "example": "깎아지른 듯 높은 바위산을 연결한 철교가 멋스럽게 펼쳐지자, 사람들은 철교를 보기 위해 위험을 무릅쓰고 바위 위에 올라섰다."
+        },
+        {
+          "type": "구",
+          "example": "거친 바위산."
+        },
+        {
+          "type": "구",
+          "example": "바위산에 오르다."
+        }
+      ],
+      "multimedia_info": [
+        {
+          "label": "바위산",
+          "type": "사진",
+          "url": "http://dicmedia.korean.go.kr:8899/front/search/searchResultView.do?file_no=104901",
+          "media_urls": []
+        }
+      ]
+    }
+  ],
+  "allomorph": "",
+  "conjugation_info": [],
+  "derivative_info": [],
+  "reference_info": [],
+  "category_info": [],
+  "subword_info": []
+}
 ```

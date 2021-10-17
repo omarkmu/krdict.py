@@ -11,6 +11,7 @@ Performs an advanced search on the Korean Learner's Dictionary API.
 def advanced_search(*,
     query: str,
     raise_api_errors: bool = False,
+    guarantee_keys: bool = False,
     key: str = None,
     page: int = 1,
     per_page: int = 10,
@@ -41,7 +42,12 @@ def advanced_search(*,
 
 - `query`: The search query.
 - `raise_api_errors`: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
-This guarantees that the result is not an error object.
+A value of `True` guarantees that the result is not an error object.
+- `guarantee_keys`: Sets whether keys that are missing from the response should be inserted with default values. A value of `True`
+guarantees that every key marked as *not required* below is included, including keys set by the scraper. Default values:
+    - The empty string `""` for string values.
+    - Zero `0` for integer values.
+    - An empty list `[]` for list values.
 - `key`: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
 - `page`: The page at which the search should start `[1, 1000]`.
 - `per_page`: The maximum number of search results to return `[10, 100]`.
@@ -88,6 +94,7 @@ Performs a basic search on the Korean Learner's Dictionary API.
 def search(*,
     query: str,
     raise_api_errors: bool = False,
+    guarantee_keys: bool = False,
     key: str = None,
     page: int = 1,
     per_page: int = 10,
@@ -102,7 +109,12 @@ def search(*,
 
 - `query`: The search query.
 - `raise_api_errors`: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
-This guarantees that the result is not an error object.
+A value of `True` guarantees that the result is not an error object.
+- `guarantee_keys`: Sets whether keys that are missing from the response should be inserted with default values. A value of `True`
+guarantees that every key marked as *not required* below is included, including keys set by the scraper. Default values:
+    - The empty string `""` for string values.
+    - Zero `0` for integer values.
+    - An empty list `[]` for list values.
 - `key`: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
 - `page`: The page at which the search should start `[1, 1000]`.
 - `per_page`: The maximum number of search results to return `[10, 100]`.
@@ -136,7 +148,7 @@ def set_default(name: Option, value: bool) -> None: ...
 
 - `name`: The name of the option to set. Accepted values:
     - `'fetch_multimedia'`: Controls whether multimedia is scraped during view queries. No effect unless the `'use_scraper'` option is `True`.
-    - `'fetch_page_data'`: Controls whether pronunciation URLS and extended language information are scraped. No effect unless the `'use_scraper'` option is `True`.
+    - `'fetch_page_data'`: Controls whether pronunciation URLs and extended language information are scraped. No effect unless the `'use_scraper'` option is `True`.
     - `'raise_scraper_errors'`: Controls whether errors that occur during scraping are raised. No effect unless the `'use_scraper'` option is `True`.
     - `'use_scraper'`: Controls whether the scraper should be used to fetch more information.
 - `value`: The new default value of the option.
@@ -166,6 +178,7 @@ def view(*,
     query: str,
     homograph_num: int = 0,
     raise_api_errors: bool = False,
+    guarantee_keys: bool = False,
     key: str = None,
     translation_language: TranslationLanguage | List[TranslationLanguage] = None,
     options: OptionsDict = None
@@ -174,6 +187,7 @@ def view(*,
 def view(*,
     target_code: int,
     raise_api_errors: bool = False,
+    guarantee_keys: bool = False,
     key: str = None,
     translation_language: TranslationLanguage | List[TranslationLanguage] = None,
     options: OptionsDict = None
@@ -186,7 +200,12 @@ def view(*,
 - `homograph_num`: The superscript number used to distinguish homographs.
 - `target_code`: The target code of the desired result.
 - `raise_api_errors`: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
-This guarantees that the result is not an error object.
+A value of `True` guarantees that the result is not an error object.
+- `guarantee_keys`: Sets whether keys that are missing from the response should be inserted with default values. A value of `True`
+guarantees that every key marked as *not required* below is included, including keys set by the scraper. Default values:
+    - The empty string `""` for string values.
+    - Zero `0` for integer values.
+    - An empty list `[]` for list values.
 - `key`: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
 - `translation_language` ([`TranslationLanguage`](parameters.md#translationlanguage)): A language or list of
 languages to include translations for.

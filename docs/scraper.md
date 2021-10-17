@@ -85,13 +85,20 @@ Returns an extended [`ViewResponse`](return_types.md#viewresponse) object.
 Fetches the Korean word of the day by scraping the dictionary website.
 
 ```python
-def fetch_today_word(
+def fetch_today_word(*,
+    guarantee_keys: bool = False,
     translation_language: ScraperTranslationLanguage = None
 ) -> WordOfTheDayResponse: ...
 ```
 
 **Parameters:**
 
+- `guarantee_keys`: Sets whether keys that are missing from the response should be inserted with default values.
+A value of `True` guarantees that every key that is not required is included, including keys set by the scraper. Default values:
+    - The empty string `""` for string values.
+    - Zero `0` for integer values.
+    - An empty list `[]` for list values.
+    - `None` for dictionary values. This only applies to the `translation` field.
 - `translation_language` ([`ScraperTranslationLanguage`](parameters.md#scrapertranslationlanguage)): A language to include a translation for.
 
 **Returns:**
@@ -105,7 +112,8 @@ Fetches words that belong to the provided meaning category.
 
 ```python
 def fetch_meaning_category_words(*,
-    category: MeaningCategory | int,
+    guarantee_keys: bool = False,
+    category: MeaningCategory | int = 0,
     page: int = 1,
     per_page: int = 10,
     sort: SortMethod = 'alphabetical',
@@ -118,6 +126,12 @@ def fetch_meaning_category_words(*,
 
 **Parameters:**
 
+- `guarantee_keys`: Sets whether keys that are missing from the response should be inserted with default values.
+A value of `True` guarantees that every key that is not required is included, including keys set by the scraper. Default values:
+    - The empty string `""` for string values.
+    - Zero `0` for integer values.
+    - An empty list `[]` for list values.
+    - `None` for dictionary values. This only applies to the `translation` field.
 - `category`: The meaning category to fetch.
 - `page`: The page at which the search should start `[1, 1000]`.
 - `per_page`: The maximum number of search results to return `[10, 100]`.
@@ -135,7 +149,8 @@ Fetches words that belong to one of the provided subject categories.
 
 ```python
 def fetch_subject_category_words(*,
-    category: SubjectCategory | int | List[SubjectCategory | int],
+    guarantee_keys: bool = False,
+    category: SubjectCategory | int | List[SubjectCategory | int] = 0,
     page: int = 1,
     per_page: int = 0,
     sort: SortMethod = 'alphabetical',
@@ -145,6 +160,12 @@ def fetch_subject_category_words(*,
 
 **Parameters:**
 
+- `guarantee_keys`: Sets whether keys that are missing from the response should be inserted with default values.
+A value of `True` guarantees that every key that is not required is included, including keys set by the scraper. Default values:
+    - The empty string `""` for string values.
+    - Zero `0` for integer values.
+    - An empty list `[]` for list values.
+    - `None` for dictionary values. This only applies to the `translation` field.
 - `category`: The subject category to fetch.
 - `page`: The page at which the search should start `[1, 1000]`.
 - `per_page`: The maximum number of search results to return `[10, 100]`.

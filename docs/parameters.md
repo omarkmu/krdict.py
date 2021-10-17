@@ -29,7 +29,7 @@ Additional options to apply to a query. All of the keys are not required.
 ```
 
 - `'fetch_multimedia'`: Controls whether multimedia is scraped during view queries. No effect unless the `'use_scraper'` option is `True`.
-- `'fetch_page_data'`: Controls whether pronunciation URLS and extended language information are scraped. No effect unless the `'use_scraper'` option is `True`.
+- `'fetch_page_data'`: Controls whether pronunciation URLs and extended language information are scraped. No effect unless the `'use_scraper'` option is `True`.
 - `'raise_scraper_errors'`: Controls whether errors that occur during scraping are raised. No effect unless the `'use_scraper'` option is `True`.
 - `'use_scraper'`: Controls whether the scraper should be used to fetch more information.
 
