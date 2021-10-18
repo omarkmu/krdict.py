@@ -579,7 +579,7 @@ class ViewSubwordInfo(TypedDict):
     subword_unit: str
     subdefinition_info: List[ViewSubdefinitionInfo]
 
-class _ViewDefinitionInfo(TypedDict):
+class _ViewDefinitionInfo(TypedDict, total=False):
     reference: str
     translations: List[SearchTranslation]
     example_info: List[ViewExampleInfo]
@@ -589,7 +589,7 @@ class _ViewDefinitionInfo(TypedDict):
 class ViewDefinitionInfo(_ViewDefinitionInfo):
     definition: str
 
-class _ViewWordInfo(TypedDict):
+class _ViewWordInfo(TypedDict, total=False):
     allomorph: str
     original_language_info: List[ViewOriginalLanguageInfo]
     pronunciation_info: List[ViewPronunciationInfo]
