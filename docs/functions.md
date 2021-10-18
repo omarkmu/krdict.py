@@ -33,7 +33,7 @@ def advanced_search(*,
 ) -> SearchResults | KRDictError: ...
 ```
 !!! warning
-    Use of any value other than `'word'` for the `search_type` parameter with advanced search is
+    Use of any value other than `'word'` or `None` for the `search_type` parameter with advanced search is
     undefined behavior. It is likely that incomplete or empty results will be returned.
     The parameter is included for completeness, but is not recommended for usage.
 
@@ -61,8 +61,8 @@ is set to any value other than `'original_language'`, this parameter has no effe
 - vocabulary_grade ([`VocabularyGrade`](parameters.md#vocabularygrade)): A vocabulary level to filter by (default `'all'`).
 - part_of_speech ([`PartOfSpeech`](parameters.md#partofspeech)): A part of speech to filter by (default `'all'`).
 - multimedia_info ([`MultimediaType`](parameters.md#multimediatype)): A multimedia type to filter by (default `'all'`).
-- min_syllables: The minimum number of syllables in result words `[1, inf)` (default `1`).
-- max_syllables: The maximum number of syllables in results words. A value of `0` denotes no maximum `[0, inf)` (default `0`).
+- min_syllables: The minimum number of syllables in result words `[1, 80]` (default `1`).
+- max_syllables: The maximum number of syllables in results words. A value of `0` denotes no maximum `[0, 80]` (default `0`).
 - meaning_category ([`MeaningCategory`](parameters.md#meaningcategory)): The meaning category to filter by (default `'all'`).
 - subject_category ([`SubjectCategory`](parameters.md#subjectcategory)): A subject category to filter by (default `'all'`).
 - options ([`OptionsDict`](parameters.md#optionsdict)): Additional options to apply.
@@ -107,7 +107,7 @@ def search(*,
 
 - query: The search query.
 - raise_api_errors: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
-This guarantees that the result is not an error object.
+A value of `True` guarantees that the result is not an error object.
 - key: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
 - start_index: The page at which the search should start `[1, 1000]` (default `1`).
 - num_results: The maximum number of search results to return `[10, 100]` (default `10`).
@@ -151,7 +151,7 @@ def search_definitions(*,
 
 - query: The search query.
 - raise_api_errors: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
-This guarantees that the result is not an error object.
+A value of `True` guarantees that the result is not an error object.
 - key: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
 - start_index: The page at which the search should start `[1, 1000]` (default `1`).
 - num_results: The maximum number of search results to return `[10, 100]` (default `10`).
@@ -188,7 +188,7 @@ def search_examples(*,
 
 - query: The search query.
 - raise_api_errors: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
-This guarantees that the result is not an error object.
+A value of `True` guarantees that the result is not an error object.
 - key: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
 - start_index: The page at which the search should start `[1, 1000]` (default `1`).
 - num_results: The maximum number of search results to return `[10, 100]` (default `10`).
@@ -225,7 +225,7 @@ def search_idioms_proverbs(*,
 
 - query: The search query.
 - raise_api_errors: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
-This guarantees that the result is not an error object.
+A value of `True` guarantees that the result is not an error object.
 - key: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
 - start_index: The page at which the search should start `[1, 1000]` (default `1`).
 - num_results: The maximum number of search results to return `[10, 100]` (default `10`).
@@ -263,7 +263,7 @@ def search_words(*,
 
 - query: The search query.
 - raise_api_errors: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
-This guarantees that the result is not an error object.
+A value of `True` guarantees that the result is not an error object.
 - key: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
 - start_index: The page at which the search should start. `[1, 1000]` (default `1`).
 - num_results: The maximum number of search results to return. `[10, 100]` (default `10`).
@@ -291,7 +291,7 @@ def set_default(name: Option, value: bool) -> None: ...
 
 - name: The name of the option to set. Accepted values:
     - `'fetch_multimedia'`: Controls whether multimedia is scraped during view queries. No effect unless the `'use_scraper'` option is `True`.
-    - `'fetch_page_data'`: Controls whether pronunciation URLS and extended language information are scraped. No effect unless the `'use_scraper'` option is `True`.
+    - `'fetch_page_data'`: Controls whether pronunciation URLs and extended language information are scraped. No effect unless the `'use_scraper'` option is `True`.
     - `'raise_scraper_errors'`: Controls whether errors which occur during scraping are raised. No effect unless the `'use_scraper'` option is `True`.
     - `'use_scraper'`: Controls whether the scraper should be used to fetch more information.
 - value: The new default value of the option.
@@ -308,7 +308,7 @@ def set_key(key: str | None) -> None: ...
 
 **Parameters:**
 
-- key: The KRDict API key. To unset a key, use `None`.
+- key: The Korean Learner's Dictionary API key. To unset a key, use `None`.
 
 ---
 
@@ -339,7 +339,7 @@ def view(*,
 
 - query: The search query.
 - raise_api_errors: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
-This guarantees that the result is not an error object.
+A value of `True` guarantees that the result is not an error object.
 - homograph_num: The superscript number used to distinguish homographs (default `0`).
 - target_code: The target code of the desired result.
 - key: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.

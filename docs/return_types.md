@@ -44,9 +44,9 @@ The results of a [definition search](functions.md#search_definitions).
 | Container      | Field           | Type | Required | Description
 | ---------      | -----           | :--: | :------: | -----------
 | -              | data            | dict |    ✓     | Container for search results.
-| data           | title           | str  |    ✓     | The title of the KRDict Open API.
-| data           | link            | str  |    ✓     | The link to the KRDict Open API.
-| data           | description     | str  |    ✓     | The description of the KRDict Open API.
+| data           | title           | str  |    ✓     | The title of the Korean Learner's Dictionary Open API.
+| data           | link            | str  |    ✓     | The link to the Korean Learner's Dictionary.
+| data           | description     | str  |    ✓     | The description of the Korean Learner's Dictionary Open API.
 | data           | last_build_date | str  |    ✓     | The time the search results were generated.
 | data           | start_index     | int  |    ✓     | The page at which the search results begin.
 | data           | num_results     | int  |    ✓     | The number of results requested. Does not necessarily correspond to the length of `results`.
@@ -97,9 +97,9 @@ The results of an [example search](functions.md#search_examples).
 | Container  | Field           | Type | Required | Description
 | ---------  | -----           | :--: | :------: | -----------
 | -          | data            | dict |    ✓     | Container for search results.
-| data       | title           | str  |    ✓     | The title of the KRDict Open API.
-| data       | link            | str  |    ✓     | The link to the KRDict Open API.
-| data       | description     | str  |    ✓     | The description of the KRDict Open API.
+| data       | title           | str  |    ✓     | The title of the Korean Learner's Dictionary Open API.
+| data       | link            | str  |    ✓     | The link to the Korean Learner's Dictionary.
+| data       | description     | str  |    ✓     | The description of the Korean Learner's Dictionary Open API.
 | data       | last_build_date | str  |    ✓     | The time the search results were generated.
 | data       | start_index     | int  |    ✓     | The page at which the search results begin.
 | data       | num_results     | int  |    ✓     | The number of results requested. Does not necessarily correspond to the length of `results`.
@@ -157,9 +157,9 @@ The results of an [idiom/proverb search](functions.md#search_idioms_proverbs).
 | Container      | Field           | Type | Required | Description
 | ---------      | -----           | :--: | :------: | -----------
 | -              | data            | dict |    ✓     | Container for search results.
-| data           | title           | str  |    ✓     | The title of the KRDict Open API.
-| data           | link            | str  |    ✓     | The link to the KRDict Open API.
-| data           | description     | str  |    ✓     | The description of the KRDict Open API.
+| data           | title           | str  |    ✓     | The title of the Korean Learner's Dictionary Open API.
+| data           | link            | str  |    ✓     | The link to the Korean Learner's Dictionary.
+| data           | description     | str  |    ✓     | The description of the Korean Learner's Dictionary Open API.
 | data           | last_build_date | str  |    ✓     | The time the search results were generated.
 | data           | start_index     | int  |    ✓     | The page at which the search results begin.
 | data           | num_results     | int  |    ✓     | The number of results requested. Does not necessarily correspond to the length of `results`.
@@ -171,6 +171,7 @@ The results of an [idiom/proverb search](functions.md#search_idioms_proverbs).
 | results        | homograph_num   | int  |    ✓     | A superscript number used to distinguish homographs.
 | results        | definitions     | list |    ✓     | A list of definitions associated with an entry.
 | definitions    | definition      | str  |    ✓     | A definition associated with an entry.
+| definitions    | order           | int  |    ✓     | The order of the definition in the list.
 | definitions    | translations    | list |    ✗     | A list of translations of a definition. Not included if no translation languages are specified.
 | translations   | definition      | str  |    ✓     | A translation of the definition.
 | translations   | word            | str  |    ✗     | A translation of the idiom or proverb.
@@ -224,33 +225,34 @@ The results of a [word search](functions.md#search_words).
 }
 ```
 
-| Container      | Field            | Type | Required | Description
-| ---------      | -----            | :--: | :------: | -----------
-| -              | data             | dict |    ✓     | Container for search results.
-| data           | title            | str  |    ✓     | The title of the KRDict Open API.
-| data           | link             | str  |    ✓     | The link to the KRDict Open API.
-| data           | description      | str  |    ✓     | The description of the KRDict Open API.
-| data           | last_build_date  | str  |    ✓     | The time the search results were generated.
-| data           | start_index      | int  |    ✓     | The page at which the search results begin.
-| data           | num_results      | int  |    ✓     | The number of results requested. Does not necessarily correspond to the length of `results`.
-| data           | total_results    | int  |    ✓     | The total number of results, including the returned results.
-| data           | results          | list |    ✓     | A list of search result objects.
-| results        | target_code      | int  |    ✓     | An entry's identification code.
-| results        | word             | str  |    ✓     | An entry's headword.
-| results        | link             | str  |    ✓     | A link to a dictionary entry.
-| results        | part_of_speech   | str  |    ✓     | The Korean part of speech of the entry.
-| results        | homograph_num    | int  |    ✓     | A superscript number used to distinguish homographs.
-| results        | origin           | str  |    ✗     | The origin (original language) of the entry.
-| results        | pronunciation    | str  |    ✗     | The 한글 pronunciation of the entry.
-| results        | vocabulary_grade | str  |    ✗     | The vocabulary level of the entry.
+| Container      | Field              | Type | Required | Description
+| ---------      | -----              | :--: | :------: | -----------
+| -              | data               | dict |    ✓     | Container for search results.
+| data           | title              | str  |    ✓     | The title of the Korean Learner's Dictionary Open API.
+| data           | link               | str  |    ✓     | The link to the Korean Learner's Dictionary.
+| data           | description        | str  |    ✓     | The description of the Korean Learner's Dictionary Open API.
+| data           | last_build_date    | str  |    ✓     | The time the search results were generated.
+| data           | start_index        | int  |    ✓     | The page at which the search results begin.
+| data           | num_results        | int  |    ✓     | The number of results requested. Does not necessarily correspond to the length of `results`.
+| data           | total_results      | int  |    ✓     | The total number of results, including the returned results.
+| data           | results            | list |    ✓     | A list of search result objects.
+| results        | target_code        | int  |    ✓     | An entry's identification code.
+| results        | word               | str  |    ✓     | An entry's headword.
+| results        | link               | str  |    ✓     | A link to a dictionary entry.
+| results        | part_of_speech     | str  |    ✓     | The Korean part of speech of the entry.
+| results        | homograph_num      | int  |    ✓     | A superscript number used to distinguish homographs.
+| results        | origin             | str  |    ✗     | The origin (original language) of the entry.
+| results        | pronunciation      | str  |    ✗     | The 한글 pronunciation of the entry.
+| results        | vocabulary_grade   | str  |    ✗     | The vocabulary level of the entry.
 | results        | pronunciation_urls | list |    ✗     | A list of pronunciation audio URLs. Included only if scraping is enabled and URLs are available.
-| results        | definitions      | list |    ✓     | A list of definitions associated with an entry.
-| definitions    | definition       | str  |    ✓     | A definition associated with an entry.
-| definitions    | translations     | list |    ✗     | A list of translations of a definition. Not included if no translation languages are specified.
-| translations   | definition       | str  |    ✓     | A translation of the definition.
-| translations   | word             | str  |    ✗     | A translation of the word.
-| translations   | language         | str  |    ✓     | The translation language.
-| -              | request_params   | dict |    ✓     | The request parameters which were sent to the API.
+| results        | definitions        | list |    ✓     | A list of definitions associated with an entry.
+| definitions    | definition         | str  |    ✓     | A definition associated with an entry.
+| definitions    | order              | int  |    ✓     | The order of the definition in the list.
+| definitions    | translations       | list |    ✗     | A list of translations of a definition. Not included if no translation languages are specified.
+| translations   | definition         | str  |    ✓     | A translation of the definition.
+| translations   | word               | str  |    ✗     | A translation of the word.
+| translations   | language           | str  |    ✓     | The translation language.
+| -              | request_params     | dict |    ✓     | The request parameters which were sent to the API.
 
 ## ViewResult
 
@@ -424,9 +426,9 @@ The results of a [view query](functions.md#view).
 | Container              | Field                  | Type | Required | Description
 | ---------              | -----                  | :--: | :------: | -----------
 | -                      | data                   | dict |    ✓     | Container for view query results.
-| data                   | title                  | str  |    ✓     | The title of the KRDict Open API.
-| data                   | link                   | str  |    ✓     | The link to the KRDict Open API.
-| data                   | description            | str  |    ✓     | The description of the KRDict Open API.
+| data                   | title                  | str  |    ✓     | The title of the Korean Learner's Dictionary Open API.
+| data                   | link                   | str  |    ✓     | The link to the Korean Learner's Dictionary.
+| data                   | description            | str  |    ✓     | The description of the Korean Learner's Dictionary Open API.
 | data                   | last_build_date        | str  |    ✓     | The time the view results were generated.
 | data                   | total_results          | int  |    ✓     | The total number of results, including the returned results.
 | data                   | results                | list |    ✓     | A list of 0 or 1 view result objects.

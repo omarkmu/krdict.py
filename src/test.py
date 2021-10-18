@@ -14,7 +14,7 @@ dotenv.load_dotenv()
 krdict.set_key(os.getenv('KRDICT_KEY'))
 
 class TestKRDict(unittest.TestCase):
-    """Contains KRDict test cases."""
+    """Contains test cases for the main and scraper modules."""
     def test_api_error(self):
         """Invalid query string results in an API error"""
         response = krdict.search(query='')
