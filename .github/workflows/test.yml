@@ -2,15 +2,15 @@ name: Run python tests
 
 on:
   push:
-    branches:
-      - '**'
-  pull_request:
+    paths-ignore:
+      - 'docs/**'
     branches:
       - '**'
   workflow_dispatch:
 
 jobs:
   test:
+    name: Run tests
     runs-on: ubuntu-latest
 
     steps:
@@ -29,3 +29,9 @@ jobs:
         KRDICT_KEY: ${{ secrets.KRDICT_KEY }}
       run: |
         python -m unittest -v
+    - name: Test examples
+      working-directory: ./src
+      env:
+        KRDICT_KEY: ${{ secrets.KRDICT_KEY }}
+      run: |
+        python examples.py

@@ -15,9 +15,12 @@ To install the module via pip, run:
 pip install krdict.py
 ```
 
-To use this module, you'll need to generate an API key via [krdict](https://krdict.korean.go.kr/openApi/openApiRegister) (requires login).
+You can also install from one of the [releases](https://github.com/omarkmu/krdict.py/releases).
 
 ## Usage
+To use most of the functionality provided by this module, you'll need to generate an API key via
+[krdict](https://krdict.korean.go.kr/openApi/openApiRegister) (requires login).
+
 A minimal example query that assumes the `KRDICT_KEY` environment variable is set:
 
 ```python
@@ -26,7 +29,7 @@ import json
 import krdict
 
 krdict.set_key(os.getenv('KRDICT_KEY'))
-response = krdict.search_words(query='나무', raise_api_errors=True)
+response = krdict.search(query='나무', raise_api_errors=True)
 
 print(json.dumps(response, indent=2, ensure_ascii=False))
 ```
@@ -61,4 +64,4 @@ Assuming an error does not occur, the output will be similar to:
 }
 ```
 
-For more information, please check the [documentation](https://krdictpy.readthedocs.io/en/stable).
+For more information and usage examples, please check the [documentation](https://krdictpy.readthedocs.io/en/stable).

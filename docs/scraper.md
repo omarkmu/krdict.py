@@ -1,8 +1,15 @@
-In addition to API bindings, krdict.py provides a scraper module that extends
-the results of word search queries, advanced search queries, and view queries.
+In addition to API bindings, krdict.py provides a scraper module that offers functions that
+fetch information from the dictionary website and extend the results of word search queries,
+advanced search queries, and view queries.
 
 These extensions can be applied directly to results during query calls with the `use_scraper`
 [option](parameters.md#optionsdict), but are also accessible via the `krdict.scraper` module.
+
+!!! warning
+    Because this module utilizes scraping, the reliability of results cannot be guaranteed.
+    At any time, functions may break entirely and remain broken until a patch is released. If there
+    are errors or improper results, please submit an
+    [issue](https://github.com/omarkmu/krdict.py/issues/new).
 
 ---
 ## extend_advanced_search
@@ -11,40 +18,40 @@ Extends advanced word search results with pronunciation URLs.
 
 ```python
 def extend_advanced_search(
-    response: WordSearchResults,
+    response: WordSearchResponse,
     raise_errors: bool
-) -> WordSearchResults: ...
+) -> WordSearchResponse: ...
 ```
 
 **Parameters:**
 
-- response: The word search results to extend.
-- raise_errors: Whether errors that occur during scraping should be raised or ignored.
+- `response`: The word search results to extend.
+- `raise_errors`: Whether errors that occur during scraping should be raised or ignored.
 
 **Returns:**
 
-Returns an extended [`WordSearchResults`](return_types.md#wordsearchresults) object.
+Returns an extended [`WordSearchResponse`](return_types.md#wordsearchresponse) object.
 
 ---
 ## extend_search
 
-Extends advanced word search results with pronunciation URLs.
+Extends word search results with pronunciation URLs.
 
 ```python
 def extend_search(
-    response: WordSearchResults,
+    response: WordSearchResponse,
     raise_errors: bool
-) -> WordSearchResults: ...
+) -> WordSearchResponse: ...
 ```
 
 **Parameters:**
 
-- response: The word search results to extend.
-- raise_errors: Whether errors that occur during scraping should be raised or ignored.
+- `response`: The word search results to extend.
+- `raise_errors`: Whether errors that occur during scraping should be raised or ignored.
 
 **Returns:**
 
-Returns an extended [`WordSearchResults`](return_types.md#wordsearchresults) object.
+Returns an extended [`WordSearchResponse`](return_types.md#wordsearchresponse) object.
 
 ---
 ## extend_view
@@ -54,33 +61,117 @@ information.
 
 ```python
 def extend_view(
-    response: ViewResult,
+    response: ViewResponse,
     fetch_page_data: bool,
     fetch_multimedia: bool,
     raise_errors: bool
-) -> ViewResult: ...
+) -> ViewResponse: ...
 ```
 
 **Parameters:**
 
-- response: The word search results to extend.
-- fetch_page_data: Whether page data (URLs and hanja information) should be scraped.
-- fetch_multimedia: Whether multimedia URLs should be scraped.
-- raise_errors: Whether errors that occur during scraping should be raised or ignored.
+- `response`: The word search results to extend.
+- `fetch_page_data`: Whether page data (URLs and hanja information) should be scraped.
+- `fetch_multimedia`: Whether multimedia URLs should be scraped.
+- `raise_errors`: Whether errors that occur during scraping should be raised or ignored.
 
 **Returns:**
 
-Returns an extended [`ViewResult`](return_types.md#viewresult) object.
+Returns an extended [`ViewResponse`](return_types.md#viewresponse) object.
 
 ---
-## fetch_daily_word
+## fetch_today_word
 
 Fetches the Korean word of the day by scraping the dictionary website.
 
 ```python
-def fetch_daily_word() -> DailyWordResponse: ...
+def fetch_today_word(*,
+    guarantee_keys: bool = False,
+    translation_language: ScraperTranslationLanguage = None
+) -> WordOfTheDayResponse: ...
 ```
+
+**Parameters:**
+
+- `guarantee_keys`: Sets whether keys that are missing from the response should be inserted with default values.
+A value of `True` guarantees that every key that is not required is included, including keys set by the scraper. Default values:
+    - The empty string `""` for string values.
+    - Zero `0` for integer values.
+    - An empty list `[]` for list values.
+    - `None` for dictionary values. This only applies to the `translation` field.
+- `translation_language` ([`ScraperTranslationLanguage`](parameters.md#scrapertranslationlanguage)): A language to include a translation for.
 
 **Returns:**
 
-Returns a [`DailyWordResponse`](return_types.md#dailywordresponse) object.
+Returns a [`WordOfTheDayResponse`](return_types.md#wordofthedayresponse) object.
+
+---
+## fetch_meaning_category_words
+
+Fetches words that belong to the provided meaning category.
+
+```python
+def fetch_meaning_category_words(*,
+    guarantee_keys: bool = False,
+    category: MeaningCategory | int = 0,
+    page: int = 1,
+    per_page: int = 10,
+    sort: SortMethod = 'alphabetical',
+    translation_language: ScraperTranslationLanguage = None
+) -> ScrapedWordSearchResponse: ...
+```
+
+!!! warning
+    The `'전체'` or `0` MeaningCategory option is **not supported** and will return zero results.
+
+**Parameters:**
+
+- `guarantee_keys`: Sets whether keys that are missing from the response should be inserted with default values.
+A value of `True` guarantees that every key that is not required is included, including keys set by the scraper. Default values:
+    - The empty string `""` for string values.
+    - Zero `0` for integer values.
+    - An empty list `[]` for list values.
+    - `None` for dictionary values. This only applies to the `translation` field.
+- `category`: The meaning category to fetch.
+- `page`: The page at which the search should start `[1, 1000]`.
+- `per_page`: The maximum number of search results to return `[10, 100]`.
+- `sort` ([`SortMethod`](parameters.md#sortmethod)): The sort method that should be used.
+- `translation_language` ([`ScraperTranslationLanguage`](parameters.md#scrapertranslationlanguage)): A language to include translations for.
+
+**Returns:**
+
+Returns a [`ScrapedWordSearchResponse`](return_types.md#scrapedwordsearchresponse) object.
+
+---
+## fetch_subject_category_words
+
+Fetches words that belong to one of the provided subject categories.
+
+```python
+def fetch_subject_category_words(*,
+    guarantee_keys: bool = False,
+    category: SubjectCategory | int | List[SubjectCategory | int] = 0,
+    page: int = 1,
+    per_page: int = 0,
+    sort: SortMethod = 'alphabetical',
+    translation_language: ScraperTranslationLanguage = None
+) -> ScrapedWordSearchResponse: ...
+```
+
+**Parameters:**
+
+- `guarantee_keys`: Sets whether keys that are missing from the response should be inserted with default values.
+A value of `True` guarantees that every key that is not required is included, including keys set by the scraper. Default values:
+    - The empty string `""` for string values.
+    - Zero `0` for integer values.
+    - An empty list `[]` for list values.
+    - `None` for dictionary values. This only applies to the `translation` field.
+- `category`: The subject category to fetch.
+- `page`: The page at which the search should start `[1, 1000]`.
+- `per_page`: The maximum number of search results to return `[10, 100]`.
+- `sort` ([`SortMethod`](parameters.md#sortmethod)): The sort method that should be used.
+- `translation_language` ([`ScraperTranslationLanguage`](parameters.md#scrapertranslationlanguage)): A language to include translations for.
+
+**Returns:**
+
+Returns a [`ScrapedWordSearchResponse`](return_types.md#scrapedwordsearchresponse) object.

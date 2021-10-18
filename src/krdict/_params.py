@@ -6,10 +6,10 @@ _PARAM_MAPS = {
     'query': {
         'name': 'q'
     },
-    'start_index': {
+    'page': {
         'name': 'start'
     },
-    'num_results': {
+    'per_page': {
         'name': 'num'
     },
     'sort': {
