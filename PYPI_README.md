@@ -55,4 +55,4 @@ Assuming an error does not occur, the output will be similar to:
 }
 ```
 
-For more information, please check the [documentation](https://krdictpy.readthedocs.io/en/v1.1.0).
+For more information, please check the [documentation](https://krdictpy.readthedocs.io/en/v1.1.4).
