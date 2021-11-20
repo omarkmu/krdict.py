@@ -182,6 +182,12 @@ def _guarantee(value, search_type, keys):
 def postprocessor(key: str, value: Any, search_type: str, guarantee: bool):
     """
     Performs postprocessing on elements converted from XML.
+
+    - ``key``: The original XML node name.
+    - ``value``: The unprocessed value.
+    - ``search_type``: The type of search which produced this key-value pair.
+    - ``guarantee``: Whether to guarantee keys in dicts.
+
     """
 
     if value is None:
