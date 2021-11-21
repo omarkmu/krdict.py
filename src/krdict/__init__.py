@@ -1,5 +1,5 @@
 """
-Provides functions that query the Korean Learner's Dictionary API.
+Provides functions that query the Korean Learners' Dictionary API.
 """
 
 import requests
@@ -84,7 +84,7 @@ def _send_request(url, params, search_type):
 
 def advanced_search(**kwargs):
     """
-    Performs an advanced search on the Korean Learner's Dict API.
+    Performs an advanced search on the Korean Learners' Dictionary API.
     Returns a dict with contents dependent on the value of the ``search_type``
     parameter and whether an error occurred.
 
@@ -168,7 +168,7 @@ def advanced_search(**kwargs):
 
 def search(**kwargs):
     """
-    Performs a search on the Korean Learner's Dict API.
+    Performs a search on the Korean Learners' Dictionary API.
     Returns a dict with contents dependent on the value of the ``search_type``
     parameter and whether an error occurred.
 
@@ -253,7 +253,7 @@ def set_key(key):
 
 def view(**kwargs):
     """
-    Performs a view query on the Korean Learner's Dict API.
+    Performs a view query on the Korean Learners' Dictionary API.
     Returns either a dict with information about a dictionary entry, or an error object
     if an error occurred.
 

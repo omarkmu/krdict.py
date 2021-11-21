@@ -1,4 +1,4 @@
-Welcome to the documentation of krdict.py, a python module that helps to query the [API](https://krdict.korean.go.kr/openApi/openApiInfo) of the National Institute of Korean Language's [Korean Learner's Dictionary](https://krdict.korean.go.kr).
+Welcome to the documentation of krdict.py, a python module that helps to query the [API](https://krdict.korean.go.kr/openApi/openApiInfo) of the National Institute of Korean Language's [Korean Learners' Dictionary](https://krdict.korean.go.kr).
 
 ## Installation
 
