@@ -490,6 +490,7 @@ def transform_view_params(params: dict) -> None:
     Transforms input view parameters into an API-compliant dict.
 
     - ``params``: The provided input parameters.
+
     """
 
     if 'target_code' in params:
