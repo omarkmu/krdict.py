@@ -2,6 +2,8 @@
 Transforms input parameters into API-compliant dicts.
 """
 
+from enum import Enum
+
 _PARAM_MAPS = {
     'query': {
         'name': 'q'
@@ -450,8 +452,12 @@ _PARAM_MAPS = {
 def _get_map_value(mapper, value):
     if isinstance(value, list):
         return ','.join(map(lambda x: _get_map_value(mapper, x), value))
+    if isinstance(value, Enum):
+        value = value.value
+
     if 'value' in mapper and value in mapper['value']:
         return str(mapper['value'][value])
+
     return str(value)
 
 def transform_search_params(params: dict) -> None:

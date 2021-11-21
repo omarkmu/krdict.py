@@ -4,8 +4,10 @@ Provides functions that query the Korean Learners' Dictionary API.
 
 import requests
 from xmltodict import parse as parse_xml
+
 from ._params import transform_search_params, transform_view_params
 from ._results import postprocessor
+from ._helpers import MeaningCategoryHelper as MeaningCategory
 from .scraper import extend_view, extend_search, extend_advanced_search
 
 
@@ -66,6 +68,10 @@ def _send_request(url, params, search_type):
             dict_constructor=dict,
             postprocessor=lambda _, k, v: postprocessor(k, v, search_type, guarantee)
         )
+
+        if result is None:
+            # should be unreachable
+            raise AssertionError('XML parsing resulted in None')
 
         if raise_api_errors and 'error' in result:
             error = result['error']
@@ -304,5 +310,6 @@ __all__ = [
     'set_default',
     'set_key',
     'view',
-    'KRDictException'
+    'KRDictException',
+    'MeaningCategory'
 ]

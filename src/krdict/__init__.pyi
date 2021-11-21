@@ -1,4 +1,7 @@
 from typing import Dict, List, Literal, TypedDict, Union, overload
+from ._helpers import MeaningCategoryHelper, MeaningCategory as _MeaningCategory
+
+MeaningCategory = MeaningCategoryHelper
 
 Classification = Literal[
     'all',
@@ -6,7 +9,7 @@ Classification = Literal[
     'phrase',
     'expression'
 ]
-MeaningCategory = Literal[
+MeaningCategoryLiteral = Literal[
     '전체',
     '인간 > 전체',
     '인간 > 사람의 종류',
@@ -810,7 +813,7 @@ def advanced_search(*,
     multimedia_info: MultimediaType | List[MultimediaType] = None,
     min_syllables: int = None,
     max_syllables: int = None,
-    meaning_category: MeaningCategory | int = None,
+    meaning_category: _MeaningCategory | MeaningCategoryLiteral | int = None,
     subject_category: SubjectCategory | int | List[SubjectCategory | int] = None,
     options: OptionsDict = None
 ) -> TotalWordSearchResponse: ...
@@ -835,7 +838,7 @@ def advanced_search(*,
     multimedia_info: MultimediaType | List[MultimediaType] = None,
     min_syllables: int = None,
     max_syllables: int = None,
-    meaning_category: MeaningCategory | int = None,
+    meaning_category: _MeaningCategory | MeaningCategoryLiteral | int = None,
     subject_category: SubjectCategory | int | List[SubjectCategory | int] = None,
     options: OptionsDict = None
 ) -> TotalSearchResponse: ...
@@ -861,7 +864,7 @@ def advanced_search(*,
     multimedia_info: MultimediaType | List[MultimediaType] = None,
     min_syllables: int = None,
     max_syllables: int = None,
-    meaning_category: MeaningCategory | int = None,
+    meaning_category: _MeaningCategory | MeaningCategoryLiteral | int = None,
     subject_category: SubjectCategory | int | List[SubjectCategory | int] = None,
     options: OptionsDict = None
 ) -> TotalWordSearchResponse | KRDictError: ...
@@ -886,7 +889,7 @@ def advanced_search(*,
     multimedia_info: MultimediaType | List[MultimediaType] = None,
     min_syllables: int = None,
     max_syllables: int = None,
-    meaning_category: MeaningCategory | int = None,
+    meaning_category: _MeaningCategory | MeaningCategoryLiteral | int = None,
     subject_category: SubjectCategory | int | List[SubjectCategory | int] = None,
     options: OptionsDict = None
 ) -> TotalSearchResponse | KRDictError: ...
@@ -912,7 +915,7 @@ def advanced_search(*,
     multimedia_info: MultimediaType | List[MultimediaType] = None,
     min_syllables: int = None,
     max_syllables: int = None,
-    meaning_category: MeaningCategory | int = None,
+    meaning_category: _MeaningCategory | MeaningCategoryLiteral | int = None,
     subject_category: SubjectCategory | int | List[SubjectCategory | int] = None,
     options: OptionsDict = None
 ) -> WordSearchResponse: ...
@@ -937,7 +940,7 @@ def advanced_search(*,
     multimedia_info: MultimediaType | List[MultimediaType] = None,
     min_syllables: int = None,
     max_syllables: int = None,
-    meaning_category: MeaningCategory | int = None,
+    meaning_category: _MeaningCategory | MeaningCategoryLiteral | int = None,
     subject_category: SubjectCategory | int | List[SubjectCategory | int] = None,
     options: OptionsDict = None
 ) -> SearchResponse: ...
@@ -963,7 +966,7 @@ def advanced_search(*,
     multimedia_info: MultimediaType | List[MultimediaType] = None,
     min_syllables: int = None,
     max_syllables: int = None,
-    meaning_category: MeaningCategory | int = None,
+    meaning_category: _MeaningCategory | MeaningCategoryLiteral | int = None,
     subject_category: SubjectCategory | int | List[SubjectCategory | int] = None,
     options: OptionsDict = None
 ) -> WordSearchResponse | KRDictError: ...
@@ -988,7 +991,7 @@ def advanced_search(*,
     multimedia_info: MultimediaType | List[MultimediaType] = None,
     min_syllables: int = None,
     max_syllables: int = None,
-    meaning_category: MeaningCategory | int = None,
+    meaning_category: _MeaningCategory | MeaningCategoryLiteral | int = None,
     subject_category: SubjectCategory | int | List[SubjectCategory | int] = None,
     options: OptionsDict = None
 ) -> SearchResponse | KRDictError: ...

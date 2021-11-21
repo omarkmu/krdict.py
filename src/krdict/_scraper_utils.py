@@ -2,6 +2,7 @@
 Provides utilities for scraping.
 """
 
+from enum import Enum
 import requests
 from lxml import html
 from ._params import _PARAM_MAPS
@@ -315,6 +316,9 @@ def _build_language_query(lang):
     return f'&nation={nation}&nationCode={code}', f'{nation}/', exo
 
 def _build_sense_category_query(category):
+    if isinstance(category, Enum):
+        category = category.value
+
     category = int(_SENSE_MAP.get(category, category))
 
     if category <= 0 or category > 153:

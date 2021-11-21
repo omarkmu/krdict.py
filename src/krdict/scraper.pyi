@@ -1,6 +1,7 @@
 from typing import List, Literal, TypedDict, overload
+from ._helpers import MeaningCategory
 from . import (
-    MeaningCategory, SearchTranslation, SortMethod, SubjectCategory,
+    MeaningCategoryLiteral, SearchTranslation, SortMethod, SubjectCategory,
     TotalViewResponse, TotalWordSearchResponse, WordSearchResponse, ViewResponse
 )
 
@@ -168,7 +169,7 @@ def fetch_today_word(*,
 @overload
 def fetch_meaning_category_words(*,
     guarantee_keys: Literal[True],
-    category: MeaningCategory | int,
+    category: MeaningCategory | MeaningCategoryLiteral | int,
     page: int = None,
     per_page: int = None,
     sort: SortMethod = None,
@@ -177,7 +178,7 @@ def fetch_meaning_category_words(*,
 @overload
 def fetch_meaning_category_words(*,
     guarantee_keys: bool = False,
-    category: MeaningCategory | int,
+    category: MeaningCategory | MeaningCategoryLiteral | int,
     page: int = None,
     per_page: int = None,
     sort: SortMethod = None,
