@@ -43,9 +43,9 @@ The results of a definition [search](functions.md#search).
 | Container      | Field           | Type | Required | Description
 | ---------      | -----           | :--: | :------: | -----------
 | -              | data            | dict |    ✓     | Container for search results.
-| data           | title           | str  |    ✓     | The title of the Korean Learner's Dictionary Open API (constant).
-| data           | url             | str  |    ✓     | The URL of the Korean Learner's Dictionary (constant).
-| data           | description     | str  |    ✓     | The description of the Korean Learner's Dictionary Open API (constant).
+| data           | title           | str  |    ✓     | The title of the Korean Learners' Dictionary Open API (constant).
+| data           | url             | str  |    ✓     | The URL of the Korean Learners' Dictionary (constant).
+| data           | description     | str  |    ✓     | The description of the Korean Learners' Dictionary Open API (constant).
 | data           | last_build_date | str  |    ✓     | The time the search results were generated.
 | data           | page            | int  |    ✓     | The page at which the search results begin.
 | data           | per_page        | int  |    ✓     | The number of results per page. Does not necessarily correspond to the length of `results`.
@@ -96,9 +96,9 @@ The results of an example [search](functions.md#search).
 | Container  | Field           | Type | Required | Description
 | ---------  | -----           | :--: | :------: | -----------
 | -          | data            | dict |    ✓     | Container for search results.
-| data       | title           | str  |    ✓     | The title of the Korean Learner's Dictionary Open API (constant).
-| data       | url             | str  |    ✓     | The URL of the Korean Learner's Dictionary (constant).
-| data       | description     | str  |    ✓     | The description of the Korean Learner's Dictionary Open API (constant).
+| data       | title           | str  |    ✓     | The title of the Korean Learners' Dictionary Open API (constant).
+| data       | url             | str  |    ✓     | The URL of the Korean Learners' Dictionary (constant).
+| data       | description     | str  |    ✓     | The description of the Korean Learners' Dictionary Open API (constant).
 | data       | last_build_date | str  |    ✓     | The time the search results were generated.
 | data       | page            | int  |    ✓     | The page at which the search results begin.
 | data       | per_page        | int  |    ✓     | The number of results per page. Does not necessarily correspond to the length of `results`.
@@ -156,9 +156,9 @@ The results of an idiom/proverb [search](functions.md#search).
 | Container      | Field           | Type | Required | Description
 | ---------      | -----           | :--: | :------: | -----------
 | -              | data            | dict |    ✓     | Container for search results.
-| data           | title           | str  |    ✓     | The title of the Korean Learner's Dictionary Open API (constant).
-| data           | url             | str  |    ✓     | The URL of the Korean Learner's Dictionary (constant).
-| data           | description     | str  |    ✓     | The description of the Korean Learner's Dictionary Open API (constant).
+| data           | title           | str  |    ✓     | The title of the Korean Learners' Dictionary Open API (constant).
+| data           | url             | str  |    ✓     | The URL of the Korean Learners' Dictionary (constant).
+| data           | description     | str  |    ✓     | The description of the Korean Learners' Dictionary Open API (constant).
 | data           | last_build_date | str  |    ✓     | The time the search results were generated.
 | data           | page            | int  |    ✓     | The page at which the search results begin.
 | data           | per_page        | int  |    ✓     | The number of results per page. Does not necessarily correspond to the length of `results`.
@@ -228,10 +228,10 @@ The results of a word [search](functions.md#search).
 | Container      | Field              | Type | Required | Description
 | ---------      | -----              | :--: | :------: | -----------
 | -              | data               | dict |    ✓     | Container for search results.
-| data           | title              | str  |    ✓     | The title of the Korean Learner's Dictionary Open API (constant).
-| data           | url                | str  |    ✓     | The URL of the Korean Learner's Dictionary (constant).
+| data           | title              | str  |    ✓     | The title of the Korean Learners' Dictionary Open API (constant).
+| data           | url                | str  |    ✓     | The URL of the Korean Learners' Dictionary (constant).
 | data           | search_url         | str  |    ✗     | The URL of the search result. Only present if scraping is enabled and the URL is available.
-| data           | description        | str  |    ✓     | The description of the Korean Learner's Dictionary Open API (constant).
+| data           | description        | str  |    ✓     | The description of the Korean Learners' Dictionary Open API (constant).
 | data           | last_build_date    | str  |    ✓     | The time the search results were generated.
 | data           | page               | int  |    ✓     | The page at which the search results begin.
 | data           | per_page           | int  |    ✓     | The number of results per page. Does not necessarily correspond to the length of `results`.
@@ -427,9 +427,9 @@ The results of a [view](functions.md#view) query.
 | Container              | Field                  | Type | Required | Description
 | ---------              | -----                  | :--: | :------: | -----------
 | -                      | data                   | dict |    ✓     | Container for view query results.
-| data                   | title                  | str  |    ✓     | The title of the Korean Learner's Dictionary Open API (constant).
+| data                   | title                  | str  |    ✓     | The title of the Korean Learners' Dictionary Open API (constant).
 | data                   | url                    | str  |    ✓     | The URL of the search result page.
-| data                   | description            | str  |    ✓     | The description of the Korean Learner's Dictionary Open API (constant).
+| data                   | description            | str  |    ✓     | The description of the Korean Learners' Dictionary Open API (constant).
 | data                   | last_build_date        | str  |    ✓     | The time the view results were generated.
 | data                   | total_results          | int  |    ✓     | The total number of results, including the returned results.
 | data                   | results                | list |    ✓     | A list of 0 or 1 view result objects.
@@ -631,7 +631,7 @@ The results of a word search retrieved via scraping.
 | Container   | Field              | Type | Required | Description
 | ---------   | -----              | :--: | :------: | -----------
 | -           | data               | dict |    ✓     | Container for search results.
-| data        | search_url         | str  |    ✓     | The Korean Learner's Dictionary URL that can be used to view the results.
+| data        | search_url         | str  |    ✓     | The Korean Learners' Dictionary URL that can be used to view the results.
 | data        | page               | int  |    ✓     | The page at which the search results begin.
 | data        | per_page           | int  |    ✓     | The number of results per page. Does not necessarily correspond to the length of `results`.
 | data        | total_results      | int  |    ✓     | The total number of results, including the returned results.

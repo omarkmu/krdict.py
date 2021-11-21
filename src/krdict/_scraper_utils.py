@@ -778,7 +778,7 @@ def _read_wotd_details(result, dt_elem, dd_elems, exonym, guarantee_keys):
             if key in result:
                 continue
 
-            result[key] = '' if key == str else ([] if key_type == list else None)
+            result[key] = '' if key_type == str else ([] if key_type == list else None)
 
         if result['translation'] and 'word' not in result['translation']:
             result['translation']['word'] = ''

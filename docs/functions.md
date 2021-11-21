@@ -5,7 +5,7 @@ all of the functions listed below expect keyword arguments.
 ---
 ## advanced_search
 
-Performs an advanced search on the Korean Learner's Dictionary API.
+Performs an advanced search on the Korean Learners' Dictionary API.
 
 ```python
 def advanced_search(*,
@@ -88,7 +88,7 @@ Depending on the value of `search_type` and whether an error occurred, returns o
 
 ## search
 
-Performs a basic search on the Korean Learner's Dictionary API.
+Performs a basic search on the Korean Learners' Dictionary API.
 
 ```python
 def search(*,
@@ -165,13 +165,13 @@ def set_key(key: str | None) -> None: ...
 
 **Parameters:**
 
-- key: The Korean Learner's Dictionary API key. To unset a key, use `None`.
+- key: The Korean Learners' Dictionary API key. To unset a key, use `None`.
 
 ---
 
 ## view
 
-Performs a view query, which retrieves information about a particular entry, on the Korean Learner's Dictionary API.
+Performs a view query, which retrieves information about a particular entry, on the Korean Learners' Dictionary API.
 
 ```python
 def view(*,

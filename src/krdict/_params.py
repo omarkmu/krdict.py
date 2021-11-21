@@ -458,8 +458,8 @@ def transform_search_params(params: dict) -> None:
     """
     Transforms input search parameters into an API-compliant dict.
 
-    Args:
-        params: The provided input parameters.
+    - ``params``: The provided input parameters.
+
     """
 
     for key in list(params.keys()):
@@ -489,13 +489,12 @@ def transform_view_params(params: dict) -> None:
     """
     Transforms input view parameters into an API-compliant dict.
 
-    Args:
-        params: The provided input parameters.
+    - ``params``: The provided input parameters.
+
     """
 
     if 'target_code' in params:
         params['method'] = 'target_code'
-        params['view_method'] = 'target_code'
     else:
         if 'query' in params:
             if 'homograph_num' in params:

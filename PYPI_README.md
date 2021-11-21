@@ -1,5 +1,5 @@
 A module that helps to query the [API](https://krdict.korean.go.kr/openApi/openApiInfo) of the
-[Korean Learner's Dictionary](https://krdict.korean.go.kr), provided by the National Institute of Korean Language.
+[Korean Learners' Dictionary](https://krdict.korean.go.kr), provided by the National Institute of Korean Language.
 
 ## Installation
 
