@@ -1,7 +1,6 @@
 from typing import List, Literal, TypedDict, overload
-from ._helpers import MeaningCategory
 from . import (
-    MeaningCategoryLiteral, SearchTranslation, SortMethod, SubjectCategory,
+    MeaningCategoryType, SearchTranslation, SortMethod, SubjectCategoryType,
     TotalViewResponse, TotalWordSearchResponse, WordSearchResponse, ViewResponse
 )
 
@@ -169,7 +168,7 @@ def fetch_today_word(*,
 @overload
 def fetch_meaning_category_words(*,
     guarantee_keys: Literal[True],
-    category: MeaningCategory | MeaningCategoryLiteral | int,
+    category: MeaningCategoryType,
     page: int = None,
     per_page: int = None,
     sort: SortMethod = None,
@@ -178,7 +177,7 @@ def fetch_meaning_category_words(*,
 @overload
 def fetch_meaning_category_words(*,
     guarantee_keys: bool = False,
-    category: MeaningCategory | MeaningCategoryLiteral | int,
+    category: MeaningCategoryType,
     page: int = None,
     per_page: int = None,
     sort: SortMethod = None,
@@ -189,7 +188,7 @@ def fetch_meaning_category_words(*,
 @overload
 def fetch_subject_category_words(*,
     guarantee_keys: Literal[True],
-    category: SubjectCategory | int | List[SubjectCategory | int],
+    category: SubjectCategoryType | List[SubjectCategoryType],
     page: int = None,
     per_page: int = None,
     sort: SortMethod = None,
@@ -198,7 +197,7 @@ def fetch_subject_category_words(*,
 @overload
 def fetch_subject_category_words(*,
     guarantee_keys: bool = False,
-    category: SubjectCategory | int | List[SubjectCategory | int],
+    category: SubjectCategoryType | List[SubjectCategoryType],
     page: int = None,
     per_page: int = None,
     sort: SortMethod = None,

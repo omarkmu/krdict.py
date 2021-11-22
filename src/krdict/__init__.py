@@ -7,7 +7,10 @@ from xmltodict import parse as parse_xml
 
 from ._params import transform_search_params, transform_view_params
 from ._results import postprocessor
-from ._helpers import MeaningCategoryHelper as MeaningCategory
+from ._helpers import (
+    MeaningCategoryHelper as MeaningCategory,
+    SubjectCategoryHelper as SubjectCategory
+)
 from .scraper import extend_view, extend_search, extend_advanced_search
 
 
@@ -311,5 +314,6 @@ __all__ = [
     'set_key',
     'view',
     'KRDictException',
-    'MeaningCategory'
+    'MeaningCategory',
+    'SubjectCategory'
 ]

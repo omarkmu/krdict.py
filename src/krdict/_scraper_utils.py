@@ -347,6 +347,9 @@ def _build_subject_category_query(category):
         value = ''
 
         for cat in category:
+            if isinstance(cat, Enum):
+                cat = cat.value
+
             cat_value = str(_SUBJECT_MAP.get(cat, cat))
             if cat_value == '0':
                 return _build_subject_category_query(0)
@@ -354,6 +357,9 @@ def _build_subject_category_query(category):
             value += f'&actCategory={_convert_subject_cat(cat)}'
 
         return value
+
+    if isinstance(category, Enum):
+        category = category.value
 
     category = str(_SUBJECT_MAP.get(category, category))
     if category == '0':

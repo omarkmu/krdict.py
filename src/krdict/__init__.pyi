@@ -1,7 +1,13 @@
 from typing import Dict, List, Literal, TypedDict, Union, overload
-from ._helpers import MeaningCategoryHelper, MeaningCategory as _MeaningCategory
+from ._helpers import (
+    MeaningCategoryHelper,
+    MeaningCategory as _MeaningCategory,
+    SubjectCategoryHelper,
+    SubjectCategory as _SubjectCategory
+)
 
 MeaningCategory = MeaningCategoryHelper
+SubjectCategory = SubjectCategoryHelper
 
 Classification = Literal[
     'all',
@@ -416,7 +422,7 @@ SortMethod = Literal[
     'alphabetical',
     'popular'
 ]
-SubjectCategory = Literal[
+SubjectCategoryLiteral = Literal[
     '전체',
     '인사하기',
     '소개하기 (자기소개)',
@@ -611,6 +617,9 @@ Option = Literal[
     'raise_scraper_errors',
     'use_scraper'
 ]
+
+MeaningCategoryType = _MeaningCategory | MeaningCategoryLiteral | int
+SubjectCategoryType = _SubjectCategory | SubjectCategoryLiteral | int
 
 class OptionsDict(TypedDict, total=False):
     use_scraper: bool
@@ -1009,8 +1018,8 @@ def advanced_search(*,
     multimedia_info: MultimediaType | List[MultimediaType] = None,
     min_syllables: int = None,
     max_syllables: int = None,
-    meaning_category: _MeaningCategory | MeaningCategoryLiteral | int = None,
-    subject_category: SubjectCategory | int | List[SubjectCategory | int] = None,
+    meaning_category: MeaningCategoryType = None,
+    subject_category: SubjectCategoryType | List[SubjectCategoryType] = None,
     options: OptionsDict = None
 ) -> TotalWordSearchResponse: ...
 @overload
@@ -1034,8 +1043,8 @@ def advanced_search(*,
     multimedia_info: MultimediaType | List[MultimediaType] = None,
     min_syllables: int = None,
     max_syllables: int = None,
-    meaning_category: _MeaningCategory | MeaningCategoryLiteral | int = None,
-    subject_category: SubjectCategory | int | List[SubjectCategory | int] = None,
+    meaning_category: MeaningCategoryType = None,
+    subject_category: SubjectCategoryType | List[SubjectCategoryType] = None,
     options: OptionsDict = None
 ) -> TotalSearchResponse: ...
 
@@ -1060,8 +1069,8 @@ def advanced_search(*,
     multimedia_info: MultimediaType | List[MultimediaType] = None,
     min_syllables: int = None,
     max_syllables: int = None,
-    meaning_category: _MeaningCategory | MeaningCategoryLiteral | int = None,
-    subject_category: SubjectCategory | int | List[SubjectCategory | int] = None,
+    meaning_category: MeaningCategoryType = None,
+    subject_category: SubjectCategoryType | List[SubjectCategoryType] = None,
     options: OptionsDict = None
 ) -> TotalWordSearchResponse | KRDictError: ...
 @overload
@@ -1085,8 +1094,8 @@ def advanced_search(*,
     multimedia_info: MultimediaType | List[MultimediaType] = None,
     min_syllables: int = None,
     max_syllables: int = None,
-    meaning_category: _MeaningCategory | MeaningCategoryLiteral | int = None,
-    subject_category: SubjectCategory | int | List[SubjectCategory | int] = None,
+    meaning_category: MeaningCategoryType = None,
+    subject_category: SubjectCategoryType | List[SubjectCategoryType] = None,
     options: OptionsDict = None
 ) -> TotalSearchResponse | KRDictError: ...
 
@@ -1111,8 +1120,8 @@ def advanced_search(*,
     multimedia_info: MultimediaType | List[MultimediaType] = None,
     min_syllables: int = None,
     max_syllables: int = None,
-    meaning_category: _MeaningCategory | MeaningCategoryLiteral | int = None,
-    subject_category: SubjectCategory | int | List[SubjectCategory | int] = None,
+    meaning_category: MeaningCategoryType = None,
+    subject_category: SubjectCategoryType | List[SubjectCategoryType] = None,
     options: OptionsDict = None
 ) -> WordSearchResponse: ...
 @overload
@@ -1136,8 +1145,8 @@ def advanced_search(*,
     multimedia_info: MultimediaType | List[MultimediaType] = None,
     min_syllables: int = None,
     max_syllables: int = None,
-    meaning_category: _MeaningCategory | MeaningCategoryLiteral | int = None,
-    subject_category: SubjectCategory | int | List[SubjectCategory | int] = None,
+    meaning_category: MeaningCategoryType = None,
+    subject_category: SubjectCategoryType | List[SubjectCategoryType] = None,
     options: OptionsDict = None
 ) -> SearchResponse: ...
 
@@ -1162,8 +1171,8 @@ def advanced_search(*,
     multimedia_info: MultimediaType | List[MultimediaType] = None,
     min_syllables: int = None,
     max_syllables: int = None,
-    meaning_category: _MeaningCategory | MeaningCategoryLiteral | int = None,
-    subject_category: SubjectCategory | int | List[SubjectCategory | int] = None,
+    meaning_category: MeaningCategoryType = None,
+    subject_category: SubjectCategoryType | List[SubjectCategoryType] = None,
     options: OptionsDict = None
 ) -> WordSearchResponse | KRDictError: ...
 @overload
@@ -1187,8 +1196,8 @@ def advanced_search(*,
     multimedia_info: MultimediaType | List[MultimediaType] = None,
     min_syllables: int = None,
     max_syllables: int = None,
-    meaning_category: _MeaningCategory | MeaningCategoryLiteral | int = None,
-    subject_category: SubjectCategory | int | List[SubjectCategory | int] = None,
+    meaning_category: MeaningCategoryType = None,
+    subject_category: SubjectCategoryType | List[SubjectCategoryType] = None,
     options: OptionsDict = None
 ) -> SearchResponse | KRDictError: ...
 
