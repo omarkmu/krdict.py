@@ -146,7 +146,7 @@ class TestKRDict(unittest.TestCase):
         self.assertEqual(ctx.exception.message, 'Incorrect query request')
 
     def test_search_method(self):
-        """Advanced search method with various search methods returns proper results"""
+        """Advanced search with various search methods returns proper results"""
         response = krdict.advanced_search(query='나무', raise_api_errors=True)
         self.assertIn('data', response)
         self.assertEqual(response['data']['total_results'], 1)
