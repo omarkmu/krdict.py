@@ -1,10 +1,6 @@
 from typing import Dict, List, Literal, TypedDict, Union, overload
-from ._helpers import (
-    MeaningCategoryHelper,
-    MeaningCategory as _MeaningCategory,
-    SubjectCategoryHelper,
-    SubjectCategory as _SubjectCategory
-)
+from .meaning_category import MeaningCategoryHelper, MeaningCategory as _MeaningCategory
+from .subject_category import SubjectCategoryHelper, SubjectCategory as _SubjectCategory
 
 MeaningCategory = MeaningCategoryHelper
 SubjectCategory = SubjectCategoryHelper

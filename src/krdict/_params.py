@@ -3,7 +3,8 @@ Transforms input parameters into API-compliant dicts.
 """
 
 from enum import Enum
-from ._helpers import _MEANING_CATEGORY_STRINGS, _SUBJECT_CATEGORY_STRINGS
+from .meaning_category import _MEANING_CATEGORY_STRINGS
+from .subject_category import _SUBJECT_CATEGORY_STRINGS
 
 _PARAM_MAPS = {
     'query': {

@@ -7,10 +7,8 @@ from xmltodict import parse as parse_xml
 
 from ._params import transform_search_params, transform_view_params
 from ._results import postprocessor
-from ._helpers import (
-    MeaningCategoryHelper as MeaningCategory,
-    SubjectCategoryHelper as SubjectCategory
-)
+from .meaning_category import MeaningCategoryHelper as MeaningCategory
+from .subject_category import SubjectCategoryHelper as SubjectCategory
 from .scraper import extend_view, extend_search, extend_advanced_search
 
 
@@ -74,7 +72,7 @@ def _send_request(url, params, search_type):
 
         if result is None:
             # should be unreachable
-            raise AssertionError('XML parsing resulted in None')
+            raise RuntimeError('XML parsing resulted in None')
 
         if raise_api_errors and 'error' in result:
             error = result['error']
