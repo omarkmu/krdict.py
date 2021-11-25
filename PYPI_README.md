@@ -1,5 +1,5 @@
 A module that helps to query the [API](https://krdict.korean.go.kr/openApi/openApiInfo) of the
-[Korean Learners' Dictionary](https://krdict.korean.go.kr), provided by the National Institute of Korean Language.
+[Korean Learners' Dictionary](https://krdict.korean.go.kr/mainAction), provided by the National Institute of Korean Language.
 
 ## Installation
 
@@ -9,7 +9,7 @@ To install the module via pip, run:
 pip install krdict.py
 ```
 
-You can also install from one of the [releases](https://github.com/omarkmu/krdict.py/releases).
+You can also install from one of the [GitHub releases](https://github.com/omarkmu/krdict.py/releases).
 
 ## Usage
 To use most of the functionality provided by this module, you'll need to generate an API key via

@@ -113,7 +113,7 @@ Fetches words that belong to the provided meaning category.
 ```python
 def fetch_meaning_category_words(*,
     guarantee_keys: bool = False,
-    category: MeaningCategory | int = 0,
+    category: MeaningCategory = MeaningCategory.ALL,
     page: int = 1,
     per_page: int = 10,
     sort: SortMethod = 'alphabetical',
@@ -122,7 +122,8 @@ def fetch_meaning_category_words(*,
 ```
 
 !!! warning
-    The `'전체'` or `0` MeaningCategory option is **not supported** and will return zero results.
+    The `MeaningCategory.ALL` option is **not supported** and will return zero results.
+    This also applies for calls that do not supply `category`.
 
 **Parameters:**
 
@@ -132,7 +133,7 @@ A value of `True` guarantees that every key that is not required is included, in
     - Zero `0` for integer values.
     - An empty list `[]` for list values.
     - `None` for dictionary values. This only applies to the `translation` field.
-- `category`: The meaning category to fetch.
+- `category` ([`MeaningCategory`](parameters.md#meaningcategory)): The meaning category to fetch.
 - `page`: The page at which the search should start `[1, 1000]`.
 - `per_page`: The maximum number of search results to return `[10, 100]`.
 - `sort` ([`SortMethod`](parameters.md#sortmethod)): The sort method that should be used.
@@ -150,7 +151,7 @@ Fetches words that belong to one of the provided subject categories.
 ```python
 def fetch_subject_category_words(*,
     guarantee_keys: bool = False,
-    category: SubjectCategory | int | List[SubjectCategory | int] = 0,
+    category: SubjectCategory | List[SubjectCategory] = SubjectCategory.ALL,
     page: int = 1,
     per_page: int = 0,
     sort: SortMethod = 'alphabetical',
@@ -166,7 +167,7 @@ A value of `True` guarantees that every key that is not required is included, in
     - Zero `0` for integer values.
     - An empty list `[]` for list values.
     - `None` for dictionary values. This only applies to the `translation` field.
-- `category`: The subject category to fetch.
+- `category` ([`SubjectCategory`](parameters.md#subjectcategory)): The subject category to fetch.
 - `page`: The page at which the search should start `[1, 1000]`.
 - `per_page`: The maximum number of search results to return `[10, 100]`.
 - `sort` ([`SortMethod`](parameters.md#sortmethod)): The sort method that should be used.

@@ -28,8 +28,8 @@ def advanced_search(*,
     multimedia_info: MultimediaType | List[MultimediaType] = 'all',
     min_syllables: int = 1,
     max_syllables: int = 0,
-    meaning_category: MeaningCategory | int = 'all',
-    subject_category: SubjectCategory | int | List[SubjectCategory | int] = 'all',
+    meaning_category: MeaningCategory = MeaningCategory.ALL,
+    subject_category: SubjectCategory | List[SubjectCategory] = SubjectCategory.ALL,
     options: OptionsDict = None
 ) -> SearchResponse | KRDictError: ...
 ```
@@ -44,7 +44,7 @@ def advanced_search(*,
 - `raise_api_errors`: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
 A value of `True` guarantees that the result is not an error object.
 - `guarantee_keys`: Sets whether keys that are missing from the response should be inserted with default values. A value of `True`
-guarantees that every key marked as *not required* below is included, including keys set by the scraper. Default values:
+guarantees that every key marked as *not required* is included, including keys set by the scraper. Default values:
     - The empty string `""` for string values.
     - Zero `0` for integer values.
     - An empty list `[]` for list values.
@@ -111,7 +111,7 @@ def search(*,
 - `raise_api_errors`: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
 A value of `True` guarantees that the result is not an error object.
 - `guarantee_keys`: Sets whether keys that are missing from the response should be inserted with default values. A value of `True`
-guarantees that every key marked as *not required* below is included, including keys set by the scraper. Default values:
+guarantees that every key marked as *not required* is included, including keys set by the scraper. Default values:
     - The empty string `""` for string values.
     - Zero `0` for integer values.
     - An empty list `[]` for list values.
@@ -202,7 +202,7 @@ def view(*,
 - `raise_api_errors`: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
 A value of `True` guarantees that the result is not an error object.
 - `guarantee_keys`: Sets whether keys that are missing from the response should be inserted with default values. A value of `True`
-guarantees that every key marked as *not required* below is included, including keys set by the scraper. Default values:
+guarantees that every key marked as *not required* is included, including keys set by the scraper. Default values:
     - The empty string `""` for string values.
     - Zero `0` for integer values.
     - An empty list `[]` for list values.

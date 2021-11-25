@@ -1,5 +1,6 @@
 site_name: krdict.py
 theme: readthedocs
+repo_url: https://github.com/omarkmu/krdict.py
 extra_css: [extra.css]
 nav:
     - Home: index.md
@@ -7,6 +8,8 @@ nav:
     - Modules:
         - Main: functions.md
         - Scraper: scraper.md
+        - Meaning Category: meaning_category.md
+        - Subject Category: subject_category.md
     - Types:
         - Parameters: parameters.md
         - Return Types: return_types.md
