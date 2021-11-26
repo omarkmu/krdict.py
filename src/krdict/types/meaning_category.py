@@ -1,11 +1,10 @@
 """
-Contains helper for handling meaning categories.
+Contains enumeration class for handling meaning categories.
 """
 
-# pylint: disable=invalid-name
-# pylint: disable=too-few-public-methods
+# pylint: disable=invalid-name,too-few-public-methods
 
-from enum import Enum
+from .base import EnumBase, EnumProxyBase, EnumProxyMeta
 
 
 _MEANING_CATEGORY_STRINGS = {
@@ -362,8 +361,10 @@ _MEANING_CATEGORY_STRINGS = {
 }
 
 
-class MeaningCategory(Enum):
+class MeaningCategory(EnumBase):
     """Enumeration class that contains meaning category values."""
+    __ALIASES__ = _MEANING_CATEGORY_STRINGS
+
     ALL = 0
     HUMAN_ALL = 1
     HUMAN_TYPES_OF_PEOPLE = 2
@@ -519,69 +520,15 @@ class MeaningCategory(Enum):
     CONCEPTS_QUESTION_WORDS = 152
     CONCEPTS_PRONOUNS = 153
 
-class _MeaningCategoryHelperMeta(type):
-    def __getitem__(cls, key):
-        return MeaningCategory[key]
+class MeaningCategoryProxy(EnumProxyBase[MeaningCategory], metaclass=EnumProxyMeta):
+    """Proxy class for meaning categories."""
 
-class MeaningCategoryHelper(metaclass=_MeaningCategoryHelperMeta):
-    """Helper class for meaning categories."""
-
-    def __new__(cls, value):
-        return MeaningCategory(value)
-
-    @staticmethod
-    def enum():
-        """Returns the underlying enumeration type."""
-        return MeaningCategory
-
-    @staticmethod
-    def from_literal(value):
-        """
-        Returns the meaning category associated with a string or integer,
-        raising a ValueError or KeyError if the value is not associated with any meaning category.
-        """
-
-        if isinstance(value, MeaningCategory):
-            return MeaningCategory(value.value)
-
-        if isinstance(value, str):
-            numeric_value = _MEANING_CATEGORY_STRINGS.get(value)
-            if numeric_value is None:
-                return MeaningCategory[value]
-
-            value = numeric_value
-
-        return MeaningCategory(value)
-
-    @staticmethod
-    def from_literal_safe(value):
-        """
-        Returns the meaning category associated with a string or integer,
-        or None if the value is not associated with any meaning category.
-        """
-
-        if isinstance(value, MeaningCategory):
-            return MeaningCategory(value.value)
-
-        if isinstance(value, str):
-            numeric_value = _MEANING_CATEGORY_STRINGS.get(value)
-            if numeric_value is None:
-                try:
-                    return MeaningCategory[value]
-                except KeyError:
-                    return None
-
-            value = numeric_value
-
-        try:
-            return MeaningCategory(value)
-        except ValueError:
-            return None
+    __ENUM__ = MeaningCategory
 
     ALL = MeaningCategory.ALL
 
     class HUMAN:
-        """Helper class for human meaning categories."""
+        """Proxy class for human meaning categories."""
         ALL = MeaningCategory.HUMAN_ALL
         TYPES_OF_PEOPLE = MeaningCategory.HUMAN_TYPES_OF_PEOPLE
         BODY_PARTS = MeaningCategory.HUMAN_BODY_PARTS
@@ -601,7 +548,7 @@ class MeaningCategoryHelper(metaclass=_MeaningCategoryHelperMeta):
         INNER_PARTS_OF_THE_BODY = MeaningCategory.HUMAN_INNER_PARTS_OF_THE_BODY
 
     class LIFE:
-        """Helper class for life meaning categories."""
+        """Proxy class for life meaning categories."""
         ALL = MeaningCategory.LIFE_ALL
         STATE_OF_BEING = MeaningCategory.LIFE_STATE_OF_BEING
         LIFE_ACTIVIES = MeaningCategory.LIFE_LIFE_ACTIVIES
@@ -617,7 +564,7 @@ class MeaningCategoryHelper(metaclass=_MeaningCategoryHelperMeta):
         MEDICINE = MeaningCategory.LIFE_MEDICINE
 
     class DIETARY:
-        """Helper class for dietary meaning categories."""
+        """Proxy class for dietary meaning categories."""
         ALL = MeaningCategory.DIETARY_ALL
         FOOD_TYPES = MeaningCategory.DIETARY_FOOD_TYPES
         VEGETABLES = MeaningCategory.DIETARY_VEGETABLES
@@ -631,7 +578,7 @@ class MeaningCategoryHelper(metaclass=_MeaningCategoryHelperMeta):
         EATING_AND_COOKING_ACTIVITIES = MeaningCategory.DIETARY_EATING_AND_COOKING_ACTIVITIES
 
     class CLOTHING:
-        """Helper class for clothing meaning categories."""
+        """Proxy class for clothing meaning categories."""
         ALL = MeaningCategory.CLOTHING_ALL
         TYPES_OF_CLOTHING = MeaningCategory.CLOTHING_TYPES_OF_CLOTHING
         FABRIC = MeaningCategory.CLOTHING_FABRIC
@@ -643,7 +590,7 @@ class MeaningCategoryHelper(metaclass=_MeaningCategoryHelperMeta):
         BEAUTY_AND_HEALTH = MeaningCategory.CLOTHING_BEAUTY_AND_HEALTH
 
     class HOME_LIFE:
-        """Helper class for home life meaning categories."""
+        """Proxy class for home life meaning categories."""
         ALL = MeaningCategory.HOME_LIFE_ALL
         BUILDING_TYPES = MeaningCategory.HOME_LIFE_BUILDING_TYPES
         TYPE_OF_HOUSING = MeaningCategory.HOME_LIFE_TYPE_OF_HOUSING
@@ -655,7 +602,7 @@ class MeaningCategoryHelper(metaclass=_MeaningCategoryHelperMeta):
         RESIDENTIAL_CHORES = MeaningCategory.HOME_LIFE_RESIDENTIAL_CHORES
 
     class SOCIAL_LIFE:
-        """Helper class for social life meaning categories."""
+        """Proxy class for social life meaning categories."""
         ALL = MeaningCategory.SOCIAL_LIFE_ALL
         HUMAN_RELATIONSHIPS = MeaningCategory.SOCIAL_LIFE_HUMAN_RELATIONSHIPS
         MEANS_OF_COMMUNICATION = MeaningCategory.SOCIAL_LIFE_MEANS_OF_COMMUNICATION
@@ -676,7 +623,7 @@ class MeaningCategoryHelper(metaclass=_MeaningCategoryHelperMeta):
         GRAMMAR_AND_SPEECH = MeaningCategory.SOCIAL_LIFE_GRAMMAR_AND_SPEECH
 
     class ECONOMIC:
-        """Helper class for economic meaning categories."""
+        """Proxy class for economic meaning categories."""
         ALL = MeaningCategory.ECONOMIC_ALL
         PEOPLE = MeaningCategory.ECONOMIC_PEOPLE
         PLACES = MeaningCategory.ECONOMIC_PLACES
@@ -686,7 +633,7 @@ class MeaningCategoryHelper(metaclass=_MeaningCategoryHelperMeta):
         ACTIVITIES = MeaningCategory.ECONOMIC_ACTIVITIES
 
     class EDUCATION:
-        """Helper class for education meaning categories."""
+        """Proxy class for education meaning categories."""
         ALL = MeaningCategory.EDUCATION_ALL
         PEOPLE = MeaningCategory.EDUCATION_PEOPLE
         MAJORS_AND_SUBJECTS = MeaningCategory.EDUCATION_MAJORS_AND_SUBJECTS
@@ -699,7 +646,7 @@ class MeaningCategoryHelper(metaclass=_MeaningCategoryHelperMeta):
         ACADEMIC_ACTIVITIES = MeaningCategory.EDUCATION_ACADEMIC_ACTIVITIES
 
     class RELIGION:
-        """Helper class for religion meaning categories."""
+        """Proxy class for religion meaning categories."""
         ALL = MeaningCategory.RELIGION_ALL
         TYPES_OF_RELIGION = MeaningCategory.RELIGION_TYPES_OF_RELIGION
         PLACES = MeaningCategory.RELIGION_PLACES
@@ -710,7 +657,7 @@ class MeaningCategoryHelper(metaclass=_MeaningCategoryHelperMeta):
         PRACTICES = MeaningCategory.RELIGION_PRACTICES
 
     class CULTURE:
-        """Helper class for culture meaning categories."""
+        """Proxy class for culture meaning categories."""
         ALL = MeaningCategory.CULTURE_ALL
         CULTURAL_ACTIVITY_PARTICIPANTS = MeaningCategory.CULTURE_CULTURAL_ACTIVITY_PARTICIPANTS
         MUSIC = MeaningCategory.CULTURE_MUSIC
@@ -723,7 +670,7 @@ class MeaningCategoryHelper(metaclass=_MeaningCategoryHelperMeta):
         CULTURAL_ACTIVITIES = MeaningCategory.CULTURE_CULTURAL_ACTIVITIES
 
     class POLITICS_AND_ADMINISTRATION:
-        """Helper class for politics and administration meaning categories."""
+        """Proxy class for politics and administration meaning categories."""
         ALL = MeaningCategory.POLITICS_AND_ADMINISTRATION_ALL
         PUBLIC_INSTITUTIONS = MeaningCategory.POLITICS_AND_ADMINISTRATION_PUBLIC_INSTITUTIONS
         JUDICIAL_AND_SECURITY_PERSONNEL = \
@@ -736,7 +683,7 @@ class MeaningCategoryHelper(metaclass=_MeaningCategoryHelperMeta):
             MeaningCategory.POLITICS_AND_ADMINISTRATION_POLITICAL_AND_ADMINISTRATIVE_PERSONNEL
 
     class NATURE:
-        """Helper class for nature meaning categories."""
+        """Proxy class for nature meaning categories."""
         ALL = MeaningCategory.NATURE_ALL
         TOPOGRAPHY = MeaningCategory.NATURE_TOPOGRAPHY
         SURFACE_OBJECTS = MeaningCategory.NATURE_SURFACE_OBJECTS
@@ -746,7 +693,7 @@ class MeaningCategoryHelper(metaclass=_MeaningCategoryHelperMeta):
         WEATHER_AND_CLIMATE = MeaningCategory.NATURE_WEATHER_AND_CLIMATE
 
     class ANIMALS_AND_PLANTS:
-        """Helper class for animals and plants meaning categories."""
+        """Proxy class for animals and plants meaning categories."""
         ALL = MeaningCategory.ANIMALS_AND_PLANTS_ALL
         ANIMALS = MeaningCategory.ANIMALS_AND_PLANTS_ANIMALS
         INSECTS = MeaningCategory.ANIMALS_AND_PLANTS_INSECTS
@@ -757,7 +704,7 @@ class MeaningCategoryHelper(metaclass=_MeaningCategoryHelperMeta):
         SOUNDS = MeaningCategory.ANIMALS_AND_PLANTS_SOUNDS
 
     class CONCEPTS:
-        """Helper class for concept meaning categories."""
+        """Proxy class for concept meaning categories."""
         ALL = MeaningCategory.CONCEPTS_ALL
         SHAPE = MeaningCategory.CONCEPTS_SHAPE
         PROPERTY = MeaningCategory.CONCEPTS_PROPERTY

@@ -1,11 +1,10 @@
 """
-Contains helper for handling subject categories.
+Contains enumeration class for handling subject categories.
 """
 
-# pylint: disable=invalid-name
-# pylint: disable=too-few-public-methods
+# pylint: disable=invalid-name,too-few-public-methods
 
-from enum import Enum
+from .base import EnumBase, EnumProxyBase, EnumProxyMeta
 
 
 _SUBJECT_CATEGORY_STRINGS = {
@@ -263,8 +262,11 @@ _SUBJECT_CATEGORY_STRINGS = {
 }
 
 
-class SubjectCategory(Enum):
+class SubjectCategory(EnumBase):
     """Enumeration class that contains subject category values."""
+
+    __ALIASES__ = _SUBJECT_CATEGORY_STRINGS
+
     ALL = 0
     ELEMENTARY_GREETING = 1
     ELEMENTARY_INTRODUCING_ONESELF = 2
@@ -373,69 +375,15 @@ class SubjectCategory(Enum):
     ADVANCED_RELIGION = 105
     ADVANCED_PHILOSOPHY_AND_ETHICS = 106
 
-class _SubjectCategoryHelperMeta(type):
-    def __getitem__(cls, key):
-        return SubjectCategory[key]
+class SubjectCategoryProxy(EnumProxyBase[SubjectCategory], metaclass=EnumProxyMeta):
+    """Proxy class for subject categories."""
 
-class SubjectCategoryHelper(metaclass=_SubjectCategoryHelperMeta):
-    """Helper class for subject categories."""
-
-    def __new__(cls, value):
-        return SubjectCategory(value)
-
-    @staticmethod
-    def enum():
-        """Returns the underlying enumeration type."""
-        return SubjectCategory
-
-    @staticmethod
-    def from_literal(value):
-        """
-        Returns the subject category associated with a string or integer,
-        raising a ValueError or KeyError if the value is not associated with any subject category.
-        """
-
-        if isinstance(value, SubjectCategory):
-            return SubjectCategory(value.value)
-
-        if isinstance(value, str):
-            numeric_value = _SUBJECT_CATEGORY_STRINGS.get(value)
-            if numeric_value is None:
-                return SubjectCategory[value]
-
-            value = numeric_value
-
-        return SubjectCategory(value)
-
-    @staticmethod
-    def from_literal_safe(value):
-        """
-        Returns the subject category associated with a string or integer,
-        or None if the value is not associated with any subject category.
-        """
-
-        if isinstance(value, SubjectCategory):
-            return SubjectCategory(value.value)
-
-        if isinstance(value, str):
-            numeric_value = _SUBJECT_CATEGORY_STRINGS.get(value)
-            if numeric_value is None:
-                try:
-                    return SubjectCategory[value]
-                except KeyError:
-                    return None
-
-            value = numeric_value
-
-        try:
-            return SubjectCategory(value)
-        except ValueError:
-            return None
+    __ENUM__ = SubjectCategory
 
     ALL = SubjectCategory.ALL
 
     class ELEMENTARY:
-        """Helper class for elementary subject categories."""
+        """Proxy class for elementary subject categories."""
         GREETING = SubjectCategory.ELEMENTARY_GREETING
         INTRODUCING_ONESELF = SubjectCategory.ELEMENTARY_INTRODUCING_ONESELF
         INTRODUCING_FAMILY = SubjectCategory.ELEMENTARY_INTRODUCING_FAMILY
@@ -477,7 +425,7 @@ class SubjectCategoryHelper(metaclass=_SubjectCategoryHelperMeta):
         WATCHING_MOVIES = SubjectCategory.ELEMENTARY_WATCHING_MOVIES
 
     class INTERMEDIATE:
-        """Helper class for intermediate subject categories."""
+        """Proxy class for intermediate subject categories."""
         EXCHANGING_PERSONAL_INFORMATION = \
             SubjectCategory.INTERMEDIATE_EXCHANGING_PERSONAL_INFORMATION
         USING_TRANSPORTATION = SubjectCategory.INTERMEDIATE_USING_TRANSPORTATION
@@ -519,7 +467,7 @@ class SubjectCategoryHelper(metaclass=_SubjectCategoryHelperMeta):
         LANGUAGE = SubjectCategory.INTERMEDIATE_LANGUAGE
 
     class ADVANCED:
-        """Helper class for advanced subject categories."""
+        """Proxy class for advanced subject categories."""
         GEOLOGICAL_INFORMATION = SubjectCategory.ADVANCED_GEOLOGICAL_INFORMATION
         ECONOMICS_AND_ADMINISTRATION = SubjectCategory.ADVANCED_ECONOMICS_AND_ADMINISTRATION
         DIETARY_CULTURE = SubjectCategory.ADVANCED_DIETARY_CULTURE

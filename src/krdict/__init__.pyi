@@ -1,7 +1,8 @@
 from typing import Dict, List, Literal, TypedDict, Union, overload
 from . import scraper
-from .meaning_category import MeaningCategoryHelper as MeaningCategory, MeaningCategory as _MeaningCategory
-from .subject_category import SubjectCategoryHelper as SubjectCategory, SubjectCategory as _SubjectCategory
+from .types.meaning_category import MeaningCategoryProxy as MeaningCategory, MeaningCategory as _MeaningCategory
+from .types.subject_category import SubjectCategoryProxy as SubjectCategory, SubjectCategory as _SubjectCategory
+from .types import KRDictException
 
 Classification = Literal[
     'all',
@@ -9,7 +10,147 @@ Classification = Literal[
     'phrase',
     'expression'
 ]
-MeaningCategoryLiteral = Literal[
+MultimediaType = Literal[
+    'all',
+    'photo',
+    'illustration',
+    'video',
+    'animation',
+    'sound',
+    'none'
+]
+PartOfSpeech = Literal[
+    'all',
+    'noun',
+    'pronoun',
+    'numeral',
+    'particle',
+    'verb',
+    'adjective',
+    'determiner',
+    'adverb',
+    'interjection',
+    'affix',
+    'bound noun',
+    'auxiliary verb',
+    'auxiliary adjective',
+    'ending',
+    'none'
+]
+SearchMethod = Literal[
+    'exact',
+    'include',
+    'start',
+    'end'
+]
+SearchTarget = Literal[
+    'headword',
+    'definition',
+    'example',
+    'original_language',
+    'pronunciation',
+    'application',
+    'application_shorthand',
+    'idiom',
+    'proverb',
+    'reference_info'
+]
+SearchType = Literal[
+    'word',
+    'idiom_proverb',
+    'definition',
+    'example'
+]
+SortMethod = Literal[
+    'alphabetical',
+    'popular'
+]
+TargetLanguage = Literal[
+    'all',
+    'native_word',
+    'sino-korean',
+    'unknown',
+    'english',
+    'greek',
+    'dutch',
+    'norwegian',
+    'german',
+    'latin',
+    'russian',
+    'romanian',
+    'maori',
+    'malay',
+    'mongolian',
+    'basque',
+    'burmese',
+    'vietnamese',
+    'bulgarian',
+    'sanskrit',
+    'serbo-croatian',
+    'swahili',
+    'swedish',
+    'arabic',
+    'irish',
+    'spanish',
+    'uzbek',
+    'ukrainian',
+    'italian',
+    'indonesian',
+    'japanese',
+    'chinese',
+    'czech',
+    'cambodian',
+    'quechua',
+    'tagalog',
+    'thai',
+    'turkish',
+    'tibetan',
+    'persian',
+    'portuguese',
+    'polish',
+    'french',
+    'provencal',
+    'finnish',
+    'hungarian',
+    'hebrew',
+    'hindi',
+    'other',
+    'danish'
+]
+TranslationLanguage = Literal[
+    'all',
+    'english',
+    'japanese',
+    'french',
+    'spanish',
+    'arabic',
+    'mongolian',
+    'vietnamese',
+    'thai',
+    'indonesian',
+    'russian'
+]
+OriginType = Literal[
+    'all',
+    'native',
+    'hanja',
+    'loanword',
+    'hybrid'
+]
+VocabularyGrade = Literal[
+    'all',
+    'beginner',
+    'intermediate',
+    'advanced'
+]
+Option = Literal[
+    'fetch_multimedia',
+    'fetch_page_data',
+    'raise_scraper_errors',
+    'use_scraper'
+]
+
+MeaningCategoryType = _MeaningCategory | int | Literal[
     '전체',
     '인간 > 전체',
     '인간 > 사람의 종류',
@@ -361,62 +502,7 @@ MeaningCategoryLiteral = Literal[
     'concepts > pronouns',
     'concepts > person nouns and pronouns'
 ]
-MultimediaType = Literal[
-    'all',
-    'photo',
-    'illustration',
-    'video',
-    'animation',
-    'sound',
-    'none'
-]
-PartOfSpeech = Literal[
-    'all',
-    'noun',
-    'pronoun',
-    'numeral',
-    'particle',
-    'verb',
-    'adjective',
-    'determiner',
-    'adverb',
-    'interjection',
-    'affix',
-    'bound noun',
-    'auxiliary verb',
-    'auxiliary adjective',
-    'ending',
-    'none'
-]
-SearchMethod = Literal[
-    'exact',
-    'include',
-    'start',
-    'end'
-]
-SearchTarget = Literal[
-    'headword',
-    'definition',
-    'example',
-    'original_language',
-    'pronunciation',
-    'application',
-    'application_shorthand',
-    'idiom',
-    'proverb',
-    'reference_info'
-]
-SearchType = Literal[
-    'word',
-    'idiom_proverb',
-    'definition',
-    'example'
-]
-SortMethod = Literal[
-    'alphabetical',
-    'popular'
-]
-SubjectCategoryLiteral = Literal[
+SubjectCategoryType = _SubjectCategory | int | Literal[
     '전체',
     '인사하기',
     '소개하기 (자기소개)',
@@ -669,93 +755,6 @@ SubjectCategoryLiteral = Literal[
     'philosophy, ethics',
     'philosophy and ethics'
 ]
-TargetLanguage = Literal[
-    'all',
-    'native_word',
-    'sino-korean',
-    'unknown',
-    'english',
-    'greek',
-    'dutch',
-    'norwegian',
-    'german',
-    'latin',
-    'russian',
-    'romanian',
-    'maori',
-    'malay',
-    'mongolian',
-    'basque',
-    'burmese',
-    'vietnamese',
-    'bulgarian',
-    'sanskrit',
-    'serbo-croatian',
-    'swahili',
-    'swedish',
-    'arabic',
-    'irish',
-    'spanish',
-    'uzbek',
-    'ukrainian',
-    'italian',
-    'indonesian',
-    'japanese',
-    'chinese',
-    'czech',
-    'cambodian',
-    'quechua',
-    'tagalog',
-    'thai',
-    'turkish',
-    'tibetan',
-    'persian',
-    'portuguese',
-    'polish',
-    'french',
-    'provencal',
-    'finnish',
-    'hungarian',
-    'hebrew',
-    'hindi',
-    'other',
-    'danish'
-]
-TranslationLanguage = Literal[
-    'all',
-    'english',
-    'japanese',
-    'french',
-    'spanish',
-    'arabic',
-    'mongolian',
-    'vietnamese',
-    'thai',
-    'indonesian',
-    'russian'
-]
-OriginType = Literal[
-    'all',
-    'native',
-    'hanja',
-    'loanword',
-    'hybrid'
-]
-VocabularyGrade = Literal[
-    'all',
-    'beginner',
-    'intermediate',
-    'advanced'
-]
-Option = Literal[
-    'fetch_multimedia',
-    'fetch_page_data',
-    'raise_scraper_errors',
-    'use_scraper'
-]
-
-MeaningCategoryType = _MeaningCategory | MeaningCategoryLiteral | int
-SubjectCategoryType = _SubjectCategory | SubjectCategoryLiteral | int
 
 class OptionsDict(TypedDict, total=False):
     use_scraper: bool
@@ -1125,12 +1124,6 @@ class TotalViewResponse(TypedDict):
     response_type: Literal['view']
     data: TotalViewResponseData
     request_params: Dict[str, str]
-
-
-class KRDictException(Exception):
-    message: str
-    error_code: str
-    request_params: dict
 
 
 @overload
@@ -1662,3 +1655,15 @@ def view(*,
     translation_language: TranslationLanguage | List[TranslationLanguage] = None,
     options: OptionsDict = None
 ) -> ViewResponse | KRDictError: ...
+
+__all__ = [
+    'scraper',
+    'advanced_search',
+    'search',
+    'set_default',
+    'set_key',
+    'view',
+    'KRDictException',
+    'MeaningCategory',
+    'SubjectCategory'
+]

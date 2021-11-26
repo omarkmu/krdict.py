@@ -7,9 +7,8 @@ from xmltodict import parse as parse_xml
 
 from ._params import transform_search_params, transform_view_params
 from ._results import postprocessor
-from .meaning_category import MeaningCategoryHelper as MeaningCategory
-from .subject_category import SubjectCategoryHelper as SubjectCategory
 from .scraper import extend_view, extend_search, extend_advanced_search
+from .types import KRDictException, MeaningCategory, SubjectCategory
 
 
 _SEARCH_URL = 'https://krdict.korean.go.kr/api/search'
@@ -21,30 +20,6 @@ _DEFAULTS = {
     'RAISE_SCRAPER_ERRORS': False,
     'USE_SCRAPER': False
 }
-
-
-class KRDictException(Exception):
-    """
-    Contains information about an API error.
-    This exception is only thrown if the argument passed to the
-    ``raise_api_errors`` parameter is True.
-
-    - ``message``: The error message associated with the error.
-    - ``error_code``: The error code returned by the API.
-    - ``request_params``: A dict containing the transformed parameters
-    that were sent to the API.
-
-    """
-
-    def __init__(self, message, error_code, params):
-        super().__init__(message)
-
-        self.message = message
-        self.error_code = error_code
-        self.request_params = params
-
-    def __reduce__(self):
-        return (KRDictException, (self.message, self.error_code, self.request_params))
 
 
 def _send_request(url, params, search_type):
