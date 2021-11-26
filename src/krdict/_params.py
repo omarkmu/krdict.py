@@ -2,7 +2,6 @@
 Transforms input parameters into API-compliant dicts.
 """
 
-from enum import Enum
 from .types import MeaningCategory, SubjectCategory
 
 _PARAM_MAPS = {
@@ -188,12 +187,9 @@ _PARAM_MAPS = {
 def _get_map_value(mapper, value):
     if isinstance(value, list):
         return ','.join(map(lambda x: _get_map_value(mapper, x), value))
-    if isinstance(value, Enum):
-        value = value.value
 
     if 'type' in mapper:
-        enum_value = mapper['type'].get(value)
-        return str(enum_value.value if enum_value is not None else value)
+        return str(mapper['type'].get_value(value, value))
     if 'value' in mapper and value in mapper['value']:
         return str(mapper['value'][value])
 

@@ -30,8 +30,11 @@ PartOfSpeech = Literal[
     'interjection',
     'affix',
     'bound noun',
+    'bound_noun',
     'auxiliary verb',
+    'auxiliary_verb',
     'auxiliary adjective',
+    'auxiliary_adjective',
     'ending',
     'none'
 ]
@@ -45,28 +48,34 @@ SearchTarget = Literal[
     'headword',
     'definition',
     'example',
+    'original language',
     'original_language',
     'pronunciation',
     'application',
+    'application shorthand',
     'application_shorthand',
     'idiom',
     'proverb',
+    'reference info',
     'reference_info'
 ]
 SearchType = Literal[
     'word',
+    'idiom/proverb',
     'idiom_proverb',
     'definition',
     'example'
 ]
 SortMethod = Literal[
     'alphabetical',
+    'dict',
     'popular'
 ]
 TargetLanguage = Literal[
     'all',
     'native_word',
     'sino-korean',
+    'sino_korean',
     'unknown',
     'english',
     'greek',
@@ -85,6 +94,7 @@ TargetLanguage = Literal[
     'bulgarian',
     'sanskrit',
     'serbo-croatian',
+    'serbo_croatian',
     'swahili',
     'swedish',
     'arabic',
@@ -132,6 +142,7 @@ OriginType = Literal[
     'all',
     'native',
     'hanja',
+    'chinese',
     'loanword',
     'hybrid'
 ]

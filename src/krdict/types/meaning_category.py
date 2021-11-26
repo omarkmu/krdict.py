@@ -8,6 +8,7 @@ from .base import IntEnumBase, EnumProxyBase
 
 class MeaningCategory(IntEnumBase):
     """Enumeration class that contains meaning category values."""
+
     __aliases__ = {
         '전체': 0,
         '인간 > 전체': 1,

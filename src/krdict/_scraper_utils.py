@@ -313,8 +313,7 @@ def _build_language_query(lang):
     return f'&nation={nation}&nationCode={code}', f'{nation}/', exo
 
 def _build_sense_category_query(category):
-    enum_cat = MeaningCategory.get(category)
-    category = enum_cat.value if enum_cat is not None else int(category)
+    category = MeaningCategory.get_value(category, category)
 
     if category <= 0 or category > 153:
         return '&lgCategoryCode=0&miCategoryCode=-1'
@@ -344,8 +343,7 @@ def _build_subject_category_query(category):
     value = ''
 
     for cat in category:
-        enum_cat = SubjectCategory.get(cat)
-        cat_value = str(enum_cat.value if enum_cat is not None else cat)
+        cat_value = SubjectCategory.get_value(cat, cat)
 
         if cat_value == '0':
             value = ''

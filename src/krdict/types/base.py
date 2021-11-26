@@ -5,7 +5,7 @@ Contains base class for KRDict enumeration helpers.
 # pylint: disable=too-few-public-methods
 
 from collections.abc import Mapping
-from enum import IntEnum
+from enum import Enum, IntEnum
 
 class _ReadOnlyDict(Mapping):
     def __init__(self, data):
@@ -21,12 +21,12 @@ class _ReadOnlyDict(Mapping):
         return iter(self._dict)
 
     def __str__(self):
-        return self._dict.__str__()
+        return str(self._dict)
 
     def __repr__(self):
-        return self._dict.__repr__()
+        return repr(self._dict)
 
-class EnumBase:
+class EnumBase(Enum):
     """Base class for enumerations."""
 
     __aliases__ = {}
@@ -37,14 +37,11 @@ class EnumBase:
         """The alias dictionary of the enumeration."""
         return _ReadOnlyDict(cls.__aliases__)
 
-class IntEnumBase(EnumBase, IntEnum):
-    """Base class for integer-based enumerations."""
-
     @classmethod
     def get(cls, key, default=None):
         """
-        Returns the enumeration associated with a literal, or the default value
-        if the literal is not associated with any enumeration value.
+        Returns the enumeration instance associated with a literal,
+        or the provided default value if the literal is not associated with any enumeration.
         """
 
         if isinstance(key, cls):
@@ -53,18 +50,37 @@ class IntEnumBase(EnumBase, IntEnum):
         if isinstance(key, str):
             literal_value = cls.__aliases__.get(key)
 
-            if literal_value is None:
+            if literal_value is not None:
+                key = literal_value
+            else:
                 try:
                     return cls[key]
                 except KeyError:
-                    return default
-
-            key = literal_value
+                    pass
 
         try:
             return cls(key)
         except ValueError:
             return default
+
+    @classmethod
+    def get_value(cls, key, default=None):
+        """
+        Returns the enumeration value associated with a literal,
+        or the provided default value if the literal is not associated with any enumeration.
+        """
+
+        enum_instance = cls.get(key)
+        return enum_instance.value if enum_instance is not None else default
+
+class IntEnumBase(EnumBase, IntEnum):
+    """Base class for integer-based enumerations."""
+
+class StrEnumBase(str, EnumBase):
+    """Base class for string-based enumerations."""
+
+    def __str__(self):
+        return Enum.__str__(self)
 
 class EnumProxyBase:
     """Base class for enumeration proxies."""
