@@ -306,6 +306,7 @@ def view(**kwargs):
 
 
 __all__ = [
+    'scraper',
     'advanced_search',
     'search',
     'set_default',

@@ -6,7 +6,6 @@ import os
 import unittest
 import dotenv
 import krdict
-import krdict.scraper
 
 _BASE_VIEW_URL = 'https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo={}'
 

@@ -1,9 +1,7 @@
 from typing import Dict, List, Literal, TypedDict, Union, overload
-from .meaning_category import MeaningCategoryHelper, MeaningCategory as _MeaningCategory
-from .subject_category import SubjectCategoryHelper, SubjectCategory as _SubjectCategory
-
-MeaningCategory = MeaningCategoryHelper
-SubjectCategory = SubjectCategoryHelper
+from . import scraper
+from .meaning_category import MeaningCategoryHelper as MeaningCategory, MeaningCategory as _MeaningCategory
+from .subject_category import SubjectCategoryHelper as SubjectCategory, SubjectCategory as _SubjectCategory
 
 Classification = Literal[
     'all',
