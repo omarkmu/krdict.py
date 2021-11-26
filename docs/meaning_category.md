@@ -1,53 +1,17 @@
-The `krdict` module contains the helper class `MeaningCategory`, which provides
-easy access to enumeration values via nested classes.
+The `MeaningCategory` class provided by `krdict` acts as a proxy
+for an underlying enumeration class, to allow nested indexing operations.
 
-`MeaningCategory` acts as a proxy for indexing and instantiation of an underlying enumeration class.
 This means that `MeaningCategory.HUMAN.ALL`, `MeaningCategory['HUMAN_ALL']`,
 and `MeaningCategory(1)` all map to `<MeaningCategory.HUMAN_ALL: 1>`.
 
-This class can be accessed from the main module as `krdict.MeaningCategory`,
-or directly as `krdict.meaning_category.MeaningCategoryHelper`.
+The `enum` property can be used to access the underlying enumeration class.
 
 ---
 
-## Methods
-
-### enum
-
-Returns the underlying enumeration class.
-
-```python
-@staticmethod
-def enum() -> Type[MeaningCategory]: ...
-```
-
-### from_literal
-
-Returns the meaning category associated with a string or integer.
-Raises a ValueError or KeyError if the value is not associated with any meaning category.
-
-```python
-@staticmethod
-def from_literal(value: str | int) -> MeaningCategory: ...
-```
-
-### from_literal_safe
-
-Returns the meaning category associated with a string or integer,
-or None if the value is not associated with any meaning category.
-
-```python
-@staticmethod
-def from_literal_safe(value: str | int) -> MeaningCategory | None: ...
-```
-
 ## Enumeration Values
 
-The following non-standard syntax represents access via indexing.
-For the raw enumeration value names, replace index operations with underscores (`HUMAN.ALL` → `HUMAN_ALL`).
-
 ```python
-class MeaningCategoryHelper:
+class MeaningCategory:
     ALL = 0
     HUMAN.ALL = 1
     HUMAN.TYPES_OF_PEOPLE = 2
@@ -206,11 +170,13 @@ class MeaningCategoryHelper:
 
 ## Aliases
 
-The following literal values are accepted aliases for meaning categories.
+The following values are aliases for meaning categories.
+A read-only dictionary of these aliases can be accessed with
+the [`aliases`](parameters.md#aliases) property.
 
 These strings and the integer values they map to can be used directly
 in functions which expect meaning categories, and return the expected
-enumeration value when used as the argument to `from_literal`.
+enumeration value when used as the argument to [`get`](parameters.md#get).
 
 ```bash
 '전체': 0,

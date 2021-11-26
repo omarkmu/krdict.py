@@ -1,50 +1,16 @@
-The `krdict` module contains the helper class `SubjectCategory`, which provides
-easy access to enumeration values via nested classes.
+The `SubjectCategory` class provided by `krdict` acts as a proxy
+for an underlying enumeration class, to allow nested indexing operations.
 
-`SubjectCategory` acts as a proxy for indexing and instantiation of an underlying enumeration class.
 This means that `SubjectCategory.ELEMENTARY.GREETING`, `SubjectCategory['ELEMENTARY_GREETING']`,
 and `SubjectCategory(1)` all map to `<SubjectCategory.ELEMENTARY_GREETING: 1>`.
 
-This class can be accessed from the main module as `krdict.SubjectCategory`,
-or directly as `krdict.subject_category.SubjectCategoryHelper`.
+The `enum` property can be used to access the underlying enumeration class.
 
 ---
-
-## Methods
-
-### enum
-
-Returns the underlying enumeration class.
-
-```python
-@staticmethod
-def enum() -> Type[SubjectCategory]: ...
-```
-
-### from_literal
-
-Returns the subject category associated with a string or integer.
-Raises a ValueError or KeyError if the value is not associated with any subject category.
-
-```python
-@staticmethod
-def from_literal(value: str | int) -> SubjectCategory: ...
-```
-
-### from_literal_safe
-
-Returns the subject category associated with a string or integer,
-or None if the value is not associated with any subject category.
-
-```python
-@staticmethod
-def from_literal_safe(value: str | int) -> SubjectCategory | None: ...
-```
 
 ## Enumeration Values
 
 The following non-standard syntax represents access via indexing.
-For the raw enumeration value names, replace index operations with underscores (`ELEMENTARY.GREETING` → `ELEMENTARY_GREETING`).
 
 ```python
 class SubjectCategory:
@@ -159,11 +125,13 @@ class SubjectCategory:
 
 ## Aliases
 
-The following literal values are accepted aliases for subject categories.
+The following values are aliases for subject categories.
+A read-only dictionary of these aliases can be accessed with
+the [`aliases`](parameters.md#aliases) property.
 
 These strings and the integer values they map to can be used directly
 in functions which expect subject categories, and return the expected
-enumeration value when used as the argument to `from_literal`.
+enumeration value when used as the argument to [`get`](parameters.md#get).
 
 ```bash
 '전체': 0,

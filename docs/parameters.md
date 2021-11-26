@@ -2,21 +2,49 @@ A summary of expected parameter types for various [functions](functions.md).
 
 ---
 
-## Classification
+## Enumerations
+
+All of the enumeration types below define the following properties and methods:
+
+### aliases
+
+A property that allows access to enumeration aliases via a read-only dictionary.
+These aliases, which are documented under each of the types below, can be used
+with [`get`](#get) to retrieve an enumeration value.
+
+```python
+@property
+def aliases() -> Mapping: ...
+```
+
+### get
+
+Returns the enumeration value associated with a string or integer,
+or None if the value is not associated with any enumeration value.
+
+```python
+@staticmethod
+def get(value: str | int): ...
+```
+
+
+## Types
+
+### Classification
 
 The classification of a dictionary entry.
 ```bash
 'all' | 'word' | 'phrase' | 'expression'
 ```
 
-## MultimediaType
+### MultimediaType
 
 A type of multimedia file.
 ```bash
 'all' | 'photo' | 'illustration' | 'video' | 'animation' | 'sound' | 'none'
 ```
 
-## OptionsDict
+### OptionsDict
 
 Additional options to apply to a query. All of the keys are not required.
 ```python
@@ -35,14 +63,14 @@ Additional options to apply to a query. All of the keys are not required.
 
 See also: [`set_default`](functions.md#set_default).
 
-## OriginType
+### OriginType
 
 The classification of a dictionary entry's origin.
 ```bash
 'all' | 'native' | 'hanja' | 'loanword' | 'hybrid'
 ```
 
-## PartOfSpeech
+### PartOfSpeech
 
 A Korean part of speech.
 ```bash
@@ -64,7 +92,7 @@ A Korean part of speech.
 | 'none'
 ```
 
-## ScraperTranslationLanguage
+### ScraperTranslationLanguage
 
 A language to include translations for during a scraper fetch.
 ```bash
@@ -81,7 +109,7 @@ A language to include translations for during a scraper fetch.
 | 'russian'
 ```
 
-## SearchMethod
+### SearchMethod
 
 The method to use when searching.
 
@@ -94,7 +122,7 @@ The method to use when searching.
 'exact' | 'include' | 'start' | 'end'
 ```
 
-## SearchTarget
+### SearchTarget
 
 The target of the search query; what to search by.
 ```bash
@@ -110,21 +138,21 @@ The target of the search query; what to search by.
 | 'reference_info'
 ```
 
-## SearchType
+### SearchType
 
 The type of search to perform.
 ```bash
 'word' | 'idiom_proverb' | 'definition' | 'example'
 ```
 
-## SortMethod
+### SortMethod
 
 A sorting method to use for search results.
 ```bash
 'alphabetical' | 'popular'
 ```
 
-## TargetLanguage
+### TargetLanguage
 
 A target original language to search by.
 ```bash
@@ -180,7 +208,7 @@ A target original language to search by.
 | 'danish'
 ```
 
-## TranslationLanguage
+### TranslationLanguage
 
 A language to include translations for.
 ```bash
@@ -197,21 +225,21 @@ A language to include translations for.
 | 'russian'
 ```
 
-## VocabularyGrade
+### VocabularyGrade
 
 The vocabulary level of a dictionary entry.
 ```bash
 'all' | 'beginner' | 'intermediate' | 'advanced'
 ```
 
-## MeaningCategory
+### MeaningCategory
 
 A meaning category which a dictionary entry may belong to.
 Accepts a meaning category enumeration, integer, or string alias.  
 
 See [Meaning Category](meaning_category.md) for details.
 
-## SubjectCategory
+### SubjectCategory
 
 A subject category (themes and situations) which a dictionary entry may belong to.
 Accepts a subject category enumeration, integer, or string alias.  
