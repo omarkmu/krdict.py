@@ -1,8 +1,6 @@
 from typing import Dict, List, Literal, TypedDict, Union, overload
 from . import scraper
-from .types.meaning_category import MeaningCategoryProxy as MeaningCategory, MeaningCategory as _MeaningCategory
-from .types.subject_category import SubjectCategoryProxy as SubjectCategory, SubjectCategory as _SubjectCategory
-from .types import KRDictException
+from .types import KRDictException, MeaningCategory, SubjectCategory
 
 Classification = Literal[
     'all',
@@ -150,7 +148,7 @@ Option = Literal[
     'use_scraper'
 ]
 
-MeaningCategoryType = _MeaningCategory | int | Literal[
+MeaningCategoryType = MeaningCategory | int | Literal[
     '전체',
     '인간 > 전체',
     '인간 > 사람의 종류',
@@ -502,7 +500,7 @@ MeaningCategoryType = _MeaningCategory | int | Literal[
     'concepts > pronouns',
     'concepts > person nouns and pronouns'
 ]
-SubjectCategoryType = _SubjectCategory | int | Literal[
+SubjectCategoryType = SubjectCategory | int | Literal[
     '전체',
     '인사하기',
     '소개하기 (자기소개)',

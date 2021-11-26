@@ -2,9 +2,9 @@
 Contains enumeration class for handling meaning categories.
 """
 
-# pylint: disable=invalid-name,too-few-public-methods
+# pylint: disable=invalid-name,too-few-public-methods,too-many-instance-attributes
 
-from .base import EnumBase, EnumProxyBase, EnumProxyMeta
+from .base import EnumBase, EnumProxyBase
 
 
 _MEANING_CATEGORY_STRINGS = {
@@ -360,7 +360,6 @@ _MEANING_CATEGORY_STRINGS = {
     'concepts > person nouns and pronouns': 153,
 }
 
-
 class MeaningCategory(EnumBase):
     """Enumeration class that contains meaning category values."""
     __ALIASES__ = _MEANING_CATEGORY_STRINGS
@@ -520,208 +519,394 @@ class MeaningCategory(EnumBase):
     CONCEPTS_QUESTION_WORDS = 152
     CONCEPTS_PRONOUNS = 153
 
-class MeaningCategoryProxy(EnumProxyBase[MeaningCategory], metaclass=EnumProxyMeta):
-    """Proxy class for meaning categories."""
+    class __PROXY_HUMAN__(EnumProxyBase):
+        def __init__(self, populate):
+            super().__init__(populate)
+            if not populate:
+                return
 
-    __ENUM__ = MeaningCategory
+            self.ALL = MeaningCategory.HUMAN_ALL
+            self.TYPES_OF_PEOPLE = MeaningCategory.HUMAN_TYPES_OF_PEOPLE
+            self.BODY_PARTS = MeaningCategory.HUMAN_BODY_PARTS
+            self.HEALTH_STATUS = MeaningCategory.HUMAN_HEALTH_STATUS
+            self.PHYSIOLOGICAL_PHENOMENA = MeaningCategory.HUMAN_PHYSIOLOGICAL_PHENOMENA
+            self.SENSES = MeaningCategory.HUMAN_SENSES
+            self.EMOTION = MeaningCategory.HUMAN_EMOTION
+            self.PERSONALITY = MeaningCategory.HUMAN_PERSONALITY
+            self.ATTITUDE = MeaningCategory.HUMAN_ATTITUDE
+            self.FEATURES = MeaningCategory.HUMAN_FEATURES
+            self.ABILITY = MeaningCategory.HUMAN_ABILITY
+            self.PHYSICAL_CHANGES = MeaningCategory.HUMAN_PHYSICAL_CHANGES
+            self.PHYSICAL_ACTIVITIES = MeaningCategory.HUMAN_PHYSICAL_ACTIVITIES
+            self.ACTIONS_DONE_TO_THE_BODY = MeaningCategory.HUMAN_ACTIONS_DONE_TO_THE_BODY
+            self.COGNITIVE_BEHAVIOR = MeaningCategory.HUMAN_COGNITIVE_BEHAVIOR
+            self.SOUND = MeaningCategory.HUMAN_SOUND
+            self.INNER_PARTS_OF_THE_BODY = MeaningCategory.HUMAN_INNER_PARTS_OF_THE_BODY
 
-    ALL = MeaningCategory.ALL
+    class __PROXY_LIFE__(EnumProxyBase):
+        def __init__(self, populate):
+            super().__init__(populate)
+            if not populate:
+                return
 
-    class HUMAN:
-        """Proxy class for human meaning categories."""
-        ALL = MeaningCategory.HUMAN_ALL
-        TYPES_OF_PEOPLE = MeaningCategory.HUMAN_TYPES_OF_PEOPLE
-        BODY_PARTS = MeaningCategory.HUMAN_BODY_PARTS
-        HEALTH_STATUS = MeaningCategory.HUMAN_HEALTH_STATUS
-        PHYSIOLOGICAL_PHENOMENA = MeaningCategory.HUMAN_PHYSIOLOGICAL_PHENOMENA
-        SENSES = MeaningCategory.HUMAN_SENSES
-        EMOTION = MeaningCategory.HUMAN_EMOTION
-        PERSONALITY = MeaningCategory.HUMAN_PERSONALITY
-        ATTITUDE = MeaningCategory.HUMAN_ATTITUDE
-        FEATURES = MeaningCategory.HUMAN_FEATURES
-        ABILITY = MeaningCategory.HUMAN_ABILITY
-        PHYSICAL_CHANGES = MeaningCategory.HUMAN_PHYSICAL_CHANGES
-        PHYSICAL_ACTIVITIES = MeaningCategory.HUMAN_PHYSICAL_ACTIVITIES
-        ACTIONS_DONE_TO_THE_BODY = MeaningCategory.HUMAN_ACTIONS_DONE_TO_THE_BODY
-        COGNITIVE_BEHAVIOR = MeaningCategory.HUMAN_COGNITIVE_BEHAVIOR
-        SOUND = MeaningCategory.HUMAN_SOUND
-        INNER_PARTS_OF_THE_BODY = MeaningCategory.HUMAN_INNER_PARTS_OF_THE_BODY
+            self.ALL = MeaningCategory.LIFE_ALL
+            self.STATE_OF_BEING = MeaningCategory.LIFE_STATE_OF_BEING
+            self.LIFE_ACTIVIES = MeaningCategory.LIFE_LIFE_ACTIVIES
+            self.DAILY_ACTIVITIES = MeaningCategory.LIFE_DAILY_ACTIVITIES
+            self.KINSHIP = MeaningCategory.LIFE_KINSHIP
+            self.FAMILY_EVENTS = MeaningCategory.LIFE_FAMILY_EVENTS
+            self.LEISURE_TOOLS = MeaningCategory.LIFE_LEISURE_TOOLS
+            self.LEISURE_FACILITIES = MeaningCategory.LIFE_LEISURE_FACILITIES
+            self.LEISURE_ACTIVITIES = MeaningCategory.LIFE_LEISURE_ACTIVITIES
+            self.DISEASES_AND_SYMPTOMS = MeaningCategory.LIFE_DISEASES_AND_SYMPTOMS
+            self.MEDICAL_ACTIVITIES = MeaningCategory.LIFE_MEDICAL_ACTIVITIES
+            self.MEDICAL_FACILITIES = MeaningCategory.LIFE_MEDICAL_FACILITIES
+            self.MEDICINE = MeaningCategory.LIFE_MEDICINE
 
-    class LIFE:
-        """Proxy class for life meaning categories."""
-        ALL = MeaningCategory.LIFE_ALL
-        STATE_OF_BEING = MeaningCategory.LIFE_STATE_OF_BEING
-        LIFE_ACTIVIES = MeaningCategory.LIFE_LIFE_ACTIVIES
-        DAILY_ACTIVITIES = MeaningCategory.LIFE_DAILY_ACTIVITIES
-        KINSHIP = MeaningCategory.LIFE_KINSHIP
-        FAMILY_EVENTS = MeaningCategory.LIFE_FAMILY_EVENTS
-        LEISURE_TOOLS = MeaningCategory.LIFE_LEISURE_TOOLS
-        LEISURE_FACILITIES = MeaningCategory.LIFE_LEISURE_FACILITIES
-        LEISURE_ACTIVITIES = MeaningCategory.LIFE_LEISURE_ACTIVITIES
-        DISEASES_AND_SYMPTOMS = MeaningCategory.LIFE_DISEASES_AND_SYMPTOMS
-        MEDICAL_ACTIVITIES = MeaningCategory.LIFE_MEDICAL_ACTIVITIES
-        MEDICAL_FACILITIES = MeaningCategory.LIFE_MEDICAL_FACILITIES
-        MEDICINE = MeaningCategory.LIFE_MEDICINE
+    class __PROXY_DIETARY__(EnumProxyBase):
+        def __init__(self, populate):
+            super().__init__(populate)
+            if not populate:
+                return
 
-    class DIETARY:
-        """Proxy class for dietary meaning categories."""
-        ALL = MeaningCategory.DIETARY_ALL
-        FOOD_TYPES = MeaningCategory.DIETARY_FOOD_TYPES
-        VEGETABLES = MeaningCategory.DIETARY_VEGETABLES
-        GRAIN = MeaningCategory.DIETARY_GRAIN
-        FRUIT = MeaningCategory.DIETARY_FRUIT
-        BEVERAGES = MeaningCategory.DIETARY_BEVERAGES
-        FOOD_INGREDIENTS = MeaningCategory.DIETARY_FOOD_INGREDIENTS
-        COOKING_APPLIANCES = MeaningCategory.DIETARY_COOKING_APPLIANCES
-        EATING_PLACES = MeaningCategory.DIETARY_EATING_PLACES
-        TASTE = MeaningCategory.DIETARY_TASTE
-        EATING_AND_COOKING_ACTIVITIES = MeaningCategory.DIETARY_EATING_AND_COOKING_ACTIVITIES
+            self.ALL = MeaningCategory.DIETARY_ALL
+            self.FOOD_TYPES = MeaningCategory.DIETARY_FOOD_TYPES
+            self.VEGETABLES = MeaningCategory.DIETARY_VEGETABLES
+            self.GRAIN = MeaningCategory.DIETARY_GRAIN
+            self.FRUIT = MeaningCategory.DIETARY_FRUIT
+            self.BEVERAGES = MeaningCategory.DIETARY_BEVERAGES
+            self.FOOD_INGREDIENTS = MeaningCategory.DIETARY_FOOD_INGREDIENTS
+            self.COOKING_APPLIANCES = MeaningCategory.DIETARY_COOKING_APPLIANCES
+            self.EATING_PLACES = MeaningCategory.DIETARY_EATING_PLACES
+            self.TASTE = MeaningCategory.DIETARY_TASTE
+            self.EATING_AND_COOKING_ACTIVITIES = \
+                MeaningCategory.DIETARY_EATING_AND_COOKING_ACTIVITIES
 
-    class CLOTHING:
-        """Proxy class for clothing meaning categories."""
-        ALL = MeaningCategory.CLOTHING_ALL
-        TYPES_OF_CLOTHING = MeaningCategory.CLOTHING_TYPES_OF_CLOTHING
-        FABRIC = MeaningCategory.CLOTHING_FABRIC
-        PARTS_OF_CLOTHING = MeaningCategory.CLOTHING_PARTS_OF_CLOTHING
-        HATS_SHOES_ACCESSORIES = MeaningCategory.CLOTHING_HATS_SHOES_ACCESSORIES
-        PLACES_RELATED_TO_CLOTHING = MeaningCategory.CLOTHING_PLACES_RELATED_TO_CLOTHING
-        STATE_OF_CLOTHING = MeaningCategory.CLOTHING_STATE_OF_CLOTHING
-        ACTIVITIES_RELATED_TO_CLOTHING = MeaningCategory.CLOTHING_ACTIVITIES_RELATED_TO_CLOTHING
-        BEAUTY_AND_HEALTH = MeaningCategory.CLOTHING_BEAUTY_AND_HEALTH
+    class __PROXY_CLOTHING__(EnumProxyBase):
+        def __init__(self, populate):
+            super().__init__(populate)
+            if not populate:
+                return
 
-    class HOME_LIFE:
-        """Proxy class for home life meaning categories."""
-        ALL = MeaningCategory.HOME_LIFE_ALL
-        BUILDING_TYPES = MeaningCategory.HOME_LIFE_BUILDING_TYPES
-        TYPE_OF_HOUSING = MeaningCategory.HOME_LIFE_TYPE_OF_HOUSING
-        RESIDENTIAL_AREA = MeaningCategory.HOME_LIFE_RESIDENTIAL_AREA
-        HOUSEHOLD_ITEMS = MeaningCategory.HOME_LIFE_HOUSEHOLD_ITEMS
-        HOUSING_STRUCTURE = MeaningCategory.HOME_LIFE_HOUSING_STRUCTURE
-        RESIDENTIAL_STATUS = MeaningCategory.HOME_LIFE_RESIDENTIAL_STATUS
-        RESIDENTIAL_ACTIVITIES = MeaningCategory.HOME_LIFE_RESIDENTIAL_ACTIVITIES
-        RESIDENTIAL_CHORES = MeaningCategory.HOME_LIFE_RESIDENTIAL_CHORES
+            self.ALL = MeaningCategory.CLOTHING_ALL
+            self.TYPES_OF_CLOTHING = MeaningCategory.CLOTHING_TYPES_OF_CLOTHING
+            self.FABRIC = MeaningCategory.CLOTHING_FABRIC
+            self.PARTS_OF_CLOTHING = MeaningCategory.CLOTHING_PARTS_OF_CLOTHING
+            self.HATS_SHOES_ACCESSORIES = MeaningCategory.CLOTHING_HATS_SHOES_ACCESSORIES
+            self.PLACES_RELATED_TO_CLOTHING = MeaningCategory.CLOTHING_PLACES_RELATED_TO_CLOTHING
+            self.STATE_OF_CLOTHING = MeaningCategory.CLOTHING_STATE_OF_CLOTHING
+            self.ACTIVITIES_RELATED_TO_CLOTHING = \
+                MeaningCategory.CLOTHING_ACTIVITIES_RELATED_TO_CLOTHING
+            self.BEAUTY_AND_HEALTH = MeaningCategory.CLOTHING_BEAUTY_AND_HEALTH
 
-    class SOCIAL_LIFE:
-        """Proxy class for social life meaning categories."""
-        ALL = MeaningCategory.SOCIAL_LIFE_ALL
-        HUMAN_RELATIONSHIPS = MeaningCategory.SOCIAL_LIFE_HUMAN_RELATIONSHIPS
-        MEANS_OF_COMMUNICATION = MeaningCategory.SOCIAL_LIFE_MEANS_OF_COMMUNICATION
-        MODES_OF_TRANSPORTATION = MeaningCategory.SOCIAL_LIFE_MODES_OF_TRANSPORTATION
-        PLACES_FOR_TRANSPORTATION_USAGE = \
-            MeaningCategory.SOCIAL_LIFE_PLACES_FOR_TRANSPORTATION_USAGE
-        MEDIA = MeaningCategory.SOCIAL_LIFE_MEDIA
-        WORKPLACE = MeaningCategory.SOCIAL_LIFE_WORKPLACE
-        TITLES_AND_POSITIONS = MeaningCategory.SOCIAL_LIFE_TITLES_AND_POSITIONS
-        OCCUPATION = MeaningCategory.SOCIAL_LIFE_OCCUPATION
-        SOCIAL_EVENTS = MeaningCategory.SOCIAL_LIFE_SOCIAL_EVENTS
-        SOCIAL_LIFE_STATUS = MeaningCategory.SOCIAL_LIFE_SOCIAL_LIFE_STATUS
-        SOCIAL_ACTIVITIES = MeaningCategory.SOCIAL_LIFE_SOCIAL_ACTIVITIES
-        TRANSPORTATION_USAGE = MeaningCategory.SOCIAL_LIFE_TRANSPORTATION_USAGE
-        WORKPLACE_LIFE = MeaningCategory.SOCIAL_LIFE_WORKPLACE_LIFE
-        LANGUAGE_ACTIVITIES = MeaningCategory.SOCIAL_LIFE_LANGUAGE_ACTIVITIES
-        COMMUNICATION_ACTIVITIES = MeaningCategory.SOCIAL_LIFE_COMMUNICATION_ACTIVITIES
-        GRAMMAR_AND_SPEECH = MeaningCategory.SOCIAL_LIFE_GRAMMAR_AND_SPEECH
+    class __PROXY_HOME_LIFE__(EnumProxyBase):
+        def __init__(self, populate):
+            super().__init__(populate)
+            if not populate:
+                return
 
-    class ECONOMIC:
-        """Proxy class for economic meaning categories."""
-        ALL = MeaningCategory.ECONOMIC_ALL
-        PEOPLE = MeaningCategory.ECONOMIC_PEOPLE
-        PLACES = MeaningCategory.ECONOMIC_PLACES
-        MEANS = MeaningCategory.ECONOMIC_MEANS
-        PRODUCTS = MeaningCategory.ECONOMIC_PRODUCTS
-        STATUS = MeaningCategory.ECONOMIC_STATUS
-        ACTIVITIES = MeaningCategory.ECONOMIC_ACTIVITIES
+            self.ALL = MeaningCategory.HOME_LIFE_ALL
+            self.BUILDING_TYPES = MeaningCategory.HOME_LIFE_BUILDING_TYPES
+            self.TYPE_OF_HOUSING = MeaningCategory.HOME_LIFE_TYPE_OF_HOUSING
+            self.RESIDENTIAL_AREA = MeaningCategory.HOME_LIFE_RESIDENTIAL_AREA
+            self.HOUSEHOLD_ITEMS = MeaningCategory.HOME_LIFE_HOUSEHOLD_ITEMS
+            self.HOUSING_STRUCTURE = MeaningCategory.HOME_LIFE_HOUSING_STRUCTURE
+            self.RESIDENTIAL_STATUS = MeaningCategory.HOME_LIFE_RESIDENTIAL_STATUS
+            self.RESIDENTIAL_ACTIVITIES = MeaningCategory.HOME_LIFE_RESIDENTIAL_ACTIVITIES
+            self.RESIDENTIAL_CHORES = MeaningCategory.HOME_LIFE_RESIDENTIAL_CHORES
 
-    class EDUCATION:
-        """Proxy class for education meaning categories."""
-        ALL = MeaningCategory.EDUCATION_ALL
-        PEOPLE = MeaningCategory.EDUCATION_PEOPLE
-        MAJORS_AND_SUBJECTS = MeaningCategory.EDUCATION_MAJORS_AND_SUBJECTS
-        EDUCATIONAL_INSTITUTIONS = MeaningCategory.EDUCATION_EDUCATIONAL_INSTITUTIONS
-        SCHOOL_FACILITIES = MeaningCategory.EDUCATION_SCHOOL_FACILITIES
-        OBJECTS = MeaningCategory.EDUCATION_OBJECTS
-        ACADEMIC_TERMS = MeaningCategory.EDUCATION_ACADEMIC_TERMS
-        TEACHING_AND_LEARNING_ACTIVITIES = \
-            MeaningCategory.EDUCATION_TEACHING_AND_LEARNING_ACTIVITIES
-        ACADEMIC_ACTIVITIES = MeaningCategory.EDUCATION_ACADEMIC_ACTIVITIES
+    class __PROXY_SOCIAL_LIFE__(EnumProxyBase):
+        def __init__(self, populate):
+            super().__init__(populate)
+            if not populate:
+                return
 
-    class RELIGION:
-        """Proxy class for religion meaning categories."""
-        ALL = MeaningCategory.RELIGION_ALL
-        TYPES_OF_RELIGION = MeaningCategory.RELIGION_TYPES_OF_RELIGION
-        PLACES = MeaningCategory.RELIGION_PLACES
-        PEOPLE = MeaningCategory.RELIGION_PEOPLE
-        RELIGIOUS_WORDS = MeaningCategory.RELIGION_RELIGIOUS_WORDS
-        MAJOR_FIGURES = MeaningCategory.RELIGION_MAJOR_FIGURES
-        OBJECTS = MeaningCategory.RELIGION_OBJECTS
-        PRACTICES = MeaningCategory.RELIGION_PRACTICES
+            self.ALL = MeaningCategory.SOCIAL_LIFE_ALL
+            self.HUMAN_RELATIONSHIPS = MeaningCategory.SOCIAL_LIFE_HUMAN_RELATIONSHIPS
+            self.MEANS_OF_COMMUNICATION = MeaningCategory.SOCIAL_LIFE_MEANS_OF_COMMUNICATION
+            self.MODES_OF_TRANSPORTATION = MeaningCategory.SOCIAL_LIFE_MODES_OF_TRANSPORTATION
+            self.PLACES_FOR_TRANSPORTATION_USAGE = \
+                MeaningCategory.SOCIAL_LIFE_PLACES_FOR_TRANSPORTATION_USAGE
+            self.MEDIA = MeaningCategory.SOCIAL_LIFE_MEDIA
+            self.WORKPLACE = MeaningCategory.SOCIAL_LIFE_WORKPLACE
+            self.TITLES_AND_POSITIONS = MeaningCategory.SOCIAL_LIFE_TITLES_AND_POSITIONS
+            self.OCCUPATION = MeaningCategory.SOCIAL_LIFE_OCCUPATION
+            self.SOCIAL_EVENTS = MeaningCategory.SOCIAL_LIFE_SOCIAL_EVENTS
+            self.SOCIAL_LIFE_STATUS = MeaningCategory.SOCIAL_LIFE_SOCIAL_LIFE_STATUS
+            self.SOCIAL_ACTIVITIES = MeaningCategory.SOCIAL_LIFE_SOCIAL_ACTIVITIES
+            self.TRANSPORTATION_USAGE = MeaningCategory.SOCIAL_LIFE_TRANSPORTATION_USAGE
+            self.WORKPLACE_LIFE = MeaningCategory.SOCIAL_LIFE_WORKPLACE_LIFE
+            self.LANGUAGE_ACTIVITIES = MeaningCategory.SOCIAL_LIFE_LANGUAGE_ACTIVITIES
+            self.COMMUNICATION_ACTIVITIES = MeaningCategory.SOCIAL_LIFE_COMMUNICATION_ACTIVITIES
+            self.GRAMMAR_AND_SPEECH = MeaningCategory.SOCIAL_LIFE_GRAMMAR_AND_SPEECH
 
-    class CULTURE:
-        """Proxy class for culture meaning categories."""
-        ALL = MeaningCategory.CULTURE_ALL
-        CULTURAL_ACTIVITY_PARTICIPANTS = MeaningCategory.CULTURE_CULTURAL_ACTIVITY_PARTICIPANTS
-        MUSIC = MeaningCategory.CULTURE_MUSIC
-        FINE_ART = MeaningCategory.CULTURE_FINE_ART
-        LITERATURE = MeaningCategory.CULTURE_LITERATURE
-        ART = MeaningCategory.CULTURE_ART
-        POP_CULTURE = MeaningCategory.CULTURE_POP_CULTURE
-        TRADITIONAL_CULTURE = MeaningCategory.CULTURE_TRADITIONAL_CULTURE
-        CULTURAL_ACTIVITY_PLACES = MeaningCategory.CULTURE_CULTURAL_ACTIVITY_PLACES
-        CULTURAL_ACTIVITIES = MeaningCategory.CULTURE_CULTURAL_ACTIVITIES
+    class __PROXY_ECONOMIC__(EnumProxyBase):
+        def __init__(self, populate):
+            super().__init__(populate)
+            if not populate:
+                return
 
-    class POLITICS_AND_ADMINISTRATION:
-        """Proxy class for politics and administration meaning categories."""
-        ALL = MeaningCategory.POLITICS_AND_ADMINISTRATION_ALL
-        PUBLIC_INSTITUTIONS = MeaningCategory.POLITICS_AND_ADMINISTRATION_PUBLIC_INSTITUTIONS
-        JUDICIAL_AND_SECURITY_PERSONNEL = \
-            MeaningCategory.POLITICS_AND_ADMINISTRATION_JUDICIAL_AND_SECURITY_PERSONNEL
-        WEAPONS = MeaningCategory.POLITICS_AND_ADMINISTRATION_WEAPONS
-        POLITICS_AND_SECURITY = MeaningCategory.POLITICS_AND_ADMINISTRATION_POLITICS_AND_SECURITY
-        POLITICAL_ACTS = MeaningCategory.POLITICS_AND_ADMINISTRATION_POLITICAL_ACTS
-        LAW_AND_SECURITY_ACTS = MeaningCategory.POLITICS_AND_ADMINISTRATION_LAW_AND_SECURITY_ACTS
-        POLITICAL_AND_ADMINISTRATIVE_PERSONNEL = \
-            MeaningCategory.POLITICS_AND_ADMINISTRATION_POLITICAL_AND_ADMINISTRATIVE_PERSONNEL
+            self.ALL = MeaningCategory.ECONOMIC_ALL
+            self.PEOPLE = MeaningCategory.ECONOMIC_PEOPLE
+            self.PLACES = MeaningCategory.ECONOMIC_PLACES
+            self.MEANS = MeaningCategory.ECONOMIC_MEANS
+            self.PRODUCTS = MeaningCategory.ECONOMIC_PRODUCTS
+            self.STATUS = MeaningCategory.ECONOMIC_STATUS
+            self.ACTIVITIES = MeaningCategory.ECONOMIC_ACTIVITIES
 
-    class NATURE:
-        """Proxy class for nature meaning categories."""
-        ALL = MeaningCategory.NATURE_ALL
-        TOPOGRAPHY = MeaningCategory.NATURE_TOPOGRAPHY
-        SURFACE_OBJECTS = MeaningCategory.NATURE_SURFACE_OBJECTS
-        CELESTIAL_BODIES = MeaningCategory.NATURE_CELESTIAL_BODIES
-        NATURAL_RESOURCES = MeaningCategory.NATURE_NATURAL_RESOURCES
-        DISASTERS = MeaningCategory.NATURE_DISASTERS
-        WEATHER_AND_CLIMATE = MeaningCategory.NATURE_WEATHER_AND_CLIMATE
+    class __PROXY_EDUCATION__(EnumProxyBase):
+        def __init__(self, populate):
+            super().__init__(populate)
+            if not populate:
+                return
 
-    class ANIMALS_AND_PLANTS:
-        """Proxy class for animals and plants meaning categories."""
-        ALL = MeaningCategory.ANIMALS_AND_PLANTS_ALL
-        ANIMALS = MeaningCategory.ANIMALS_AND_PLANTS_ANIMALS
-        INSECTS = MeaningCategory.ANIMALS_AND_PLANTS_INSECTS
-        PLANTS = MeaningCategory.ANIMALS_AND_PLANTS_PLANTS
-        PARTS_OF_ANIMALS = MeaningCategory.ANIMALS_AND_PLANTS_PARTS_OF_ANIMALS
-        PARTS_OF_PLANTS = MeaningCategory.ANIMALS_AND_PLANTS_PARTS_OF_PLANTS
-        BEHAVIORS = MeaningCategory.ANIMALS_AND_PLANTS_BEHAVIORS
-        SOUNDS = MeaningCategory.ANIMALS_AND_PLANTS_SOUNDS
+            self.ALL = MeaningCategory.EDUCATION_ALL
+            self.PEOPLE = MeaningCategory.EDUCATION_PEOPLE
+            self.MAJORS_AND_SUBJECTS = MeaningCategory.EDUCATION_MAJORS_AND_SUBJECTS
+            self.EDUCATIONAL_INSTITUTIONS = MeaningCategory.EDUCATION_EDUCATIONAL_INSTITUTIONS
+            self.SCHOOL_FACILITIES = MeaningCategory.EDUCATION_SCHOOL_FACILITIES
+            self.OBJECTS = MeaningCategory.EDUCATION_OBJECTS
+            self.ACADEMIC_TERMS = MeaningCategory.EDUCATION_ACADEMIC_TERMS
+            self.TEACHING_AND_LEARNING_ACTIVITIES = \
+                MeaningCategory.EDUCATION_TEACHING_AND_LEARNING_ACTIVITIES
+            self.ACADEMIC_ACTIVITIES = MeaningCategory.EDUCATION_ACADEMIC_ACTIVITIES
 
-    class CONCEPTS:
-        """Proxy class for concept meaning categories."""
-        ALL = MeaningCategory.CONCEPTS_ALL
-        SHAPE = MeaningCategory.CONCEPTS_SHAPE
-        PROPERTY = MeaningCategory.CONCEPTS_PROPERTY
-        SPEED = MeaningCategory.CONCEPTS_SPEED
-        BRIGHTNESS = MeaningCategory.CONCEPTS_BRIGHTNESS
-        TEMPERATURE = MeaningCategory.CONCEPTS_TEMPERATURE
-        COLORS = MeaningCategory.CONCEPTS_COLORS
-        NUMBERS = MeaningCategory.CONCEPTS_NUMBERS
-        COUNTERS = MeaningCategory.CONCEPTS_COUNTERS
-        AMOUNT = MeaningCategory.CONCEPTS_AMOUNT
-        DEGREE = MeaningCategory.CONCEPTS_DEGREE
-        ORDER = MeaningCategory.CONCEPTS_ORDER
-        FREQUENCY = MeaningCategory.CONCEPTS_FREQUENCY
-        TIME = MeaningCategory.CONCEPTS_TIME
-        LOCATION_AND_DIRECTION = MeaningCategory.CONCEPTS_LOCATION_AND_DIRECTION
-        AREA = MeaningCategory.CONCEPTS_AREA
-        INSTRUCTIONS = MeaningCategory.CONCEPTS_INSTRUCTIONS
-        CONNECTION = MeaningCategory.CONCEPTS_CONNECTION
-        QUESTION_WORDS = MeaningCategory.CONCEPTS_QUESTION_WORDS
-        PRONOUNS = MeaningCategory.CONCEPTS_PRONOUNS
+    class __PROXY_RELIGION__(EnumProxyBase):
+        def __init__(self, populate):
+            super().__init__(populate)
+            if not populate:
+                return
+
+            self.ALL = MeaningCategory.RELIGION_ALL
+            self.TYPES_OF_RELIGION = MeaningCategory.RELIGION_TYPES_OF_RELIGION
+            self.PLACES = MeaningCategory.RELIGION_PLACES
+            self.PEOPLE = MeaningCategory.RELIGION_PEOPLE
+            self.RELIGIOUS_WORDS = MeaningCategory.RELIGION_RELIGIOUS_WORDS
+            self.MAJOR_FIGURES = MeaningCategory.RELIGION_MAJOR_FIGURES
+            self.OBJECTS = MeaningCategory.RELIGION_OBJECTS
+            self.PRACTICES = MeaningCategory.RELIGION_PRACTICES
+
+    class __PROXY_CULTURE__(EnumProxyBase):
+        def __init__(self, populate):
+            super().__init__(populate)
+            if not populate:
+                return
+
+            self.ALL = MeaningCategory.CULTURE_ALL
+            self.CULTURAL_ACTIVITY_PARTICIPANTS = \
+                MeaningCategory.CULTURE_CULTURAL_ACTIVITY_PARTICIPANTS
+            self.MUSIC = MeaningCategory.CULTURE_MUSIC
+            self.FINE_ART = MeaningCategory.CULTURE_FINE_ART
+            self.LITERATURE = MeaningCategory.CULTURE_LITERATURE
+            self.ART = MeaningCategory.CULTURE_ART
+            self.POP_CULTURE = MeaningCategory.CULTURE_POP_CULTURE
+            self.TRADITIONAL_CULTURE = MeaningCategory.CULTURE_TRADITIONAL_CULTURE
+            self.CULTURAL_ACTIVITY_PLACES = MeaningCategory.CULTURE_CULTURAL_ACTIVITY_PLACES
+            self.CULTURAL_ACTIVITIES = MeaningCategory.CULTURE_CULTURAL_ACTIVITIES
+
+    class __PROXY_POLITICS_AND_ADMINISTRATION__(EnumProxyBase):
+        def __init__(self, populate):
+            super().__init__(populate)
+            if not populate:
+                return
+
+            self.ALL = MeaningCategory.POLITICS_AND_ADMINISTRATION_ALL
+            self.PUBLIC_INSTITUTIONS = \
+                MeaningCategory.POLITICS_AND_ADMINISTRATION_PUBLIC_INSTITUTIONS
+            self.JUDICIAL_AND_SECURITY_PERSONNEL = \
+                MeaningCategory.POLITICS_AND_ADMINISTRATION_JUDICIAL_AND_SECURITY_PERSONNEL
+            self.WEAPONS = MeaningCategory.POLITICS_AND_ADMINISTRATION_WEAPONS
+            self.POLITICS_AND_SECURITY = \
+                MeaningCategory.POLITICS_AND_ADMINISTRATION_POLITICS_AND_SECURITY
+            self.POLITICAL_ACTS = MeaningCategory.POLITICS_AND_ADMINISTRATION_POLITICAL_ACTS
+            self.LAW_AND_SECURITY_ACTS = \
+                MeaningCategory.POLITICS_AND_ADMINISTRATION_LAW_AND_SECURITY_ACTS
+            self.POLITICAL_AND_ADMINISTRATIVE_PERSONNEL = \
+                MeaningCategory.POLITICS_AND_ADMINISTRATION_POLITICAL_AND_ADMINISTRATIVE_PERSONNEL
+
+    class __PROXY_NATURE__(EnumProxyBase):
+        def __init__(self, populate):
+            super().__init__(populate)
+            if not populate:
+                return
+
+            self.ALL = MeaningCategory.NATURE_ALL
+            self.TOPOGRAPHY = MeaningCategory.NATURE_TOPOGRAPHY
+            self.SURFACE_OBJECTS = MeaningCategory.NATURE_SURFACE_OBJECTS
+            self.CELESTIAL_BODIES = MeaningCategory.NATURE_CELESTIAL_BODIES
+            self.NATURAL_RESOURCES = MeaningCategory.NATURE_NATURAL_RESOURCES
+            self.DISASTERS = MeaningCategory.NATURE_DISASTERS
+            self.WEATHER_AND_CLIMATE = MeaningCategory.NATURE_WEATHER_AND_CLIMATE
+
+    class __PROXY_ANIMALS_AND_PLANTS__(EnumProxyBase):
+        def __init__(self, populate):
+            super().__init__(populate)
+            if not populate:
+                return
+
+            self.ALL = MeaningCategory.ANIMALS_AND_PLANTS_ALL
+            self.ANIMALS = MeaningCategory.ANIMALS_AND_PLANTS_ANIMALS
+            self.INSECTS = MeaningCategory.ANIMALS_AND_PLANTS_INSECTS
+            self.PLANTS = MeaningCategory.ANIMALS_AND_PLANTS_PLANTS
+            self.PARTS_OF_ANIMALS = MeaningCategory.ANIMALS_AND_PLANTS_PARTS_OF_ANIMALS
+            self.PARTS_OF_PLANTS = MeaningCategory.ANIMALS_AND_PLANTS_PARTS_OF_PLANTS
+            self.BEHAVIORS = MeaningCategory.ANIMALS_AND_PLANTS_BEHAVIORS
+            self.SOUNDS = MeaningCategory.ANIMALS_AND_PLANTS_SOUNDS
+
+    class __PROXY_CONCEPTS__(EnumProxyBase):
+        def __init__(self, populate):
+            super().__init__(populate)
+            if not populate:
+                return
+
+            self.ALL = MeaningCategory.CONCEPTS_ALL
+            self.SHAPE = MeaningCategory.CONCEPTS_SHAPE
+            self.PROPERTY = MeaningCategory.CONCEPTS_PROPERTY
+            self.SPEED = MeaningCategory.CONCEPTS_SPEED
+            self.BRIGHTNESS = MeaningCategory.CONCEPTS_BRIGHTNESS
+            self.TEMPERATURE = MeaningCategory.CONCEPTS_TEMPERATURE
+            self.COLORS = MeaningCategory.CONCEPTS_COLORS
+            self.NUMBERS = MeaningCategory.CONCEPTS_NUMBERS
+            self.COUNTERS = MeaningCategory.CONCEPTS_COUNTERS
+            self.AMOUNT = MeaningCategory.CONCEPTS_AMOUNT
+            self.DEGREE = MeaningCategory.CONCEPTS_DEGREE
+            self.ORDER = MeaningCategory.CONCEPTS_ORDER
+            self.FREQUENCY = MeaningCategory.CONCEPTS_FREQUENCY
+            self.TIME = MeaningCategory.CONCEPTS_TIME
+            self.LOCATION_AND_DIRECTION = MeaningCategory.CONCEPTS_LOCATION_AND_DIRECTION
+            self.AREA = MeaningCategory.CONCEPTS_AREA
+            self.INSTRUCTIONS = MeaningCategory.CONCEPTS_INSTRUCTIONS
+            self.CONNECTION = MeaningCategory.CONCEPTS_CONNECTION
+            self.QUESTION_WORDS = MeaningCategory.CONCEPTS_QUESTION_WORDS
+            self.PRONOUNS = MeaningCategory.CONCEPTS_PRONOUNS
+
+
+    __HUMAN__: __PROXY_HUMAN__ = __PROXY_HUMAN__(False)
+    __LIFE__: __PROXY_LIFE__ = __PROXY_LIFE__(False)
+    __DIETARY__: __PROXY_DIETARY__ = __PROXY_DIETARY__(False)
+    __CLOTHING__: __PROXY_CLOTHING__ = __PROXY_CLOTHING__(False)
+    __HOME_LIFE__: __PROXY_HOME_LIFE__ = __PROXY_HOME_LIFE__(False)
+    __SOCIAL_LIFE__: __PROXY_SOCIAL_LIFE__ = __PROXY_SOCIAL_LIFE__(False)
+    __ECONOMIC__: __PROXY_ECONOMIC__ = __PROXY_ECONOMIC__(False)
+    __EDUCATION__: __PROXY_EDUCATION__ = __PROXY_EDUCATION__(False)
+    __RELIGION__: __PROXY_RELIGION__ = __PROXY_RELIGION__(False)
+    __CULTURE__: __PROXY_CULTURE__ = __PROXY_CULTURE__(False)
+    __POLITICS_AND_ADMINISTRATION__: __PROXY_POLITICS_AND_ADMINISTRATION__ = \
+        __PROXY_POLITICS_AND_ADMINISTRATION__(False)
+    __NATURE__: __PROXY_NATURE__ = __PROXY_NATURE__(False)
+    __ANIMALS_AND_PLANTS__: __PROXY_ANIMALS_AND_PLANTS__ = __PROXY_ANIMALS_AND_PLANTS__(False)
+    __CONCEPTS__: __PROXY_CONCEPTS__ = __PROXY_CONCEPTS__(False)
+
+
+    @classmethod
+    @property
+    def HUMAN(cls):
+        """Proxy for human meaning categories."""
+        if not cls.__HUMAN__.__populated__:
+            cls.__HUMAN__ = MeaningCategory.__PROXY_HUMAN__(True)
+        return cls.__HUMAN__
+
+    @classmethod
+    @property
+    def LIFE(cls):
+        """Proxy for life meaning categories."""
+        if not cls.__LIFE__.__populated__:
+            cls.__LIFE__ = MeaningCategory.__PROXY_LIFE__(True)
+        return cls.__LIFE__
+
+    @classmethod
+    @property
+    def DIETARY(cls):
+        """Proxy for dietary meaning categories."""
+        if not cls.__DIETARY__.__populated__:
+            cls.__DIETARY__ = MeaningCategory.__PROXY_DIETARY__(True)
+        return cls.__DIETARY__
+
+    @classmethod
+    @property
+    def CLOTHING(cls):
+        """Proxy for clothing meaning categories."""
+        if not cls.__CLOTHING__.__populated__:
+            cls.__CLOTHING__ = MeaningCategory.__PROXY_CLOTHING__(True)
+        return cls.__CLOTHING__
+
+    @classmethod
+    @property
+    def HOME_LIFE(cls):
+        """Proxy for home life meaning categories."""
+        if not cls.__HOME_LIFE__.__populated__:
+            cls.__HOME_LIFE__ = MeaningCategory.__PROXY_HOME_LIFE__(True)
+        return cls.__HOME_LIFE__
+
+    @classmethod
+    @property
+    def SOCIAL_LIFE(cls):
+        """Proxy for social life meaning categories."""
+        if not cls.__SOCIAL_LIFE__.__populated__:
+            cls.__SOCIAL_LIFE__ = MeaningCategory.__PROXY_SOCIAL_LIFE__(True)
+        return cls.__SOCIAL_LIFE__
+
+    @classmethod
+    @property
+    def ECONOMIC(cls):
+        """Proxy for economic meaning categories."""
+        if not cls.__ECONOMIC__.__populated__:
+            cls.__ECONOMIC__ = MeaningCategory.__PROXY_ECONOMIC__(True)
+        return cls.__ECONOMIC__
+
+    @classmethod
+    @property
+    def EDUCATION(cls):
+        """Proxy for education meaning categories."""
+        if not cls.__EDUCATION__.__populated__:
+            cls.__EDUCATION__ = MeaningCategory.__PROXY_EDUCATION__(True)
+        return cls.__EDUCATION__
+
+    @classmethod
+    @property
+    def RELIGION(cls):
+        """Proxy for religion meaning categories."""
+        if not cls.__RELIGION__.__populated__:
+            cls.__RELIGION__ = MeaningCategory.__PROXY_RELIGION__(True)
+        return cls.__RELIGION__
+
+    @classmethod
+    @property
+    def CULTURE(cls):
+        """Proxy for culture meaning categories."""
+        if not cls.__CULTURE__.__populated__:
+            cls.__CULTURE__ = MeaningCategory.__PROXY_CULTURE__(True)
+        return cls.__CULTURE__
+
+    @classmethod
+    @property
+    def POLITICS_AND_ADMINISTRATION(cls):
+        """Proxy for politics and administration meaning categories."""
+        if not cls.__POLITICS_AND_ADMINISTRATION__.__populated__:
+            cls.__POLITICS_AND_ADMINISTRATION__ = \
+                MeaningCategory.__PROXY_POLITICS_AND_ADMINISTRATION__(True)
+        return cls.__POLITICS_AND_ADMINISTRATION__
+
+    @classmethod
+    @property
+    def NATURE(cls):
+        """Proxy for nature meaning categories."""
+        if not cls.__NATURE__.__populated__:
+            cls.__NATURE__ = MeaningCategory.__PROXY_NATURE__(True)
+        return cls.__NATURE__
+
+    @classmethod
+    @property
+    def ANIMALS_AND_PLANTS(cls):
+        """Proxy for animals and plants meaning categories."""
+        if not cls.__ANIMALS_AND_PLANTS__.__populated__:
+            cls.__ANIMALS_AND_PLANTS__ = MeaningCategory.__PROXY_ANIMALS_AND_PLANTS__(True)
+        return cls.__ANIMALS_AND_PLANTS__
+
+    @classmethod
+    @property
+    def CONCEPTS(cls):
+        """Proxy for concept meaning categories."""
+        if not cls.__CONCEPTS__.__populated__:
+            cls.__CONCEPTS__ = MeaningCategory.__PROXY_CONCEPTS__(True)
+        return cls.__CONCEPTS__

@@ -2,9 +2,9 @@
 Contains enumeration class for handling subject categories.
 """
 
-# pylint: disable=invalid-name,too-few-public-methods
+# pylint: disable=invalid-name,too-few-public-methods,too-many-instance-attributes
 
-from .base import EnumBase, EnumProxyBase, EnumProxyMeta
+from .base import EnumBase, EnumProxyBase
 
 
 _SUBJECT_CATEGORY_STRINGS = {
@@ -261,7 +261,6 @@ _SUBJECT_CATEGORY_STRINGS = {
     'philosophy and ethics': 106
 }
 
-
 class SubjectCategory(EnumBase):
     """Enumeration class that contains subject category values."""
 
@@ -375,126 +374,170 @@ class SubjectCategory(EnumBase):
     ADVANCED_RELIGION = 105
     ADVANCED_PHILOSOPHY_AND_ETHICS = 106
 
-class SubjectCategoryProxy(EnumProxyBase[SubjectCategory], metaclass=EnumProxyMeta):
-    """Proxy class for subject categories."""
+    class __PROXY_ELEMENTARY__(EnumProxyBase):
+        def __init__(self, populate):
+            super().__init__(populate)
+            if not populate:
+                return
 
-    __ENUM__ = SubjectCategory
+            self.GREETING = SubjectCategory.ELEMENTARY_GREETING
+            self.INTRODUCING_ONESELF = SubjectCategory.ELEMENTARY_INTRODUCING_ONESELF
+            self.INTRODUCING_FAMILY = SubjectCategory.ELEMENTARY_INTRODUCING_FAMILY
+            self.EXCHANGING_PERSONAL_INFORMATION = \
+                SubjectCategory.ELEMENTARY_EXCHANGING_PERSONAL_INFORMATION
+            self.DESCRIBING_LOCATION = SubjectCategory.ELEMENTARY_DESCRIBING_LOCATION
+            self.DIRECTIONS = SubjectCategory.ELEMENTARY_DIRECTIONS
+            self.USING_TRANSPORTATION = SubjectCategory.ELEMENTARY_USING_TRANSPORTATION
+            self.PURCHASING_GOODS = SubjectCategory.ELEMENTARY_PURCHASING_GOODS
+            self.ORDERING_FOOD = SubjectCategory.ELEMENTARY_ORDERING_FOOD
+            self.DESCRIBING_DISHES = SubjectCategory.ELEMENTARY_DESCRIBING_DISHES
+            self.EXPRESSING_TIME = SubjectCategory.ELEMENTARY_EXPRESSING_TIME
+            self.EXPRESSING_DATE = SubjectCategory.ELEMENTARY_EXPRESSING_DATE
+            self.EXPRESSING_DAY_OF_THE_WEEK = SubjectCategory.ELEMENTARY_EXPRESSING_DAY_OF_THE_WEEK
+            self.WEATHER_AND_SEASON = SubjectCategory.ELEMENTARY_WEATHER_AND_SEASON
+            self.DAILY_LIFE = SubjectCategory.ELEMENTARY_DAILY_LIFE
+            self.SCHOOL_LIFE = SubjectCategory.ELEMENTARY_SCHOOL_LIFE
+            self.LIFE_IN_KOREA = SubjectCategory.ELEMENTARY_LIFE_IN_KOREA
+            self.MAKING_PROMISES = SubjectCategory.ELEMENTARY_MAKING_PROMISES
+            self.MAKING_PHONE_CALLS = SubjectCategory.ELEMENTARY_MAKING_PHONE_CALLS
+            self.EXPRESSING_GRATITUDE = SubjectCategory.ELEMENTARY_EXPRESSING_GRATITUDE
+            self.APOLOGIZING = SubjectCategory.ELEMENTARY_APOLOGIZING
+            self.TRAVEL = SubjectCategory.ELEMENTARY_TRAVEL
+            self.WEEKENDS_AND_HOLIDAYS = SubjectCategory.ELEMENTARY_WEEKENDS_AND_HOLIDAYS
+            self.HOBBIES = SubjectCategory.ELEMENTARY_HOBBIES
+            self.FAMILY_EVENTS = SubjectCategory.ELEMENTARY_FAMILY_EVENTS
+            self.HEALTH = SubjectCategory.ELEMENTARY_HEALTH
+            self.USING_THE_HOSPITAL = SubjectCategory.ELEMENTARY_USING_THE_HOSPITAL
+            self.USING_THE_PHARMACY = SubjectCategory.ELEMENTARY_USING_THE_PHARMACY
+            self.USING_THE_LIBRARY = SubjectCategory.ELEMENTARY_USING_THE_LIBRARY
+            self.USING_THE_POST_OFFICE = SubjectCategory.ELEMENTARY_USING_THE_POST_OFFICE
+            self.USING_THE_IMMIGRATION_OFFICE = \
+                SubjectCategory.ELEMENTARY_USING_THE_IMMIGRATION_OFFICE
+            self.INVITING_AND_VISITING = SubjectCategory.ELEMENTARY_INVITING_AND_VISITING
+            self.FINDING_A_HOUSE = SubjectCategory.ELEMENTARY_FINDING_A_HOUSE
+            self.HOUSEWORK = SubjectCategory.ELEMENTARY_HOUSEWORK
+            self.EXPRESSING_EMOTIONS = SubjectCategory.ELEMENTARY_EXPRESSING_EMOTIONS
+            self.DESCRIBING_PERSONALITY = SubjectCategory.ELEMENTARY_DESCRIBING_PERSONALITY
+            self.DESCRIBING_CLOTHES = SubjectCategory.ELEMENTARY_DESCRIBING_CLOTHES
+            self.DESCRIBING_PHYSICAL_FEATURES = \
+                SubjectCategory.ELEMENTARY_DESCRIBING_PHYSICAL_FEATURES
+            self.WATCHING_MOVIES = SubjectCategory.ELEMENTARY_WATCHING_MOVIES
 
-    ALL = SubjectCategory.ALL
+    class __PROXY_INTERMEDIATE__(EnumProxyBase):
+        def __init__(self, populate):
+            super().__init__(populate)
+            if not populate:
+                return
 
-    class ELEMENTARY:
-        """Proxy class for elementary subject categories."""
-        GREETING = SubjectCategory.ELEMENTARY_GREETING
-        INTRODUCING_ONESELF = SubjectCategory.ELEMENTARY_INTRODUCING_ONESELF
-        INTRODUCING_FAMILY = SubjectCategory.ELEMENTARY_INTRODUCING_FAMILY
-        EXCHANGING_PERSONAL_INFORMATION = SubjectCategory.ELEMENTARY_EXCHANGING_PERSONAL_INFORMATION
-        DESCRIBING_LOCATION = SubjectCategory.ELEMENTARY_DESCRIBING_LOCATION
-        DIRECTIONS = SubjectCategory.ELEMENTARY_DIRECTIONS
-        USING_TRANSPORTATION = SubjectCategory.ELEMENTARY_USING_TRANSPORTATION
-        PURCHASING_GOODS = SubjectCategory.ELEMENTARY_PURCHASING_GOODS
-        ORDERING_FOOD = SubjectCategory.ELEMENTARY_ORDERING_FOOD
-        DESCRIBING_DISHES = SubjectCategory.ELEMENTARY_DESCRIBING_DISHES
-        EXPRESSING_TIME = SubjectCategory.ELEMENTARY_EXPRESSING_TIME
-        EXPRESSING_DATE = SubjectCategory.ELEMENTARY_EXPRESSING_DATE
-        EXPRESSING_DAY_OF_THE_WEEK = SubjectCategory.ELEMENTARY_EXPRESSING_DAY_OF_THE_WEEK
-        WEATHER_AND_SEASON = SubjectCategory.ELEMENTARY_WEATHER_AND_SEASON
-        DAILY_LIFE = SubjectCategory.ELEMENTARY_DAILY_LIFE
-        SCHOOL_LIFE = SubjectCategory.ELEMENTARY_SCHOOL_LIFE
-        LIFE_IN_KOREA = SubjectCategory.ELEMENTARY_LIFE_IN_KOREA
-        MAKING_PROMISES = SubjectCategory.ELEMENTARY_MAKING_PROMISES
-        MAKING_PHONE_CALLS = SubjectCategory.ELEMENTARY_MAKING_PHONE_CALLS
-        EXPRESSING_GRATITUDE = SubjectCategory.ELEMENTARY_EXPRESSING_GRATITUDE
-        APOLOGIZING = SubjectCategory.ELEMENTARY_APOLOGIZING
-        TRAVEL = SubjectCategory.ELEMENTARY_TRAVEL
-        WEEKENDS_AND_HOLIDAYS = SubjectCategory.ELEMENTARY_WEEKENDS_AND_HOLIDAYS
-        HOBBIES = SubjectCategory.ELEMENTARY_HOBBIES
-        FAMILY_EVENTS = SubjectCategory.ELEMENTARY_FAMILY_EVENTS
-        HEALTH = SubjectCategory.ELEMENTARY_HEALTH
-        USING_THE_HOSPITAL = SubjectCategory.ELEMENTARY_USING_THE_HOSPITAL
-        USING_THE_PHARMACY = SubjectCategory.ELEMENTARY_USING_THE_PHARMACY
-        USING_THE_LIBRARY = SubjectCategory.ELEMENTARY_USING_THE_LIBRARY
-        USING_THE_POST_OFFICE = SubjectCategory.ELEMENTARY_USING_THE_POST_OFFICE
-        USING_THE_IMMIGRATION_OFFICE = SubjectCategory.ELEMENTARY_USING_THE_IMMIGRATION_OFFICE
-        INVITING_AND_VISITING = SubjectCategory.ELEMENTARY_INVITING_AND_VISITING
-        FINDING_A_HOUSE = SubjectCategory.ELEMENTARY_FINDING_A_HOUSE
-        HOUSEWORK = SubjectCategory.ELEMENTARY_HOUSEWORK
-        EXPRESSING_EMOTIONS = SubjectCategory.ELEMENTARY_EXPRESSING_EMOTIONS
-        DESCRIBING_PERSONALITY = SubjectCategory.ELEMENTARY_DESCRIBING_PERSONALITY
-        DESCRIBING_CLOTHES = SubjectCategory.ELEMENTARY_DESCRIBING_CLOTHES
-        DESCRIBING_PHYSICAL_FEATURES = SubjectCategory.ELEMENTARY_DESCRIBING_PHYSICAL_FEATURES
-        WATCHING_MOVIES = SubjectCategory.ELEMENTARY_WATCHING_MOVIES
+            self.EXCHANGING_PERSONAL_INFORMATION = \
+                SubjectCategory.INTERMEDIATE_EXCHANGING_PERSONAL_INFORMATION
+            self.USING_TRANSPORTATION = SubjectCategory.INTERMEDIATE_USING_TRANSPORTATION
+            self.GEOLOGICAL_INFORMATION = SubjectCategory.INTERMEDIATE_GEOLOGICAL_INFORMATION
+            self.PURCHASING_GOODS = SubjectCategory.INTERMEDIATE_PURCHASING_GOODS
+            self.DESCRIBING_FOOD = SubjectCategory.INTERMEDIATE_DESCRIBING_FOOD
+            self.DESCRIBING_DISHES = SubjectCategory.INTERMEDIATE_DESCRIBING_DISHES
+            self.WEATHER_AND_SEASON = SubjectCategory.INTERMEDIATE_WEATHER_AND_SEASON
+            self.SCHOOL_LIFE = SubjectCategory.INTERMEDIATE_SCHOOL_LIFE
+            self.LIFE_IN_KOREA = SubjectCategory.INTERMEDIATE_LIFE_IN_KOREA
+            self.JOBS_AND_CAREERS = SubjectCategory.INTERMEDIATE_JOBS_AND_CAREERS
+            self.WORKPLACE_LIFE = SubjectCategory.INTERMEDIATE_WORKPLACE_LIFE
+            self.TRAVEL = SubjectCategory.INTERMEDIATE_TRAVEL
+            self.WEEKENDS_AND_HOLIDAYS = SubjectCategory.INTERMEDIATE_WEEKENDS_AND_HOLIDAYS
+            self.HOBBIES = SubjectCategory.INTERMEDIATE_HOBBIES
+            self.FAMILY_EVENTS = SubjectCategory.INTERMEDIATE_FAMILY_EVENTS
+            self.FAMILY_EVENTS_DURING_HOLIDAYS = \
+                SubjectCategory.INTERMEDIATE_FAMILY_EVENTS_DURING_HOLIDAYS
+            self.HEALTH = SubjectCategory.INTERMEDIATE_HEALTH
+            self.USING_PUBLIC_INSTITUTIONS = SubjectCategory.INTERMEDIATE_USING_PUBLIC_INSTITUTIONS
+            self.INVITING_AND_VISITING = SubjectCategory.INTERMEDIATE_INVITING_AND_VISITING
+            self.FINDING_A_HOUSE = SubjectCategory.INTERMEDIATE_FINDING_A_HOUSE
+            self.HOUSEWORK = SubjectCategory.INTERMEDIATE_HOUSEWORK
+            self.EXPRESSING_EMOTIONS = SubjectCategory.INTERMEDIATE_EXPRESSING_EMOTIONS
+            self.DESCRIBING_PERSONALITY = SubjectCategory.INTERMEDIATE_DESCRIBING_PERSONALITY
+            self.DESCRIBING_CLOTHES = SubjectCategory.INTERMEDIATE_DESCRIBING_CLOTHES
+            self.DESCRIBING_PHYSICAL_FEATURES = \
+                SubjectCategory.INTERMEDIATE_DESCRIBING_PHYSICAL_FEATURES
+            self.PERFORMANCES_AND_APPRECIATION = \
+                SubjectCategory.INTERMEDIATE_PERFORMANCES_AND_APPRECIATION
+            self.MASS_MEDIA = SubjectCategory.INTERMEDIATE_MASS_MEDIA
+            self.COMPUTERS_AND_THE_INTERNET = \
+                SubjectCategory.INTERMEDIATE_COMPUTERS_AND_THE_INTERNET
+            self.DESCRIBING_EVENTS_AND_DISASTERS = \
+                SubjectCategory.INTERMEDIATE_DESCRIBING_EVENTS_AND_DISASTERS
+            self.ENVIRONMENTAL_ISSUES = SubjectCategory.INTERMEDIATE_ENVIRONMENTAL_ISSUES
+            self.COMPARING_CULTURES = SubjectCategory.INTERMEDIATE_COMPARING_CULTURES
+            self.HUMAN_RELATIONSHIPS = SubjectCategory.INTERMEDIATE_HUMAN_RELATIONSHIPS
+            self.KOREAN_LITERATURE = SubjectCategory.INTERMEDIATE_KOREAN_LITERATURE
+            self.SOLVING_PROBLEMS = SubjectCategory.INTERMEDIATE_SOLVING_PROBLEMS
+            self.TALKING_ABOUT_MISTAKES = SubjectCategory.INTERMEDIATE_TALKING_ABOUT_MISTAKES
+            self.DATING_AND_MARRIAGE = SubjectCategory.INTERMEDIATE_DATING_AND_MARRIAGE
+            self.LANGUAGE = SubjectCategory.INTERMEDIATE_LANGUAGE
 
-    class INTERMEDIATE:
-        """Proxy class for intermediate subject categories."""
-        EXCHANGING_PERSONAL_INFORMATION = \
-            SubjectCategory.INTERMEDIATE_EXCHANGING_PERSONAL_INFORMATION
-        USING_TRANSPORTATION = SubjectCategory.INTERMEDIATE_USING_TRANSPORTATION
-        GEOLOGICAL_INFORMATION = SubjectCategory.INTERMEDIATE_GEOLOGICAL_INFORMATION
-        PURCHASING_GOODS = SubjectCategory.INTERMEDIATE_PURCHASING_GOODS
-        DESCRIBING_FOOD = SubjectCategory.INTERMEDIATE_DESCRIBING_FOOD
-        DESCRIBING_DISHES = SubjectCategory.INTERMEDIATE_DESCRIBING_DISHES
-        WEATHER_AND_SEASON = SubjectCategory.INTERMEDIATE_WEATHER_AND_SEASON
-        SCHOOL_LIFE = SubjectCategory.INTERMEDIATE_SCHOOL_LIFE
-        LIFE_IN_KOREA = SubjectCategory.INTERMEDIATE_LIFE_IN_KOREA
-        JOBS_AND_CAREERS = SubjectCategory.INTERMEDIATE_JOBS_AND_CAREERS
-        WORKPLACE_LIFE = SubjectCategory.INTERMEDIATE_WORKPLACE_LIFE
-        TRAVEL = SubjectCategory.INTERMEDIATE_TRAVEL
-        WEEKENDS_AND_HOLIDAYS = SubjectCategory.INTERMEDIATE_WEEKENDS_AND_HOLIDAYS
-        HOBBIES = SubjectCategory.INTERMEDIATE_HOBBIES
-        FAMILY_EVENTS = SubjectCategory.INTERMEDIATE_FAMILY_EVENTS
-        FAMILY_EVENTS_DURING_HOLIDAYS = SubjectCategory.INTERMEDIATE_FAMILY_EVENTS_DURING_HOLIDAYS
-        HEALTH = SubjectCategory.INTERMEDIATE_HEALTH
-        USING_PUBLIC_INSTITUTIONS = SubjectCategory.INTERMEDIATE_USING_PUBLIC_INSTITUTIONS
-        INVITING_AND_VISITING = SubjectCategory.INTERMEDIATE_INVITING_AND_VISITING
-        FINDING_A_HOUSE = SubjectCategory.INTERMEDIATE_FINDING_A_HOUSE
-        HOUSEWORK = SubjectCategory.INTERMEDIATE_HOUSEWORK
-        EXPRESSING_EMOTIONS = SubjectCategory.INTERMEDIATE_EXPRESSING_EMOTIONS
-        DESCRIBING_PERSONALITY = SubjectCategory.INTERMEDIATE_DESCRIBING_PERSONALITY
-        DESCRIBING_CLOTHES = SubjectCategory.INTERMEDIATE_DESCRIBING_CLOTHES
-        DESCRIBING_PHYSICAL_FEATURES = SubjectCategory.INTERMEDIATE_DESCRIBING_PHYSICAL_FEATURES
-        PERFORMANCES_AND_APPRECIATION = SubjectCategory.INTERMEDIATE_PERFORMANCES_AND_APPRECIATION
-        MASS_MEDIA = SubjectCategory.INTERMEDIATE_MASS_MEDIA
-        COMPUTERS_AND_THE_INTERNET = SubjectCategory.INTERMEDIATE_COMPUTERS_AND_THE_INTERNET
-        DESCRIBING_EVENTS_AND_DISASTERS = \
-            SubjectCategory.INTERMEDIATE_DESCRIBING_EVENTS_AND_DISASTERS
-        ENVIRONMENTAL_ISSUES = SubjectCategory.INTERMEDIATE_ENVIRONMENTAL_ISSUES
-        COMPARING_CULTURES = SubjectCategory.INTERMEDIATE_COMPARING_CULTURES
-        HUMAN_RELATIONSHIPS = SubjectCategory.INTERMEDIATE_HUMAN_RELATIONSHIPS
-        KOREAN_LITERATURE = SubjectCategory.INTERMEDIATE_KOREAN_LITERATURE
-        SOLVING_PROBLEMS = SubjectCategory.INTERMEDIATE_SOLVING_PROBLEMS
-        TALKING_ABOUT_MISTAKES = SubjectCategory.INTERMEDIATE_TALKING_ABOUT_MISTAKES
-        DATING_AND_MARRIAGE = SubjectCategory.INTERMEDIATE_DATING_AND_MARRIAGE
-        LANGUAGE = SubjectCategory.INTERMEDIATE_LANGUAGE
+    class __PROXY_ADVANCED__(EnumProxyBase):
+        def __init__(self, populate):
+            super().__init__(populate)
+            if not populate:
+                return
 
-    class ADVANCED:
-        """Proxy class for advanced subject categories."""
-        GEOLOGICAL_INFORMATION = SubjectCategory.ADVANCED_GEOLOGICAL_INFORMATION
-        ECONOMICS_AND_ADMINISTRATION = SubjectCategory.ADVANCED_ECONOMICS_AND_ADMINISTRATION
-        DIETARY_CULTURE = SubjectCategory.ADVANCED_DIETARY_CULTURE
-        CLIMATE = SubjectCategory.ADVANCED_CLIMATE
-        EDUCATION = SubjectCategory.ADVANCED_EDUCATION
-        JOBS_AND_CAREERS = SubjectCategory.ADVANCED_JOBS_AND_CAREERS
-        WORKPLACE_LIFE = SubjectCategory.ADVANCED_WORKPLACE_LIFE
-        HOBBIES = SubjectCategory.ADVANCED_HOBBIES
-        HEALTH_AND_MEDICAL_TREATMENT = SubjectCategory.ADVANCED_HEALTH_AND_MEDICAL_TREATMENT
-        RESIDENTIAL_AREA = SubjectCategory.ADVANCED_RESIDENTIAL_AREA
-        PSYCHOLOGY = SubjectCategory.ADVANCED_PSYCHOLOGY
-        APPEARANCE = SubjectCategory.ADVANCED_APPEARANCE
-        POP_CULTURE = SubjectCategory.ADVANCED_POP_CULTURE
-        COMPUTERS_AND_THE_INTERNET = SubjectCategory.ADVANCED_COMPUTERS_AND_THE_INTERNET
-        SOCIAL_ISSUES = SubjectCategory.ADVANCED_SOCIAL_ISSUES
-        ENVIRONMENTAL_ISSUES = SubjectCategory.ADVANCED_ENVIRONMENTAL_ISSUES
-        SOCIAL_SYSTEM = SubjectCategory.ADVANCED_SOCIAL_SYSTEM
-        CULTURAL_DIFFERENCES = SubjectCategory.ADVANCED_CULTURAL_DIFFERENCES
-        HUMAN_RELATIONSHIPS = SubjectCategory.ADVANCED_HUMAN_RELATIONSHIPS
-        ART = SubjectCategory.ADVANCED_ART
-        ARCHITECTURE = SubjectCategory.ADVANCED_ARCHITECTURE
-        SCIENCE_AND_TECHNOLOGY = SubjectCategory.ADVANCED_SCIENCE_AND_TECHNOLOGY
-        LAW = SubjectCategory.ADVANCED_LAW
-        SPORTS = SubjectCategory.ADVANCED_SPORTS
-        PRESS = SubjectCategory.ADVANCED_PRESS
-        LANGUAGE = SubjectCategory.ADVANCED_LANGUAGE
-        HISTORY = SubjectCategory.ADVANCED_HISTORY
-        POLITICS = SubjectCategory.ADVANCED_POLITICS
-        RELIGION = SubjectCategory.ADVANCED_RELIGION
-        PHILOSOPHY_AND_ETHICS = SubjectCategory.ADVANCED_PHILOSOPHY_AND_ETHICS
+            self.GEOLOGICAL_INFORMATION = SubjectCategory.ADVANCED_GEOLOGICAL_INFORMATION
+            self.ECONOMICS_AND_ADMINISTRATION = \
+                SubjectCategory.ADVANCED_ECONOMICS_AND_ADMINISTRATION
+            self.DIETARY_CULTURE = SubjectCategory.ADVANCED_DIETARY_CULTURE
+            self.CLIMATE = SubjectCategory.ADVANCED_CLIMATE
+            self.EDUCATION = SubjectCategory.ADVANCED_EDUCATION
+            self.JOBS_AND_CAREERS = SubjectCategory.ADVANCED_JOBS_AND_CAREERS
+            self.WORKPLACE_LIFE = SubjectCategory.ADVANCED_WORKPLACE_LIFE
+            self.HOBBIES = SubjectCategory.ADVANCED_HOBBIES
+            self.HEALTH_AND_MEDICAL_TREATMENT = \
+                SubjectCategory.ADVANCED_HEALTH_AND_MEDICAL_TREATMENT
+            self.RESIDENTIAL_AREA = SubjectCategory.ADVANCED_RESIDENTIAL_AREA
+            self.PSYCHOLOGY = SubjectCategory.ADVANCED_PSYCHOLOGY
+            self.APPEARANCE = SubjectCategory.ADVANCED_APPEARANCE
+            self.POP_CULTURE = SubjectCategory.ADVANCED_POP_CULTURE
+            self.COMPUTERS_AND_THE_INTERNET = SubjectCategory.ADVANCED_COMPUTERS_AND_THE_INTERNET
+            self.SOCIAL_ISSUES = SubjectCategory.ADVANCED_SOCIAL_ISSUES
+            self.ENVIRONMENTAL_ISSUES = SubjectCategory.ADVANCED_ENVIRONMENTAL_ISSUES
+            self.SOCIAL_SYSTEM = SubjectCategory.ADVANCED_SOCIAL_SYSTEM
+            self.CULTURAL_DIFFERENCES = SubjectCategory.ADVANCED_CULTURAL_DIFFERENCES
+            self.HUMAN_RELATIONSHIPS = SubjectCategory.ADVANCED_HUMAN_RELATIONSHIPS
+            self.ART = SubjectCategory.ADVANCED_ART
+            self.ARCHITECTURE = SubjectCategory.ADVANCED_ARCHITECTURE
+            self.SCIENCE_AND_TECHNOLOGY = SubjectCategory.ADVANCED_SCIENCE_AND_TECHNOLOGY
+            self.LAW = SubjectCategory.ADVANCED_LAW
+            self.SPORTS = SubjectCategory.ADVANCED_SPORTS
+            self.PRESS = SubjectCategory.ADVANCED_PRESS
+            self.LANGUAGE = SubjectCategory.ADVANCED_LANGUAGE
+            self.HISTORY = SubjectCategory.ADVANCED_HISTORY
+            self.POLITICS = SubjectCategory.ADVANCED_POLITICS
+            self.RELIGION = SubjectCategory.ADVANCED_RELIGION
+            self.PHILOSOPHY_AND_ETHICS = SubjectCategory.ADVANCED_PHILOSOPHY_AND_ETHICS
+
+
+    __ELEMENTARY__: __PROXY_ELEMENTARY__ = __PROXY_ELEMENTARY__(False)
+    __INTERMEDIATE__: __PROXY_INTERMEDIATE__ = __PROXY_INTERMEDIATE__(False)
+    __ADVANCED__: __PROXY_ADVANCED__ = __PROXY_ADVANCED__(False)
+
+
+    @classmethod
+    @property
+    def ELEMENTARY(cls):
+        """Proxy for elementary subject categories."""
+        if not cls.__ELEMENTARY__.__populated__:
+            cls.__ELEMENTARY__ = SubjectCategory.__PROXY_ELEMENTARY__(True)
+        return cls.__ELEMENTARY__
+
+    @classmethod
+    @property
+    def INTERMEDIATE(cls):
+        """Proxy for intermediate subject categories."""
+        if not cls.__INTERMEDIATE__.__populated__:
+            cls.__INTERMEDIATE__ = SubjectCategory.__PROXY_INTERMEDIATE__(True)
+        return cls.__INTERMEDIATE__
+
+    @classmethod
+    @property
+    def ADVANCED(cls):
+        """Proxy for advanced subject categories."""
+        if not cls.__ADVANCED__.__populated__:
+            cls.__ADVANCED__ = SubjectCategory.__PROXY_ADVANCED__(True)
+        return cls.__ADVANCED__

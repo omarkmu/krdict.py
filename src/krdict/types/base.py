@@ -2,10 +2,10 @@
 Contains base class for KRDict enumeration helpers.
 """
 
+# pylint: disable=too-few-public-methods
+
 from collections.abc import Mapping
 from enum import Enum
-from typing import Generic, TypeVar
-
 
 class _ReadOnlyDict(Mapping):
     def __init__(self, data):
@@ -63,42 +63,8 @@ class EnumBase(Enum):
         except ValueError:
             return default_value
 
+class EnumProxyBase:
+    """Base class for enumeration proxies."""
 
-EnumType = TypeVar('EnumType', bound=EnumBase)
-
-class EnumProxyMeta(type):
-    """Metaclass for enumeration helpers."""
-    def __getitem__(cls, key):
-        return getattr(cls, '__ENUM__')[key]
-
-class EnumProxyBase(Generic[EnumType]):
-    """Base class for enumeration helpers."""
-
-    __ENUM__: EnumType
-
-    def __new__(cls, value):
-        return getattr(cls, '__ENUM__')(value)
-
-    @classmethod
-    @property
-    def aliases(cls):
-        """The alias dictionary of the enumeration."""
-        return cls.__ENUM__.aliases
-
-    @classmethod
-    @property
-    def enum(cls):
-        """The underlying enumeration class."""
-        return cls.__ENUM__
-
-    @classmethod
-    def get(cls, key, default_value=None):
-        """
-        Returns the enumeration associated with a literal, or the default value
-        if the literal is not associated with any enumeration value.
-        """
-
-        if isinstance(key, str):
-            return cls.__ENUM__.get(key.replace('.', '_'), default_value)
-
-        return cls.__ENUM__.get(key, default_value)
+    def __init__(self, populate):
+        self.__populated__ = populate
