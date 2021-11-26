@@ -1,10 +1,7 @@
-The `MeaningCategory` class provided by `krdict` acts as a proxy
-for an underlying enumeration class, to allow nested indexing operations.
+The `MeaningCategory` enumeration class provided by `krdict` allows nested indexing operations.
 
-This means that `MeaningCategory.HUMAN.ALL`, `MeaningCategory['HUMAN_ALL']`,
-and `MeaningCategory(1)` all map to `<MeaningCategory.HUMAN_ALL: 1>`.
-
-The `enum` property can be used to access the underlying enumeration class.
+This means that `MeaningCategory.HUMAN.ALL`, `MeaningCategory.HUMAN_ALL`,
+`MeaningCategory['HUMAN_ALL']`, and `MeaningCategory(1)` all map to `<MeaningCategory.HUMAN_ALL: 1>`.
 
 ---
 

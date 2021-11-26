@@ -2,10 +2,9 @@
 Provides utilities for scraping.
 """
 
-from enum import Enum
 import requests
 from lxml import html
-from ._params import _PARAM_MAPS
+from .types import MeaningCategory, SubjectCategory
 
 _ADVANCED_SEARCH_URL = (
     'https://krdict.korean.go.kr/dicSearchDetail/searchDetailWordsResult?'
@@ -78,8 +77,6 @@ _SENSE_CAT_MAX = [
     133,
     153
 ]
-_SUBJECT_MAP = _PARAM_MAPS['subject_category']['value']
-_SENSE_MAP = _PARAM_MAPS['meaning_category']['value']
 _WOTD_NOT_REQUIRED = [
     ('part_of_speech', str),
     ('vocabulary_grade', str),
@@ -316,10 +313,8 @@ def _build_language_query(lang):
     return f'&nation={nation}&nationCode={code}', f'{nation}/', exo
 
 def _build_sense_category_query(category):
-    if isinstance(category, Enum):
-        category = category.value
-
-    category = int(_SENSE_MAP.get(category, category))
+    enum_cat = MeaningCategory.get(category)
+    category = enum_cat.value if enum_cat is not None else int(category)
 
     if category <= 0 or category > 153:
         return '&lgCategoryCode=0&miCategoryCode=-1'
@@ -349,10 +344,9 @@ def _build_subject_category_query(category):
     value = ''
 
     for cat in category:
-        if isinstance(cat, Enum):
-            cat = cat.value
+        enum_cat = SubjectCategory.get(cat)
+        cat_value = str(enum_cat.value if enum_cat is not None else cat)
 
-        cat_value = str(_SUBJECT_MAP.get(cat, cat))
         if cat_value == '0':
             value = ''
 

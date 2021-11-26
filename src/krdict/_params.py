@@ -3,8 +3,7 @@ Transforms input parameters into API-compliant dicts.
 """
 
 from enum import Enum
-from .types.meaning_category import _MEANING_CATEGORY_STRINGS
-from .types.subject_category import _SUBJECT_CATEGORY_STRINGS
+from .types import MeaningCategory, SubjectCategory
 
 _PARAM_MAPS = {
     'query': {
@@ -174,11 +173,11 @@ _PARAM_MAPS = {
     },
     'meaning_category': {
         'name': 'sense_cat',
-        'value': _MEANING_CATEGORY_STRINGS
+        'type': MeaningCategory
     },
     'subject_category': {
         'name': 'subject_cat',
-        'value': _SUBJECT_CATEGORY_STRINGS
+        'type': SubjectCategory
     },
     'target_code': {
         'name': 'q'
@@ -192,6 +191,9 @@ def _get_map_value(mapper, value):
     if isinstance(value, Enum):
         value = value.value
 
+    if 'type' in mapper:
+        enum_value = mapper['type'].get(value)
+        return str(enum_value.value if enum_value is not None else value)
     if 'value' in mapper and value in mapper['value']:
         return str(mapper['value'][value])
 

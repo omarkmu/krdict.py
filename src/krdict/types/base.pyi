@@ -1,22 +1,30 @@
+from abc import ABC, abstractmethod
 from collections.abc import Mapping
-from enum import Enum
-from typing import Optional, TypeVar, Union, overload
+from enum import IntEnum
+from typing import Optional, Type, TypeVar, Union, overload
 
 T = TypeVar('T')
-EnumType = TypeVar('EnumType', bound=EnumBase)
+EnumType = TypeVar('EnumType', bound='EnumBase')
 
-class EnumBase(Enum):
+class EnumBase(ABC):
+    __aliases__: dict
+
     @classmethod
     @property
     def aliases(cls) -> Mapping: ...
 
     @overload
     @classmethod
-    def get(cls: EnumType, key, default_value: None = None) -> Optional[EnumType]: ...
+    @abstractmethod
+    def get(cls: Type[EnumType], key, default: None = None) -> Optional[EnumType]: ...
 
     @overload
     @classmethod
-    def get(cls: EnumType, key, default_value: T = None) -> Union[EnumType, T]: ...
+    @abstractmethod
+    def get(cls: Type[EnumType], key, default: T) -> Union[EnumType, T]: ...
+
+class IntEnumBase(EnumBase, IntEnum):
+    pass
 
 class EnumProxyBase:
     __populated__: bool

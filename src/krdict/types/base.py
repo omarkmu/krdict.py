@@ -5,7 +5,7 @@ Contains base class for KRDict enumeration helpers.
 # pylint: disable=too-few-public-methods
 
 from collections.abc import Mapping
-from enum import Enum
+from enum import IntEnum
 
 class _ReadOnlyDict(Mapping):
     def __init__(self, data):
@@ -26,19 +26,22 @@ class _ReadOnlyDict(Mapping):
     def __repr__(self):
         return self._dict.__repr__()
 
-class EnumBase(Enum):
+class EnumBase:
     """Base class for enumerations."""
 
-    __ALIASES__ = {}
+    __aliases__ = {}
 
     @classmethod
     @property
     def aliases(cls):
         """The alias dictionary of the enumeration."""
-        return _ReadOnlyDict(cls.__ALIASES__)
+        return _ReadOnlyDict(cls.__aliases__)
+
+class IntEnumBase(EnumBase, IntEnum):
+    """Base class for integer-based enumerations."""
 
     @classmethod
-    def get(cls, key, default_value=None):
+    def get(cls, key, default=None):
         """
         Returns the enumeration associated with a literal, or the default value
         if the literal is not associated with any enumeration value.
@@ -48,20 +51,20 @@ class EnumBase(Enum):
             return cls(key.value)
 
         if isinstance(key, str):
-            literal_value = cls.__ALIASES__.get(key)
+            literal_value = cls.__aliases__.get(key)
 
             if literal_value is None:
                 try:
                     return cls[key]
                 except KeyError:
-                    return default_value
+                    return default
 
             key = literal_value
 
         try:
             return cls(key)
         except ValueError:
-            return default_value
+            return default
 
 class EnumProxyBase:
     """Base class for enumeration proxies."""

@@ -8,7 +8,6 @@ import json
 from dotenv import load_dotenv
 
 import krdict
-import krdict.scraper
 
 load_dotenv()
 krdict.set_key(os.getenv('KRDICT_KEY'))

@@ -4,12 +4,28 @@ A summary of expected parameter types for various [functions](functions.md).
 
 ## Enumerations
 
-All of the enumeration types below define the following properties and methods:
+### MeaningCategory
+
+A meaning category which a dictionary entry may belong to.
+Accepts a meaning category enumeration, integer, or string alias.  
+
+See [Meaning Category](meaning_category.md) for details.
+
+### SubjectCategory
+
+A subject category (themes and situations) which a dictionary entry may belong to.
+Accepts a subject category enumeration, integer, or string alias.  
+
+See [Subject Category](subject_category.md) for details.
+
+## Enumeration Methods
+
+All of the enumeration types in the module define the following:
 
 ### aliases
 
 A property that allows access to enumeration aliases via a read-only dictionary.
-These aliases, which are documented under each of the types below, can be used
+These aliases, which are documented under each of the types above, can be used
 with [`get`](#get) to retrieve an enumeration value.
 
 ```python
@@ -22,13 +38,15 @@ def aliases() -> Mapping: ...
 Returns the enumeration value associated with a string or integer,
 or None if the value is not associated with any enumeration value.
 
+A string value can be the name of an enumeration value, an [alias](#aliases),
+or the value of the enumeration in the case of string enumerations.
+
 ```python
 @staticmethod
 def get(value: str | int): ...
 ```
 
-
-## Types
+## Other Types
 
 ### Classification
 
@@ -231,17 +249,3 @@ The vocabulary level of a dictionary entry.
 ```bash
 'all' | 'beginner' | 'intermediate' | 'advanced'
 ```
-
-### MeaningCategory
-
-A meaning category which a dictionary entry may belong to.
-Accepts a meaning category enumeration, integer, or string alias.  
-
-See [Meaning Category](meaning_category.md) for details.
-
-### SubjectCategory
-
-A subject category (themes and situations) which a dictionary entry may belong to.
-Accepts a subject category enumeration, integer, or string alias.  
-
-See [Subject Category](subject_category.md) for details.

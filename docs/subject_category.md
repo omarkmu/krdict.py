@@ -1,10 +1,8 @@
-The `SubjectCategory` class provided by `krdict` acts as a proxy
-for an underlying enumeration class, to allow nested indexing operations.
+The `SubjectCategory` enumeration class provided by `krdict` allows nested indexing operations.
 
-This means that `SubjectCategory.ELEMENTARY.GREETING`, `SubjectCategory['ELEMENTARY_GREETING']`,
-and `SubjectCategory(1)` all map to `<SubjectCategory.ELEMENTARY_GREETING: 1>`.
-
-The `enum` property can be used to access the underlying enumeration class.
+This means that `SubjectCategory.ELEMENTARY.GREETING`, `SubjectCategory.ELEMENTARY_GREETING`,
+`SubjectCategory['ELEMENTARY_GREETING']`, and `SubjectCategory(1)`
+all map to `<SubjectCategory.ELEMENTARY_GREETING: 1>`.
 
 ---
 
