@@ -395,6 +395,9 @@ class SubjectCategoryHelper(metaclass=_SubjectCategoryHelperMeta):
         raising a ValueError or KeyError if the value is not associated with any subject category.
         """
 
+        if isinstance(value, SubjectCategory):
+            return SubjectCategory(value.value)
+
         if isinstance(value, str):
             numeric_value = _SUBJECT_CATEGORY_STRINGS.get(value)
             if numeric_value is None:
@@ -410,6 +413,9 @@ class SubjectCategoryHelper(metaclass=_SubjectCategoryHelperMeta):
         Returns the subject category associated with a string or integer,
         or None if the value is not associated with any subject category.
         """
+
+        if isinstance(value, SubjectCategory):
+            return SubjectCategory(value.value)
 
         if isinstance(value, str):
             numeric_value = _SUBJECT_CATEGORY_STRINGS.get(value)

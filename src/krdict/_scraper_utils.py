@@ -343,34 +343,27 @@ def _build_sense_category_query(category):
     return f'&lgCategoryCode={code_large}&miCategoryCode={code_mid}'
 
 def _build_subject_category_query(category):
-    if isinstance(category, list):
-        value = ''
+    if not isinstance(category, list):
+        category = [category]
 
-        for cat in category:
-            if isinstance(cat, Enum):
-                cat = cat.value
+    value = ''
 
-            cat_value = str(_SUBJECT_MAP.get(cat, cat))
-            if cat_value == '0':
-                return _build_subject_category_query(0)
+    for cat in category:
+        if isinstance(cat, Enum):
+            cat = cat.value
 
-            value += f'&actCategory={_convert_subject_cat(cat)}'
+        cat_value = str(_SUBJECT_MAP.get(cat, cat))
+        if cat_value == '0':
+            value = ''
 
-        return value
+            for i in range(1, 107):
+                value += f'&actCategory={_convert_subject_cat(i)}'
 
-    if isinstance(category, Enum):
-        category = category.value
+            return value
 
-    category = str(_SUBJECT_MAP.get(category, category))
-    if category == '0':
-        value = ''
+        value += f'&actCategory={_convert_subject_cat(cat_value)}'
 
-        for i in range(1, 107):
-            value += f'&actCategory={_convert_subject_cat(i)}'
-
-        return value
-
-    return f'&actCategory={_convert_subject_cat(category)}'
+    return value
 
 
 def _extract_between(string, sep):

@@ -541,6 +541,9 @@ class MeaningCategoryHelper(metaclass=_MeaningCategoryHelperMeta):
         raising a ValueError or KeyError if the value is not associated with any meaning category.
         """
 
+        if isinstance(value, MeaningCategory):
+            return MeaningCategory(value.value)
+
         if isinstance(value, str):
             numeric_value = _MEANING_CATEGORY_STRINGS.get(value)
             if numeric_value is None:
@@ -556,6 +559,9 @@ class MeaningCategoryHelper(metaclass=_MeaningCategoryHelperMeta):
         Returns the meaning category associated with a string or integer,
         or None if the value is not associated with any meaning category.
         """
+
+        if isinstance(value, MeaningCategory):
+            return MeaningCategory(value.value)
 
         if isinstance(value, str):
             numeric_value = _MEANING_CATEGORY_STRINGS.get(value)
