@@ -3,7 +3,9 @@ Handles processing of search results, including key remapping,
 type conversion, and restructuring.
 """
 
-from typing import Any
+from xmltodict import parse as parse_xml
+from .types import KRDictException
+from .scraper import extend_view, extend_search, extend_advanced_search
 
 
 def _handle_conju_info(elem):
@@ -159,6 +161,12 @@ _REMAPS = {
     'total': 'total_results',
     'written_form': 'name'
 }
+_DEFAULTS = {
+    'FETCH_MULTIMEDIA': False,
+    'FETCH_PAGE_DATA': True,
+    'RAISE_SCRAPER_ERRORS': False,
+    'USE_SCRAPER': False
+}
 
 
 def _guarantee(value, search_type, keys):
@@ -178,8 +186,65 @@ def _guarantee(value, search_type, keys):
         elif key_type == list:
             value[key] = []
 
+def _postprocess(response, params, options, search_type):
+    if 'error' in response:
+        return response
 
-def postprocessor(key: str, value: Any, search_type: str, guarantee: bool):
+    if search_type == 'view' and options.get('use_scraper', _DEFAULTS['USE_SCRAPER']):
+        fetch_page = options.get('fetch_page_data', _DEFAULTS['FETCH_PAGE_DATA'])
+        fetch_media = options.get('fetch_multimedia', _DEFAULTS['FETCH_MULTIMEDIA'])
+        raise_errors = options.get('raise_scraper_errors', _DEFAULTS['RAISE_SCRAPER_ERRORS'])
+        return extend_view(response, fetch_page, fetch_media, raise_errors)
+
+    use_scraper = (
+        params.get('part') == 'word'
+        and options.get('use_scraper', _DEFAULTS['USE_SCRAPER'])
+        and options.get('fetch_page_data', _DEFAULTS['FETCH_PAGE_DATA'])
+    )
+
+    if use_scraper:
+        raise_errors = options.get('raise_scraper_errors', _DEFAULTS['RAISE_SCRAPER_ERRORS'])
+        return (
+            extend_advanced_search(response, raise_errors) if params.get('advanced') == 'y'
+            else extend_search(response, raise_errors)
+        )
+
+    return response
+
+
+def parse_response(kwargs, api_response, request_params, search_type):
+    """
+    Transforms an HTTP response to a response object.
+
+    - ``kwargs``: The provided input keyword arguments.
+    - ``api_response``: Whether or not this an advanced search.
+    - ``request_params``: The request parameters which were sent to the API.
+    - ``search_type``: The type of search which was performed.
+
+    """
+
+    response = parse_xml(
+        api_response.text,
+        dict_constructor=dict,
+        postprocessor=(
+            lambda _, k, v:
+            postprocessor(k, v, search_type, kwargs.get('guarantee_keys', False))
+        )
+    )
+
+    if kwargs.get('raise_api_errors', False) and 'error' in response:
+        error = response['error']
+        raise KRDictException(error['message'], error['error_code'], request_params)
+
+    response['request_params'] = request_params
+    response['response_type'] = search_type if 'error' not in response else 'error'
+
+    if 'data' in response and 'results' not in response['data']:
+        response['data']['results'] = []
+
+    return _postprocess(response, request_params, kwargs.get('options', {}), search_type)
+
+def postprocessor(key, value, search_type, guarantee):
     """
     Performs postprocessing on elements converted from XML.
 
@@ -214,3 +279,26 @@ def postprocessor(key: str, value: Any, search_type: str, guarantee: bool):
 
 
     return key, value
+
+def set_default(name, value):
+    """
+    Sets the default value of the given option.
+
+    - ``name``: The name of the option to set.
+        - ``'fetch_multimedia'``: Controls whether multimedia is scraped during view queries.
+        No effect unless the 'use_scraper' option is True.
+        - ``'fetch_page_data'``: Controls whether pronunciation URLs and extended language
+        information are scraped. No effect unless the 'use_scraper' option is True.
+        - ``'raise_scraper_errors'``: Controls whether errors that occur during scraping are raised.
+        No effect unless the 'use_scraper' option is True.
+        - ``'use_scraper'``: Controls whether the scraper should be used to fetch more information.
+    - ``value``: Boolean value; sets or unsets a default value.
+
+    """
+
+    name = name.upper()
+
+    if name not in _DEFAULTS:
+        return
+
+    _DEFAULTS[name] = value is True

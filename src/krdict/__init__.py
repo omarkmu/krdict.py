@@ -3,7 +3,8 @@ Provides functions that query the Korean Learners' Dictionary API.
 """
 
 from . import scraper
-from .request import send_request, set_default, set_key
+from .request import send_request, set_key
+from .response import parse_response, set_default
 from .types import (
     Classification,
     KRDictException,
@@ -85,9 +86,7 @@ def advanced_search(**kwargs):
 
     """
 
-    kwargs = kwargs.copy()
-    kwargs['advanced'] = 'y'
-    return send_request(kwargs)
+    return parse_response(kwargs, *send_request(kwargs, True))
 
 def search(**kwargs):
     """
@@ -122,7 +121,7 @@ def search(**kwargs):
 
     """
 
-    return send_request(kwargs)
+    return parse_response(kwargs, *send_request(kwargs, False))
 
 def view(**kwargs):
     """
@@ -154,7 +153,7 @@ def view(**kwargs):
 
     """
 
-    return send_request(kwargs, 'view')
+    return parse_response(kwargs, *send_request(kwargs, False, 'view'))
 
 
 __all__ = [
