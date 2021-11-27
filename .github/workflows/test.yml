@@ -1,4 +1,4 @@
-name: Run python tests
+name: Test
 
 on:
   push:
@@ -9,10 +9,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
-    name: Run tests
+  unittest:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.9
@@ -29,6 +27,18 @@ jobs:
         KRDICT_KEY: ${{ secrets.KRDICT_KEY }}
       run: |
         python -m unittest -v
+  examples:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Test examples
       working-directory: ./src
       env:
