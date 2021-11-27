@@ -5,11 +5,8 @@ the following setup code has run:
 ```python
 import os
 import json
-from dotenv import load_dotenv
-
 import krdict
 
-load_dotenv()
 krdict.set_key(os.getenv('KRDICT_KEY'))
 
 # displays a limited amount of information

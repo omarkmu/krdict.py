@@ -5,12 +5,16 @@ Contains potential usage examples of the library.
 import os
 import sys
 import json
-from requests import RequestException
-from dotenv import load_dotenv
-
+import requests
 import krdict
 
-load_dotenv()
+try:
+    # try to load environment variables from .env file
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 krdict.set_key(os.getenv('KRDICT_KEY'))
 
 
@@ -420,5 +424,5 @@ def _run_examples():
 if __name__ == '__main__':
     try:
         _run_examples()
-    except (krdict.KRDictException, RequestException) as exc:
+    except (krdict.KRDictException, requests.RequestException) as exc:
         sys.exit(exc)

@@ -4,12 +4,16 @@ Handles testing the krdict module.
 
 import os
 import unittest
-import dotenv
 import krdict
 
 _BASE_VIEW_URL = 'https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo={}'
 
-dotenv.load_dotenv()
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 krdict.set_key(os.getenv('KRDICT_KEY'))
 
 class TestKRDict(unittest.TestCase):
