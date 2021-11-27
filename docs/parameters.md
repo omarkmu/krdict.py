@@ -1,4 +1,4 @@
-A summary of expected parameter types for various [functions](functions.md).
+A summary of expected parameter types for various [functions](main.md).
 
 Functions which expect any of the enumeration types below also accept their underlying string or integer
 value, the enumeration name, or a string alias. The [methods and properties](#enumeration%20methods)
@@ -463,6 +463,6 @@ Additional options to apply to a query. All of the keys are not required.
 - `'raise_scraper_errors'`: Controls whether errors that occur during scraping are raised. No effect unless the `'use_scraper'` option is `True`.
 - `'use_scraper'`: Controls whether the scraper should be used to fetch more information.
 
-See also: [`set_default`](functions.md#set_default).
+See also: [`set_default`](main.md#set_default).
 
 

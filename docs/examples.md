@@ -27,7 +27,7 @@ brevity; for the full example file, see the
 ## 1. Pagination
 
 Collects results from multiple queries for the word 나무
-using the [`search`](functions.md#search) function.
+using the [`search`](main.md#search) function.
 
 !!! note
     The maximum value for `per_page` is 100, so the below results
@@ -64,7 +64,7 @@ Collected 13 results from page 3. All results collected.
 ## 2. Search By Definition
 
 Performs a search for definitions containing the word 나무
-using the [`search`](functions.md#search) function.
+using the [`search`](main.md#search) function.
 
 ```python
 response = krdict.search(
@@ -108,7 +108,7 @@ Total Results: 493
 ## 3. Search By Examples
 
 Performs a search for examples containing the word 나무
-using the [`search`](functions.md#search) function.
+using the [`search`](main.md#search) function.
 
 ```python
 response = krdict.search(
@@ -136,7 +136,7 @@ for result in response['data']['results']:
 ## 4. Search By Idioms/Proverbs
 
 Performs a search for idioms and proverbs containing the word 나무
-using the [`search`](functions.md#search) function.
+using the [`search`](main.md#search) function.
 
 ```python
 response = krdict.search(
@@ -176,7 +176,7 @@ Total Results: 13
 
 Retrieves and displays information about the first ten results
 which are beginner grade words and contain any kind of multimedia
-using the [`advanced_search`](functions.md#advanced_search) function.
+using the [`advanced_search`](main.md#advanced_search) function.
 
 ```python
 response = krdict.advanced_search(
@@ -224,7 +224,7 @@ Total Results: 299
 ## 6. Search Words Containing Hanja (한자)
 
 Retrieves and displays information about the first ten results which contain the hanja 機 (기)
-using the [`advanced_search`](functions.md#advanced_search) function.
+using the [`advanced_search`](main.md#advanced_search) function.
 
 ```python
 response = krdict.advanced_search(
@@ -265,7 +265,7 @@ Total Results: 170
 ## 7. Perform a View Query
 
 Displays the results of a view query for the word 단풍나무
-using the [`view`](functions.md#view) function.
+using the [`view`](main.md#view) function.
 
 !!! warning
     As shown in the result below, the API has a bug which duplicates
@@ -311,7 +311,7 @@ https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=42075
 ## 8. Perform an Enhanced View Query
 
 Displays the results of a view query enhanced by scraping for the word 단풍나무
-using the [`view`](functions.md#view) function.
+using the [`view`](main.md#view) function.
 
 The scraper extends view queries with pronunciation URLs, multimedia URLs,
 and extended information about 한자 such as readings, stroke count, and radicals.
@@ -349,7 +349,7 @@ https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=42075
 
 Fetches the word of the day with [`fetch_today_word`](scraper.md#fetch_today_word),
 then fetches extended information about the word of the day
-using the [`view`](functions.md#view) function.
+using the [`view`](main.md#view) function.
 
 ```python
 wotd_response = krdict.scraper.fetch_today_word(translation_language='english')
@@ -484,10 +484,10 @@ Total Results: 17
 ## 12. Using The `guarantee_keys` Parameter
 
 Demonstrates the use of the `guarantee_keys` keyword argument of
-the [`view`](functions.md#view) function.
+the [`view`](main.md#view) function.
 
-A similar parameter exists for [`advanced_search`](functions.md#advanced_search),
-[`search`](functions.md#search),
+A similar parameter exists for [`advanced_search`](main.md#advanced_search),
+[`search`](main.md#search),
 [`fetch_today_word`](scraper.md#fetch_today_word),
 [`fetch_meaning_category_words`](scraper.md#fetch_meaning_category_words), and
 [`fetch_subject_category_words`](scraper.md#fetch_subject_category_words).
@@ -640,7 +640,7 @@ With guarantee_keys:
 ---
 ## 13. Get Hanja Information
 
-Displays information about the hanja characters in a [`view`](functions.md#view)
+Displays information about the hanja characters in a [`view`](main.md#view)
 response using the scraper.
 
 ```python
