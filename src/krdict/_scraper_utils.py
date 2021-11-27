@@ -4,6 +4,8 @@ Provides utilities for scraping.
 
 import requests
 from lxml import html
+
+from krdict.types.scraper import ScraperTranslationLanguage
 from .types import MeaningCategory, SubjectCategory
 
 _ADVANCED_SEARCH_URL = (
@@ -24,19 +26,19 @@ _AFTER_SEARCH_URL = [
     'per_page',
     'results'
 ]
-_LANG_INFO = {
-    'mongolian': ['mon', 1, '몽골어'],
-    'vietnamese': ['vie', 2, '베트남어'],
-    'thai': ['tha', 3, '타이어'],
-    'indonesian': ['ind', 4, '인도네시아어'],
-    'russian': ['rus', 5, '러시아어'],
-    'english': ['eng', 6, '영어'],
-    'japanese': ['jpn', 7, '일본어'],
-    'french': ['fra', 8, '프랑스어'],
-    'spanish': ['spa', 9, '스페인어'],
-    'arabic': ['ara', 10, '아랍어'],
-    'chinese': ['chn', 11, '중국어']
-}
+_LANG_INFO = [
+    ['eng', 6, '영어'],
+    ['jpn', 7, '일본어'],
+    ['fra', 8, '프랑스어'],
+    ['spa', 9, '스페인어'],
+    ['ara', 10, '아랍어'],
+    ['mon', 1, '몽골어'],
+    ['vie', 2, '베트남어'],
+    ['tha', 3, '타이어'],
+    ['ind', 4, '인도네시아어'],
+    ['rus', 5, '러시아어'],
+    ['chn', 11, '중국어']
+]
 _LANG_MAP = {
     '0': 'all',
     '1': '0',
@@ -305,7 +307,9 @@ def _build_advanced_search_url(params):
     return url
 
 def _build_language_query(lang):
-    [nation, code, exo] = _LANG_INFO.get(lang, ['', 0, ''])
+    lang = ScraperTranslationLanguage.get_value(lang, lang)
+    [nation, code, exo] = _LANG_INFO[lang - 1] \
+        if isinstance(lang, int) and lang != 0 else [None, 0, None]
 
     if code == 0:
         return '', '', None

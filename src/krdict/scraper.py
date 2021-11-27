@@ -2,7 +2,7 @@
 Retrieves information from the krdict website via scraping.
 """
 
-from .types import SortMethod
+from .types import ScraperTranslationLanguage, SortMethod
 from ._scraper_utils import (
     _build_advanced_search_url,
     _build_language_query,
@@ -328,5 +328,6 @@ __all__ = [
     'extend_view',
     'fetch_today_word',
     'fetch_meaning_category_words',
-    'fetch_subject_category_words'
+    'fetch_subject_category_words',
+    'ScraperTranslationLanguage'
 ]

@@ -5,6 +5,7 @@ from .types import (
     KRDictException,
     MeaningCategory,
     MultimediaType,
+    OriginType,
     PartOfSpeech,
     SearchMethod,
     SearchTarget,
@@ -13,7 +14,6 @@ from .types import (
     SortMethod,
     TargetLanguage,
     TranslationLanguage,
-    OriginType,
     VocabularyLevel
 )
 
@@ -1693,6 +1693,7 @@ __all__ = [
     'KRDictException',
     'MeaningCategory',
     'MultimediaType',
+    'OriginType',
     'PartOfSpeech',
     'SearchMethod',
     'SearchTarget',
@@ -1701,6 +1702,5 @@ __all__ = [
     'SubjectCategory',
     'TargetLanguage',
     'TranslationLanguage',
-    'OriginType',
     'VocabularyLevel'
 ]

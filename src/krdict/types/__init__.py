@@ -6,6 +6,7 @@ from .base import IntEnumBase, StrEnumBase
 from .meaning_category import MeaningCategory
 from .subject_category import SubjectCategory
 from .exceptions import KRDictException
+from .scraper import ScraperTranslationLanguage
 
 class Classification(StrEnumBase):
     """Enumeration class that contains word classifications."""
@@ -35,6 +36,19 @@ class MultimediaType(IntEnumBase):
     ANIMATION = 4
     SOUND = 5
     NONE = 6
+
+class OriginType(StrEnumBase):
+    """Enumeration class that contains word origin types."""
+
+    __aliases__ = {
+        'hanja': 'chinese'
+    }
+
+    ALL = 'all'
+    NATIVE = 'native'
+    HANJA = 'chinese'
+    LOANWORD = 'loanword'
+    HYBRID = 'hybrid'
 
 class PartOfSpeech(IntEnumBase):
     """Enumeration class that contains parts of speech."""
@@ -279,19 +293,6 @@ class TranslationLanguage(IntEnumBase):
     INDONESIAN = 9
     RUSSIAN = 10
 
-class OriginType(StrEnumBase):
-    """Enumeration class that contains word origin types."""
-
-    __aliases__ = {
-        'hanja': 'chinese'
-    }
-
-    ALL = 'all'
-    NATIVE = 'native'
-    HANJA = 'chinese'
-    LOANWORD = 'loanword'
-    HYBRID = 'hybrid'
-
 class VocabularyLevel(StrEnumBase):
     """Enumeration class that contains vocabulary levels."""
 
@@ -311,7 +312,9 @@ __all__ = [
     'KRDictException',
     'MeaningCategory',
     'MultimediaType',
+    'OriginType',
     'PartOfSpeech',
+    'ScraperTranslationLanguage',
     'SearchMethod',
     'SearchTarget',
     'SearchType',
@@ -319,6 +322,5 @@ __all__ = [
     'SubjectCategory',
     'TargetLanguage',
     'TranslationLanguage',
-    'OriginType',
     'VocabularyLevel'
 ]

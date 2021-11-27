@@ -1,11 +1,11 @@
 from typing import List, Literal, TypedDict, overload
+from .types.scraper import ScraperTranslationLanguage
 from . import (
     TMeaningCategory, SearchTranslation, TSortMethod, TSubjectCategory,
     TotalViewResponse, TotalWordSearchResponse, WordSearchResponse, ViewResponse
 )
 
-ScraperTranslationLanguage = Literal[
-    'chinese',
+TScraperTranslationLanguage = ScraperTranslationLanguage | int | Literal[
     'english',
     'japanese',
     'french',
@@ -15,7 +15,8 @@ ScraperTranslationLanguage = Literal[
     'vietnamese',
     'thai',
     'indonesian',
-    'russian'
+    'russian',
+    'chinese'
 ]
 
 
@@ -156,12 +157,12 @@ def extend_view(
 @overload
 def fetch_today_word(*,
     guarantee_keys: Literal[True],
-    translation_language: ScraperTranslationLanguage = None
+    translation_language: TScraperTranslationLanguage = None
 ) -> TotalWordOfTheDayResponse: ...
 @overload
 def fetch_today_word(*,
     guarantee_keys: bool = False,
-    translation_language: ScraperTranslationLanguage = None
+    translation_language: TScraperTranslationLanguage = None
 ) -> WordOfTheDayResponse: ...
 
 
@@ -172,7 +173,7 @@ def fetch_meaning_category_words(*,
     page: int = None,
     per_page: int = None,
     sort: TSortMethod = None,
-    translation_language: ScraperTranslationLanguage = None
+    translation_language: TScraperTranslationLanguage = None
 ) -> TotalScrapedWordSearchResponse: ...
 @overload
 def fetch_meaning_category_words(*,
@@ -181,7 +182,7 @@ def fetch_meaning_category_words(*,
     page: int = None,
     per_page: int = None,
     sort: TSortMethod = None,
-    translation_language: ScraperTranslationLanguage = None
+    translation_language: TScraperTranslationLanguage = None
 ) -> ScrapedWordSearchResponse: ...
 
 
@@ -192,7 +193,7 @@ def fetch_subject_category_words(*,
     page: int = None,
     per_page: int = None,
     sort: TSortMethod = None,
-    translation_language: ScraperTranslationLanguage = None
+    translation_language: TScraperTranslationLanguage = None
 ) -> TotalScrapedWordSearchResponse: ...
 @overload
 def fetch_subject_category_words(*,
@@ -201,5 +202,15 @@ def fetch_subject_category_words(*,
     page: int = None,
     per_page: int = None,
     sort: TSortMethod = None,
-    translation_language: ScraperTranslationLanguage = None
+    translation_language: TScraperTranslationLanguage = None
 ) -> ScrapedWordSearchResponse: ...
+
+__all__ = [
+    'extend_advanced_search',
+    'extend_search',
+    'extend_view',
+    'fetch_today_word',
+    'fetch_meaning_category_words',
+    'fetch_subject_category_words',
+    'ScraperTranslationLanguage'
+]
