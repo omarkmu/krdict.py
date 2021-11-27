@@ -2,12 +2,8 @@
 Provides functions that query the Korean Learners' Dictionary API.
 """
 
-import requests
-from xmltodict import parse as parse_xml
-
-from ._params import transform_search_params, transform_view_params
-from ._results import postprocessor
-from .scraper import extend_view, extend_search, extend_advanced_search
+from . import scraper
+from .request import send_request, set_default, set_key
 from .types import (
     Classification,
     KRDictException,
@@ -24,60 +20,6 @@ from .types import (
     TranslationLanguage,
     VocabularyLevel
 )
-
-
-_SEARCH_URL = 'https://krdict.korean.go.kr/api/search'
-_VIEW_URL = 'https://krdict.korean.go.kr/api/view'
-_DEFAULTS = {
-    'API_KEY': None,
-    'FETCH_MULTIMEDIA': False,
-    'FETCH_PAGE_DATA': True,
-    'RAISE_SCRAPER_ERRORS': False,
-    'USE_SCRAPER': False
-}
-
-
-def _send_request(url, params, search_type):
-    raise_api_errors = False
-    guarantee = False
-    if 'key' not in params and _DEFAULTS['API_KEY'] is not None:
-        params['key'] = _DEFAULTS['API_KEY']
-    if 'raise_api_errors' in params:
-        raise_api_errors = params['raise_api_errors'] is True
-        del params['raise_api_errors']
-    if 'guarantee_keys' in params:
-        guarantee = params['guarantee_keys'] is True
-        del params['guarantee_keys']
-    if 'options' in params:
-        del params['options']
-
-    try:
-        response = requests.get(url, params=params)
-        response.raise_for_status()
-        result = parse_xml(
-            response.text,
-            dict_constructor=dict,
-            postprocessor=lambda _, k, v: postprocessor(k, v, search_type, guarantee)
-        )
-
-        if result is None:
-            # should be unreachable
-            raise RuntimeError('XML parsing resulted in None')
-
-        if raise_api_errors and 'error' in result:
-            error = result['error']
-            raise KRDictException(error['message'], error['error_code'], params)
-
-        result['request_params'] = params
-        result['response_type'] = search_type if 'error' not in result else 'error'
-
-        if 'data' in result and 'results' not in result['data']:
-            result['data']['results'] = []
-
-        return result
-    except requests.exceptions.RequestException as exc:
-        raise exc
-
 
 def advanced_search(**kwargs):
     """
@@ -143,25 +85,9 @@ def advanced_search(**kwargs):
 
     """
 
+    kwargs = kwargs.copy()
     kwargs['advanced'] = 'y'
-    search_type = kwargs.get('search_type', 'word')
-    transform_search_params(kwargs)
-
-    options = kwargs.get('options', {})
-    use_scraper = (kwargs.get('part', 'word') == 'word'
-        and options.get('use_scraper', _DEFAULTS['USE_SCRAPER'])
-        and options.get('fetch_page_data', _DEFAULTS['FETCH_PAGE_DATA']))
-
-    if use_scraper:
-        response = _send_request(_SEARCH_URL, kwargs, search_type)
-
-        if 'error' in response:
-            return response
-
-        raise_errors = options.get('raise_scraper_errors', _DEFAULTS['RAISE_SCRAPER_ERRORS'])
-        return extend_advanced_search(response, raise_errors)
-
-    return _send_request(_SEARCH_URL, kwargs, search_type)
+    return send_request(kwargs)
 
 def search(**kwargs):
     """
@@ -196,57 +122,7 @@ def search(**kwargs):
 
     """
 
-    search_type = kwargs.get('search_type', 'word')
-    transform_search_params(kwargs)
-
-    options = kwargs.get('options', {})
-    use_scraper = (kwargs.get('part', 'word') == 'word'
-        and options.get('use_scraper', _DEFAULTS['USE_SCRAPER'])
-        and options.get('fetch_page_data', _DEFAULTS['FETCH_PAGE_DATA']))
-
-    if use_scraper:
-        response = _send_request(_SEARCH_URL, kwargs, search_type)
-
-        if 'error' in response:
-            return response
-
-        raise_errors = options.get('raise_scraper_errors', _DEFAULTS['RAISE_SCRAPER_ERRORS'])
-        return extend_search(response, raise_errors)
-
-    return _send_request(_SEARCH_URL, kwargs, search_type)
-
-def set_default(name, value):
-    """
-    Sets the default value of the given option.
-
-    - ``name``: The name of the option to set.
-        - ``'fetch_multimedia'``: Controls whether multimedia is scraped during view queries.
-        No effect unless the 'use_scraper' option is True.
-        - ``'fetch_page_data'``: Controls whether pronunciation URLs and extended language
-        information are scraped. No effect unless the 'use_scraper' option is True.
-        - ``'raise_scraper_errors'``: Controls whether errors that occur during scraping are raised.
-        No effect unless the 'use_scraper' option is True.
-        - ``'use_scraper'``: Controls whether the scraper should be used to fetch more information.
-    - ``value``: Boolean value; sets or unsets a default value.
-
-    """
-
-    name = name.upper()
-
-    if name == 'API_KEY' or name not in _DEFAULTS:
-        return
-
-    _DEFAULTS[name] = value is True
-
-def set_key(key):
-    """
-    Sets the API key to use when a key is not specified in a request.
-
-    - ``key``: The API key to use, or None to unset the key.
-
-    """
-
-    _DEFAULTS['API_KEY'] = key
+    return send_request(kwargs)
 
 def view(**kwargs):
     """
@@ -278,21 +154,7 @@ def view(**kwargs):
 
     """
 
-    transform_view_params(kwargs)
-
-    options = kwargs.get('options', {})
-    if options.get('use_scraper', _DEFAULTS['USE_SCRAPER']) is True:
-        response = _send_request(_VIEW_URL, kwargs, 'view')
-
-        if 'error' in response:
-            return response
-
-        fetch_page = options.get('fetch_page_data', _DEFAULTS['FETCH_PAGE_DATA'])
-        fetch_media = options.get('fetch_multimedia', _DEFAULTS['FETCH_MULTIMEDIA'])
-        raise_errors = options.get('raise_scraper_errors', _DEFAULTS['RAISE_SCRAPER_ERRORS'])
-        return extend_view(response, fetch_page, fetch_media, raise_errors)
-
-    return _send_request(_VIEW_URL, kwargs, 'view')
+    return send_request(kwargs, 'view')
 
 
 __all__ = [
