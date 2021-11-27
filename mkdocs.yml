@@ -6,12 +6,12 @@ nav:
     - Home: index.md
     - Usage Examples: examples.md
     - Modules:
-        - Main: functions.md
+        - Main: main.md
         - Scraper: scraper.md
+    - Types:
+        - Parameter Types: parameters.md
         - Meaning Category: meaning_category.md
         - Subject Category: subject_category.md
-    - Types:
-        - Parameters: parameters.md
         - Return Types: return_types.md
         - Exceptions: exceptions.md
 markdown_extensions:

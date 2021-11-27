@@ -12,7 +12,7 @@ You can also install from one of the [GitHub releases](https://github.com/omarkm
 
 ## Usage
 To use most of the functionality provided by this module, you'll need to generate an API key via
-[krdict](https://krdict.korean.go.kr/openApi/openApiRegister) (requires login).
+[the portal](https://krdict.korean.go.kr/openApi/openApiRegister) (requires login).
 
 A minimal example query that assumes the `KRDICT_KEY` environment variable is set:
 

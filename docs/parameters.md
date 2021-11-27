@@ -1,7 +1,7 @@
 A summary of expected parameter types for various [functions](main.md).
 
 Functions which expect any of the enumeration types below also accept their underlying string or integer
-value, the enumeration name, or a string alias. The [methods and properties](#enumeration%20methods)
+value, the enumeration name, or a string alias. The [methods and properties](#enumeration-methods)
 available on all enumeration types are also detailed below.
 
 ---
