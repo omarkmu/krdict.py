@@ -15,7 +15,7 @@ class Classification(StrEnumBase):
     PHRASE = 'phrase'
     EXPRESSION = 'expression'
 
-class Multimedia(IntEnumBase):
+class MultimediaType(IntEnumBase):
     """Enumeration class that contains multimedia types."""
 
     __aliases__ = {
@@ -305,3 +305,20 @@ class VocabularyLevel(StrEnumBase):
     BEGINNER = 'level1'
     INTERMEDIATE = 'level2'
     ADVANCED = 'level3'
+
+__all__ = [
+    'Classification',
+    'KRDictException',
+    'MeaningCategory',
+    'MultimediaType',
+    'PartOfSpeech',
+    'SearchMethod',
+    'SearchTarget',
+    'SearchType',
+    'SortMethod',
+    'SubjectCategory',
+    'TargetLanguage',
+    'TranslationLanguage',
+    'OriginType',
+    'VocabularyLevel'
+]

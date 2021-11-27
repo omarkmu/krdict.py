@@ -8,7 +8,22 @@ from xmltodict import parse as parse_xml
 from ._params import transform_search_params, transform_view_params
 from ._results import postprocessor
 from .scraper import extend_view, extend_search, extend_advanced_search
-from .types import KRDictException, MeaningCategory, SubjectCategory
+from .types import (
+    Classification,
+    KRDictException,
+    MeaningCategory,
+    MultimediaType,
+    PartOfSpeech,
+    SearchMethod,
+    SearchTarget,
+    SearchType,
+    SortMethod,
+    SubjectCategory,
+    TargetLanguage,
+    TranslationLanguage,
+    OriginType,
+    VocabularyLevel
+)
 
 
 _SEARCH_URL = 'https://krdict.korean.go.kr/api/search'
@@ -287,7 +302,18 @@ __all__ = [
     'set_default',
     'set_key',
     'view',
+    'Classification',
     'KRDictException',
     'MeaningCategory',
-    'SubjectCategory'
+    'MultimediaType',
+    'PartOfSpeech',
+    'SearchMethod',
+    'SearchTarget',
+    'SearchType',
+    'SortMethod',
+    'SubjectCategory',
+    'TargetLanguage',
+    'TranslationLanguage',
+    'OriginType',
+    'VocabularyLevel'
 ]

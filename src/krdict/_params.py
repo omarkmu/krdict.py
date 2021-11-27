@@ -2,7 +2,21 @@
 Transforms input parameters into API-compliant dicts.
 """
 
-from .types import MeaningCategory, SubjectCategory
+from .types import (
+    Classification,
+    MeaningCategory,
+    MultimediaType,
+    PartOfSpeech,
+    SearchMethod,
+    SearchTarget,
+    SearchType,
+    SortMethod,
+    SubjectCategory,
+    TargetLanguage,
+    TranslationLanguage,
+    OriginType,
+    VocabularyLevel
+)
 
 _PARAM_MAPS = {
     'query': {
@@ -16,153 +30,47 @@ _PARAM_MAPS = {
     },
     'sort': {
         'name': 'sort',
-        'value': {
-            'alphabetical': 'dict'
-        }
+        'type': SortMethod
     },
     'search_type': {
         'name': 'part',
-        'value': {
-            'idiom_proverb': 'ip',
-            'definition': 'dfn',
-            'example': 'exam'
-        }
+        'type': SearchType
     },
     'translation_language': {
         'name': 'trans_lang',
-        'value': {
-            'all': 0,
-            'english': 1,
-            'japanese': 2,
-            'french': 3,
-            'spanish': 4,
-            'arabic': 5,
-            'mongolian': 6,
-            'vietnamese': 7,
-            'thai': 8,
-            'indonesian': 9,
-            'russian': 10
-        }
+        'type': TranslationLanguage
     },
     'search_target': {
         'name': 'target',
-        'value': {
-            'headword': 1,
-            'definition': 2,
-            'example': 3,
-            'original_language': 4,
-            'pronunciation': 5,
-            'application': 6,
-            'application_shorthand': 7,
-            'idiom': 8,
-            'proverb': 9,
-            'reference_info': 10
-        }
+        'type': SearchTarget
     },
     'target_language': {
         'name': 'lang',
-        'value': {
-            'all': 0,
-            'native_word': 1,
-            'sino-korean': 2,
-            'unknown': 3,
-            'english': 4,
-            'greek': 5,
-            'dutch': 6,
-            'norwegian': 7,
-            'german': 8,
-            'latin': 9,
-            'russian': 10,
-            'romanian': 11,
-            'maori': 12,
-            'malay': 13,
-            'mongolian': 14,
-            'basque': 15,
-            'burmese': 16,
-            'vietnamese': 17,
-            'bulgarian': 18,
-            'sanskrit': 19,
-            'serbo-croatian': 20,
-            'swahili': 21,
-            'swedish': 22,
-            'arabic': 23,
-            'irish': 24,
-            'spanish': 25,
-            'uzbek': 26,
-            'ukrainian': 27,
-            'italian': 28,
-            'indonesian': 29,
-            'japanese': 30,
-            'chinese': 31,
-            'czech': 32,
-            'cambodian': 33,
-            'quechua': 34,
-            'tagalog': 35,
-            'thai': 36,
-            'turkish': 37,
-            'tibetan': 38,
-            'persian': 39,
-            'portuguese': 40,
-            'polish': 41,
-            'french': 42,
-            'provencal': 43,
-            'finnish': 44,
-            'hungarian': 45,
-            'hebrew': 46,
-            'hindi': 47,
-            'other': 48,
-            'danish': 49
-        }
+        'type': TargetLanguage
     },
     'search_method': {
-        'name': 'method'
+        'name': 'method',
+        'type': SearchMethod
     },
     'classification': {
-        'name': 'type1'
+        'name': 'type1',
+        'type': Classification
     },
     'origin_type': {
-        'name': 'type2'
+        'name': 'type2',
+        'type': OriginType
     },
     'vocabulary_grade': {
         'name': 'level',
-        'value': {
-            'beginner': 'level1',
-            'intermediate': 'level2',
-            'advanced': 'level3'
-        }
+        'type': VocabularyLevel
     },
     'part_of_speech': {
         'name': 'pos',
-        'value': {
-            'all': 0,
-            'noun': 1,
-            'pronoun': 2,
-            'numeral': 3,
-            'particle': 4,
-            'verb': 5,
-            'adjective': 6,
-            'determiner': 7,
-            'adverb': 8,
-            'interjection': 9,
-            'affix': 10,
-            'bound noun': 11,
-            'auxiliary verb': 12,
-            'auxiliary adjective': 13,
-            'ending': 14,
-            'none': 15
-        }
+        'type': PartOfSpeech
     },
     'multimedia_info': {
         'name': 'multimedia',
-        'value': {
-            'all': 0,
-            'photo': 1,
-            'illustration': 2,
-            'video': 3,
-            'animation': 4,
-            'sound': 5,
-            'none': 6
-        }
+        'type': MultimediaType
     },
     'min_syllables': {
         'name': 'letter_s'
@@ -184,14 +92,12 @@ _PARAM_MAPS = {
 }
 
 
-def _get_map_value(mapper, value):
+def _map_value(mapper, value):
     if isinstance(value, list):
-        return ','.join(map(lambda x: _get_map_value(mapper, x), value))
+        return ','.join(map(lambda x: _map_value(mapper, x), value))
 
     if 'type' in mapper:
         return str(mapper['type'].get_value(value, value))
-    if 'value' in mapper and value in mapper['value']:
-        return str(mapper['value'][value])
 
     return str(value)
 
@@ -212,7 +118,7 @@ def transform_search_params(params: dict) -> None:
 
         mapper = _PARAM_MAPS[key]
         new_key = mapper['name']
-        new_value = _get_map_value(mapper, params[key])
+        new_value = _map_value(mapper, params[key])
 
         params[new_key] = new_value
 

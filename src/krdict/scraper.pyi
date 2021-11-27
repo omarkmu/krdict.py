@@ -1,6 +1,6 @@
 from typing import List, Literal, TypedDict, overload
 from . import (
-    MeaningCategoryType, SearchTranslation, SortMethod, SubjectCategoryType,
+    TMeaningCategory, SearchTranslation, TSortMethod, TSubjectCategory,
     TotalViewResponse, TotalWordSearchResponse, WordSearchResponse, ViewResponse
 )
 
@@ -168,19 +168,19 @@ def fetch_today_word(*,
 @overload
 def fetch_meaning_category_words(*,
     guarantee_keys: Literal[True],
-    category: MeaningCategoryType,
+    category: TMeaningCategory,
     page: int = None,
     per_page: int = None,
-    sort: SortMethod = None,
+    sort: TSortMethod = None,
     translation_language: ScraperTranslationLanguage = None
 ) -> TotalScrapedWordSearchResponse: ...
 @overload
 def fetch_meaning_category_words(*,
     guarantee_keys: bool = False,
-    category: MeaningCategoryType,
+    category: TMeaningCategory,
     page: int = None,
     per_page: int = None,
-    sort: SortMethod = None,
+    sort: TSortMethod = None,
     translation_language: ScraperTranslationLanguage = None
 ) -> ScrapedWordSearchResponse: ...
 
@@ -188,18 +188,18 @@ def fetch_meaning_category_words(*,
 @overload
 def fetch_subject_category_words(*,
     guarantee_keys: Literal[True],
-    category: SubjectCategoryType | List[SubjectCategoryType],
+    category: TSubjectCategory | List[TSubjectCategory],
     page: int = None,
     per_page: int = None,
-    sort: SortMethod = None,
+    sort: TSortMethod = None,
     translation_language: ScraperTranslationLanguage = None
 ) -> TotalScrapedWordSearchResponse: ...
 @overload
 def fetch_subject_category_words(*,
     guarantee_keys: bool = False,
-    category: SubjectCategoryType | List[SubjectCategoryType],
+    category: TSubjectCategory | List[TSubjectCategory],
     page: int = None,
     per_page: int = None,
-    sort: SortMethod = None,
+    sort: TSortMethod = None,
     translation_language: ScraperTranslationLanguage = None
 ) -> ScrapedWordSearchResponse: ...

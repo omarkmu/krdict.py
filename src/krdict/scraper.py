@@ -2,6 +2,7 @@
 Retrieves information from the krdict website via scraping.
 """
 
+from .types import SortMethod
 from ._scraper_utils import (
     _build_advanced_search_url,
     _build_language_query,
@@ -256,7 +257,7 @@ def fetch_meaning_category_words(**kwargs):
         lang,
         page,
         per_page,
-        'C' if kwargs.get('sort') == 'popular' else 'W',
+        'C' if SortMethod.get_value(kwargs.get('sort')) == 'popular' else 'W',
         _build_sense_category_query(kwargs.get('category', 0)))
 
     [_, doc] = _send_request(url, True)
@@ -304,7 +305,7 @@ def fetch_subject_category_words(**kwargs):
         lang,
         page,
         per_page,
-        'C' if kwargs.get('sort') == 'popular' else 'W',
+        'C' if SortMethod.get_value(kwargs.get('sort')) == 'popular' else 'W',
         _build_subject_category_query(kwargs.get('category', 0)))
 
     [_, doc] = _send_request(url, True)
