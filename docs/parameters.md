@@ -164,7 +164,7 @@ The method to use when searching.
 - `'end'`: Returns entries that end with the query.
 
 ```python
-class SearchMethod(StrEnumBase):
+class SearchMethod:
     EXACT = 'exact'
     INCLUDE = 'include'
     START = 'start'
@@ -175,7 +175,7 @@ class SearchMethod(StrEnumBase):
 
 The target of the search query; what to search by.
 ```python
-class SearchTarget(IntEnumBase):
+class SearchTarget:
     HEADWORD = 1
     DEFINITION = 2
     EXAMPLE = 3
@@ -228,7 +228,7 @@ Aliases:
 
 A sorting method to use for search results.
 ```python
-class SortMethod(StrEnumBase):
+class SortMethod:
     ALPHABETICAL = 'dict'
     POPULAR = 'popular'
 ```
@@ -242,7 +242,7 @@ Aliases:
 
 A target original language to search by.
 ```python
-class TargetLanguage(IntEnumBase):
+class TargetLanguage:
     ALL = 0
     NATIVE_WORD = 1
     SINO_KOREAN = 2
@@ -388,7 +388,7 @@ Aliases:
 
 The vocabulary level of a dictionary entry.
 ```python
-class VocabularyLevel(StrEnumBase):
+class VocabularyLevel:
     ALL = 'all'
     BEGINNER = 'level1'
     INTERMEDIATE = 'level2'

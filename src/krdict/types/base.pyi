@@ -1,16 +1,21 @@
 from collections.abc import Mapping
-from enum import Enum, IntEnum
-from typing import Any, Optional, Type, TypeVar, Union, overload
+from enum import Enum
+from typing import Any, Generic, Optional, Type, TypeVar, Union, overload
 
 T = TypeVar('T')
 EnumType = TypeVar('EnumType', bound='EnumBase')
+UnderlyingType = TypeVar('UnderlyingType')
 
-class EnumBase(Enum):
-    __aliases__: dict
+class EnumBase(Generic[UnderlyingType]):
+    __aliases__: Mapping[str, UnderlyingType]
 
     @classmethod
     @property
-    def aliases(cls) -> Mapping: ...
+    def aliases(cls) -> Mapping[str, UnderlyingType]: ...
+
+    @overload
+    @classmethod
+    def get(cls: Type[EnumType], key: Any) -> Optional[EnumType]: ...
 
     @overload
     @classmethod
@@ -18,41 +23,17 @@ class EnumBase(Enum):
 
     @overload
     @classmethod
-    def get(cls: Type[EnumType], key: Any, default=None) -> Optional[EnumType]: ...
+    def get_value(cls: Type[EnumType], key: Any) -> Optional[UnderlyingType]: ...
 
     @overload
     @classmethod
-    def get_value(cls: Type[EnumType], key: Any, default: Any) -> Any: ...
+    def get_value(cls: Type[EnumType], key: Any, default: T) -> Union[UnderlyingType, T]: ...
 
-    @overload
-    @classmethod
-    def get_value(cls: Type[EnumType], key: Any, default=None) -> Optional[Any]: ...
+class IntEnumBase(int, EnumBase[int], Enum):
+    pass
 
-class IntEnumBase(EnumBase, IntEnum):
-    @classmethod
-    @property
-    def aliases(cls) -> Mapping[str, int]: ...
-
-    @overload
-    @classmethod
-    def get_value(cls: Type[EnumType], key: Any, default: T) -> Union[int, T]: ...
-
-    @overload
-    @classmethod
-    def get_value(cls: Type[EnumType], key: Any, default: None=None) -> Optional[int]: ...
-
-class StrEnumBase(str, EnumBase):
-    @classmethod
-    @property
-    def aliases(cls) -> Mapping[str, str]: ...
-
-    @overload
-    @classmethod
-    def get_value(cls: Type[EnumType], key: Any, default: T) -> Union[str, T]: ...
-
-    @overload
-    @classmethod
-    def get_value(cls: Type[EnumType], key: Any, default: None=None) -> Optional[str]: ...
+class StrEnumBase(str, EnumBase[str], Enum):
+    pass
 
 class EnumProxyBase:
     __populated__: bool

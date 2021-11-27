@@ -94,7 +94,7 @@ _PARAM_MAPS = {
         'name': 'q'
     }
 }
-_DEFAULTS = { 'API_KEY': None }
+_DEFAULTS = { 'API_KEY': '' }
 
 
 def _get_search_type(search_type):
@@ -126,7 +126,7 @@ def _map_value(mapper, value):
 def _transform_params(params, search_type):
     params = params.copy()
 
-    if 'key' not in params and _DEFAULTS['API_KEY'] is not None:
+    if 'key' not in params and _DEFAULTS['API_KEY']:
         params['key'] = _DEFAULTS['API_KEY']
     if 'raise_api_errors' in params:
         del params['raise_api_errors']
@@ -177,7 +177,7 @@ def set_key(key):
 
     """
 
-    _DEFAULTS['API_KEY'] = key
+    _DEFAULTS['API_KEY'] = '' if key is None else key
 
 def transform_search_params(params):
     """

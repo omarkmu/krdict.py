@@ -5,7 +5,7 @@ Contains base class for KRDict enumeration helpers.
 # pylint: disable=too-few-public-methods
 
 from collections.abc import Mapping
-from enum import Enum, IntEnum
+from enum import Enum
 
 class _ReadOnlyDict(Mapping):
     def __init__(self, data):
@@ -73,7 +73,7 @@ class EnumBase(Enum):
         enum_instance = cls.get(key)
         return enum_instance.value if enum_instance is not None else default
 
-class IntEnumBase(EnumBase, IntEnum):
+class IntEnumBase(int, EnumBase):
     """Base class for integer-based enumerations."""
 
 class StrEnumBase(str, EnumBase):
