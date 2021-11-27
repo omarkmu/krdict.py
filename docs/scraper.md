@@ -2,7 +2,7 @@ In addition to API bindings, krdict.py provides a scraper module that offers fun
 fetch information from the dictionary website and extend the results of word search queries,
 advanced search queries, and view queries.
 
-These extensions can be applied directly to results during query calls with the `use_scraper`
+The extensions can be applied directly to the results of the main module's functions with the `use_scraper`
 [option](parameters.md#optionsdict), but are also accessible via the `krdict.scraper` module.
 
 !!! warning
@@ -14,7 +14,7 @@ These extensions can be applied directly to results during query calls with the 
 ---
 ## extend_advanced_search
 
-Extends advanced word search results with pronunciation URLs.
+Extends advanced word search responses with pronunciation URLs.
 
 ```python
 def extend_advanced_search(
@@ -25,7 +25,7 @@ def extend_advanced_search(
 
 **Parameters:**
 
-- `response`: The word search results to extend.
+- `response`: The word search responses to extend.
 - `raise_errors`: Whether errors that occur during scraping should be raised or ignored.
 
 **Returns:**
@@ -35,7 +35,7 @@ Returns an extended [`WordSearchResponse`](return_types.md#wordsearchresponse) o
 ---
 ## extend_search
 
-Extends word search results with pronunciation URLs.
+Extends word search responses with pronunciation URLs.
 
 ```python
 def extend_search(
@@ -46,7 +46,7 @@ def extend_search(
 
 **Parameters:**
 
-- `response`: The word search results to extend.
+- `response`: The word search responses to extend.
 - `raise_errors`: Whether errors that occur during scraping should be raised or ignored.
 
 **Returns:**
@@ -56,7 +56,7 @@ Returns an extended [`WordSearchResponse`](return_types.md#wordsearchresponse) o
 ---
 ## extend_view
 
-Extends view query results with pronunciation URLs, multimedia information, and extended hanja
+Extends view query responses with pronunciation URLs, multimedia information, and extended hanja
 information.
 
 ```python
@@ -70,7 +70,7 @@ def extend_view(
 
 **Parameters:**
 
-- `response`: The word search results to extend.
+- `response`: The word search responses to extend.
 - `fetch_page_data`: Whether page data (URLs and hanja information) should be scraped.
 - `fetch_multimedia`: Whether multimedia URLs should be scraped.
 - `raise_errors`: Whether errors that occur during scraping should be raised or ignored.
@@ -116,7 +116,7 @@ def fetch_meaning_category_words(*,
     category: MeaningCategory = MeaningCategory.ALL,
     page: int = 1,
     per_page: int = 10,
-    sort: SortMethod = 'alphabetical',
+    sort: SortMethod = SortMethod.ALPHABETICAL,
     translation_language: ScraperTranslationLanguage = None
 ) -> ScrapedWordSearchResponse: ...
 ```
@@ -137,7 +137,7 @@ A value of `True` guarantees that every key that is not required is included, in
 - `page`: The page at which the search should start `[1, 1000]`.
 - `per_page`: The maximum number of search results to return `[10, 100]`.
 - `sort` ([`SortMethod`](parameters.md#sortmethod)): The sort method that should be used.
-- `translation_language` ([`ScraperTranslationLanguage`](parameters.md#scrapertranslationlanguage)): A language to include translations for.
+- `translation_language` ([`ScraperTranslationLanguage`](parameters.md#scrapertranslationlanguage)): A language for which translations should be included.
 
 **Returns:**
 
@@ -154,7 +154,7 @@ def fetch_subject_category_words(*,
     category: SubjectCategory | List[SubjectCategory] = SubjectCategory.ALL,
     page: int = 1,
     per_page: int = 0,
-    sort: SortMethod = 'alphabetical',
+    sort: SortMethod = SortMethod.ALPHABETICAL,
     translation_language: ScraperTranslationLanguage = None
 ) -> ScrapedWordSearchResponse: ...
 ```
@@ -171,7 +171,7 @@ A value of `True` guarantees that every key that is not required is included, in
 - `page`: The page at which the search should start `[1, 1000]`.
 - `per_page`: The maximum number of search results to return `[10, 100]`.
 - `sort` ([`SortMethod`](parameters.md#sortmethod)): The sort method that should be used.
-- `translation_language` ([`ScraperTranslationLanguage`](parameters.md#scrapertranslationlanguage)): A language to include translations for.
+- `translation_language` ([`ScraperTranslationLanguage`](parameters.md#scrapertranslationlanguage)): A language for which translations should be included.
 
 **Returns:**
 
