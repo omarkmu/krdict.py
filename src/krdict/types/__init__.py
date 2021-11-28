@@ -2,13 +2,13 @@
 Contains types defined by the krdict module.
 """
 
-from .base import IntEnumBase, StrEnumBase
+from .base import IntEnum, StrEnum
 from .meaning_category import MeaningCategory
 from .subject_category import SubjectCategory
 from .exceptions import KRDictException
 from .scraper import ScraperTranslationLanguage
 
-class Classification(StrEnumBase):
+class Classification(StrEnum):
     """Enumeration class that contains word classifications."""
 
     ALL = 'all'
@@ -16,7 +16,7 @@ class Classification(StrEnumBase):
     PHRASE = 'phrase'
     EXPRESSION = 'expression'
 
-class MultimediaType(IntEnumBase):
+class MultimediaType(IntEnum):
     """Enumeration class that contains multimedia types."""
 
     __aliases__ = {
@@ -37,7 +37,7 @@ class MultimediaType(IntEnumBase):
     SOUND = 5
     NONE = 6
 
-class OriginType(StrEnumBase):
+class OriginType(StrEnum):
     """Enumeration class that contains word origin types."""
 
     __aliases__ = {
@@ -50,7 +50,7 @@ class OriginType(StrEnumBase):
     LOANWORD = 'loanword'
     HYBRID = 'hybrid'
 
-class PartOfSpeech(IntEnumBase):
+class PartOfSpeech(IntEnum):
     """Enumeration class that contains parts of speech."""
 
     __aliases__ = {
@@ -92,7 +92,7 @@ class PartOfSpeech(IntEnumBase):
     ENDING = 14
     NONE = 15
 
-class SearchMethod(StrEnumBase):
+class SearchMethod(StrEnum):
     """Enumeration class that contains search methods."""
 
     EXACT = 'exact'
@@ -100,7 +100,7 @@ class SearchMethod(StrEnumBase):
     START = 'start'
     END = 'end'
 
-class SearchTarget(IntEnumBase):
+class SearchTarget(IntEnum):
     """Enumeration class that contains search targets."""
 
     __aliases__ = {
@@ -130,7 +130,7 @@ class SearchTarget(IntEnumBase):
     PROVERB = 9
     REFERENCE_INFO = 10
 
-class SearchType(StrEnumBase):
+class SearchType(StrEnum):
     """Enumeration class that contains search types."""
 
     __aliases__ = {
@@ -145,7 +145,7 @@ class SearchType(StrEnumBase):
     EXAMPLE = 'exam'
     WORD = 'word'
 
-class SortMethod(StrEnumBase):
+class SortMethod(StrEnum):
     """Enumeration class that contains sort methods."""
 
     __aliases__ = {
@@ -155,7 +155,7 @@ class SortMethod(StrEnumBase):
     ALPHABETICAL = 'dict'
     POPULAR = 'popular'
 
-class TargetLanguage(IntEnumBase):
+class TargetLanguage(IntEnum):
     """Enumeration class that contains target languages."""
 
     __aliases__ = {
@@ -264,7 +264,7 @@ class TargetLanguage(IntEnumBase):
     OTHER = 48
     DANISH = 49
 
-class TranslationLanguage(IntEnumBase):
+class TranslationLanguage(IntEnum):
     """Enumeration class that contains translation languages."""
 
     __aliases__ = {
@@ -293,7 +293,7 @@ class TranslationLanguage(IntEnumBase):
     INDONESIAN = 9
     RUSSIAN = 10
 
-class VocabularyLevel(StrEnumBase):
+class VocabularyLevel(StrEnum):
     """Enumeration class that contains vocabulary levels."""
 
     __aliases__ = {

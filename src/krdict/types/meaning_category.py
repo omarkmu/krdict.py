@@ -4,9 +4,9 @@ Contains enumeration class for handling meaning categories.
 
 # pylint: disable=invalid-name,too-few-public-methods,too-many-instance-attributes
 
-from .base import IntEnumBase, EnumProxyBase
+from .base import IntEnum, EnumProxy
 
-class MeaningCategory(IntEnumBase):
+class MeaningCategory(IntEnum):
     """Enumeration class that contains meaning category values."""
 
     __aliases__ = {
@@ -517,7 +517,7 @@ class MeaningCategory(IntEnumBase):
     CONCEPTS_QUESTION_WORDS = 152
     CONCEPTS_PRONOUNS = 153
 
-    class __PROXY_HUMAN__(EnumProxyBase):
+    class __PROXY_HUMAN__(EnumProxy):
         def __init__(self, populate):
             super().__init__(populate)
             if not populate:
@@ -541,7 +541,7 @@ class MeaningCategory(IntEnumBase):
             self.SOUND = MeaningCategory.HUMAN_SOUND
             self.INNER_PARTS_OF_THE_BODY = MeaningCategory.HUMAN_INNER_PARTS_OF_THE_BODY
 
-    class __PROXY_LIFE__(EnumProxyBase):
+    class __PROXY_LIFE__(EnumProxy):
         def __init__(self, populate):
             super().__init__(populate)
             if not populate:
@@ -561,7 +561,7 @@ class MeaningCategory(IntEnumBase):
             self.MEDICAL_FACILITIES = MeaningCategory.LIFE_MEDICAL_FACILITIES
             self.MEDICINE = MeaningCategory.LIFE_MEDICINE
 
-    class __PROXY_DIETARY__(EnumProxyBase):
+    class __PROXY_DIETARY__(EnumProxy):
         def __init__(self, populate):
             super().__init__(populate)
             if not populate:
@@ -580,7 +580,7 @@ class MeaningCategory(IntEnumBase):
             self.EATING_AND_COOKING_ACTIVITIES = \
                 MeaningCategory.DIETARY_EATING_AND_COOKING_ACTIVITIES
 
-    class __PROXY_CLOTHING__(EnumProxyBase):
+    class __PROXY_CLOTHING__(EnumProxy):
         def __init__(self, populate):
             super().__init__(populate)
             if not populate:
@@ -597,7 +597,7 @@ class MeaningCategory(IntEnumBase):
                 MeaningCategory.CLOTHING_ACTIVITIES_RELATED_TO_CLOTHING
             self.BEAUTY_AND_HEALTH = MeaningCategory.CLOTHING_BEAUTY_AND_HEALTH
 
-    class __PROXY_HOME_LIFE__(EnumProxyBase):
+    class __PROXY_HOME_LIFE__(EnumProxy):
         def __init__(self, populate):
             super().__init__(populate)
             if not populate:
@@ -613,7 +613,7 @@ class MeaningCategory(IntEnumBase):
             self.RESIDENTIAL_ACTIVITIES = MeaningCategory.HOME_LIFE_RESIDENTIAL_ACTIVITIES
             self.RESIDENTIAL_CHORES = MeaningCategory.HOME_LIFE_RESIDENTIAL_CHORES
 
-    class __PROXY_SOCIAL_LIFE__(EnumProxyBase):
+    class __PROXY_SOCIAL_LIFE__(EnumProxy):
         def __init__(self, populate):
             super().__init__(populate)
             if not populate:
@@ -638,7 +638,7 @@ class MeaningCategory(IntEnumBase):
             self.COMMUNICATION_ACTIVITIES = MeaningCategory.SOCIAL_LIFE_COMMUNICATION_ACTIVITIES
             self.GRAMMAR_AND_SPEECH = MeaningCategory.SOCIAL_LIFE_GRAMMAR_AND_SPEECH
 
-    class __PROXY_ECONOMIC__(EnumProxyBase):
+    class __PROXY_ECONOMIC__(EnumProxy):
         def __init__(self, populate):
             super().__init__(populate)
             if not populate:
@@ -652,7 +652,7 @@ class MeaningCategory(IntEnumBase):
             self.STATUS = MeaningCategory.ECONOMIC_STATUS
             self.ACTIVITIES = MeaningCategory.ECONOMIC_ACTIVITIES
 
-    class __PROXY_EDUCATION__(EnumProxyBase):
+    class __PROXY_EDUCATION__(EnumProxy):
         def __init__(self, populate):
             super().__init__(populate)
             if not populate:
@@ -669,7 +669,7 @@ class MeaningCategory(IntEnumBase):
                 MeaningCategory.EDUCATION_TEACHING_AND_LEARNING_ACTIVITIES
             self.ACADEMIC_ACTIVITIES = MeaningCategory.EDUCATION_ACADEMIC_ACTIVITIES
 
-    class __PROXY_RELIGION__(EnumProxyBase):
+    class __PROXY_RELIGION__(EnumProxy):
         def __init__(self, populate):
             super().__init__(populate)
             if not populate:
@@ -684,7 +684,7 @@ class MeaningCategory(IntEnumBase):
             self.OBJECTS = MeaningCategory.RELIGION_OBJECTS
             self.PRACTICES = MeaningCategory.RELIGION_PRACTICES
 
-    class __PROXY_CULTURE__(EnumProxyBase):
+    class __PROXY_CULTURE__(EnumProxy):
         def __init__(self, populate):
             super().__init__(populate)
             if not populate:
@@ -702,7 +702,7 @@ class MeaningCategory(IntEnumBase):
             self.CULTURAL_ACTIVITY_PLACES = MeaningCategory.CULTURE_CULTURAL_ACTIVITY_PLACES
             self.CULTURAL_ACTIVITIES = MeaningCategory.CULTURE_CULTURAL_ACTIVITIES
 
-    class __PROXY_POLITICS_AND_ADMINISTRATION__(EnumProxyBase):
+    class __PROXY_POLITICS_AND_ADMINISTRATION__(EnumProxy):
         def __init__(self, populate):
             super().__init__(populate)
             if not populate:
@@ -722,7 +722,7 @@ class MeaningCategory(IntEnumBase):
             self.POLITICAL_AND_ADMINISTRATIVE_PERSONNEL = \
                 MeaningCategory.POLITICS_AND_ADMINISTRATION_POLITICAL_AND_ADMINISTRATIVE_PERSONNEL
 
-    class __PROXY_NATURE__(EnumProxyBase):
+    class __PROXY_NATURE__(EnumProxy):
         def __init__(self, populate):
             super().__init__(populate)
             if not populate:
@@ -736,7 +736,7 @@ class MeaningCategory(IntEnumBase):
             self.DISASTERS = MeaningCategory.NATURE_DISASTERS
             self.WEATHER_AND_CLIMATE = MeaningCategory.NATURE_WEATHER_AND_CLIMATE
 
-    class __PROXY_ANIMALS_AND_PLANTS__(EnumProxyBase):
+    class __PROXY_ANIMALS_AND_PLANTS__(EnumProxy):
         def __init__(self, populate):
             super().__init__(populate)
             if not populate:
@@ -751,7 +751,7 @@ class MeaningCategory(IntEnumBase):
             self.BEHAVIORS = MeaningCategory.ANIMALS_AND_PLANTS_BEHAVIORS
             self.SOUNDS = MeaningCategory.ANIMALS_AND_PLANTS_SOUNDS
 
-    class __PROXY_CONCEPTS__(EnumProxyBase):
+    class __PROXY_CONCEPTS__(EnumProxy):
         def __init__(self, populate):
             super().__init__(populate)
             if not populate:

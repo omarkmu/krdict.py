@@ -2,9 +2,9 @@
 Contains types defined by the krdict.scraper module.
 """
 
-from .base import IntEnumBase
+from .base import IntEnum
 
-class ScraperTranslationLanguage(IntEnumBase):
+class ScraperTranslationLanguage(IntEnum):
     """Enumeration class that contains translation languages that can be used by the scraper."""
 
     __aliases__ = {

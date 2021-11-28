@@ -4,9 +4,9 @@ Contains enumeration class for handling subject categories.
 
 # pylint: disable=invalid-name,too-few-public-methods,too-many-instance-attributes
 
-from .base import IntEnumBase, EnumProxyBase
+from .base import IntEnum, EnumProxy
 
-class SubjectCategory(IntEnumBase):
+class SubjectCategory(IntEnum):
     """Enumeration class that contains subject category values."""
 
     __aliases__ = {
@@ -371,7 +371,7 @@ class SubjectCategory(IntEnumBase):
     ADVANCED_RELIGION = 105
     ADVANCED_PHILOSOPHY_AND_ETHICS = 106
 
-    class __PROXY_ELEMENTARY__(EnumProxyBase):
+    class __PROXY_ELEMENTARY__(EnumProxy):
         def __init__(self, populate):
             super().__init__(populate)
             if not populate:
@@ -420,7 +420,7 @@ class SubjectCategory(IntEnumBase):
                 SubjectCategory.ELEMENTARY_DESCRIBING_PHYSICAL_FEATURES
             self.WATCHING_MOVIES = SubjectCategory.ELEMENTARY_WATCHING_MOVIES
 
-    class __PROXY_INTERMEDIATE__(EnumProxyBase):
+    class __PROXY_INTERMEDIATE__(EnumProxy):
         def __init__(self, populate):
             super().__init__(populate)
             if not populate:
@@ -470,7 +470,7 @@ class SubjectCategory(IntEnumBase):
             self.DATING_AND_MARRIAGE = SubjectCategory.INTERMEDIATE_DATING_AND_MARRIAGE
             self.LANGUAGE = SubjectCategory.INTERMEDIATE_LANGUAGE
 
-    class __PROXY_ADVANCED__(EnumProxyBase):
+    class __PROXY_ADVANCED__(EnumProxy):
         def __init__(self, populate):
             super().__init__(populate)
             if not populate:

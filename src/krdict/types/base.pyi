@@ -29,12 +29,12 @@ class EnumBase(Generic[UnderlyingType]):
     @classmethod
     def get_value(cls: Type[EnumType], key: Any, default: T) -> Union[UnderlyingType, T]: ...
 
-class IntEnumBase(int, EnumBase[int], Enum):
+class IntEnum(int, EnumBase[int], Enum):
     pass
 
-class StrEnumBase(str, EnumBase[str], Enum):
+class StrEnum(str, EnumBase[str], Enum):
     pass
 
-class EnumProxyBase:
+class EnumProxy:
     __populated__: bool
     def __init__(self, populate: bool): ...

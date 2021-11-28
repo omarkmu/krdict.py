@@ -73,16 +73,16 @@ class EnumBase(Enum):
         enum_instance = cls.get(key)
         return enum_instance.value if enum_instance is not None else default
 
-class IntEnumBase(int, EnumBase):
+class IntEnum(int, EnumBase):
     """Base class for integer-based enumerations."""
 
-class StrEnumBase(str, EnumBase):
+class StrEnum(str, EnumBase):
     """Base class for string-based enumerations."""
 
     def __str__(self):
         return Enum.__str__(self)
 
-class EnumProxyBase:
+class EnumProxy:
     """Base class for enumeration proxies."""
 
     def __init__(self, populate):
