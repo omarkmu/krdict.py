@@ -244,14 +244,14 @@ def parse_response(kwargs, api_response, request_params, search_type):
 
     return _postprocess(response, request_params, kwargs.get('options', {}), search_type)
 
-def postprocessor(key, value, search_type, guarantee):
+def postprocessor(key, value, search_type, guarantee_keys):
     """
     Performs postprocessing on elements converted from XML.
 
     - ``key``: The original XML node name.
     - ``value``: The unprocessed value.
     - ``search_type``: The type of search which produced this key-value pair.
-    - ``guarantee``: Whether to guarantee keys in dicts.
+    - ``guarantee_keys``: Whether to guarantee keys in dicts.
 
     """
 
@@ -268,7 +268,7 @@ def postprocessor(key, value, search_type, guarantee):
             elif c_key in _CONVERT_SINGLE and isinstance(value[c_key], list):
                 value[c_key] = value[c_key][0]
 
-        if guarantee and key in _NOT_REQUIRED_KEYS:
+        if guarantee_keys and key in _NOT_REQUIRED_KEYS:
             _guarantee(value, search_type, _NOT_REQUIRED_KEYS[key])
 
         key = _REMAPS.get(key, key)
@@ -280,11 +280,11 @@ def postprocessor(key, value, search_type, guarantee):
 
     return key, value
 
-def set_default(name, value):
+def set_default(option, value):
     """
     Sets the default value of the given option.
 
-    - ``name``: The name of the option to set.
+    - ``option``: The name of the option to set.
         - ``'fetch_multimedia'``: Controls whether multimedia is scraped during view queries.
         No effect unless the 'use_scraper' option is True.
         - ``'fetch_page_data'``: Controls whether pronunciation URLs and extended language
@@ -296,9 +296,9 @@ def set_default(name, value):
 
     """
 
-    name = name.upper()
+    option = option.upper()
 
-    if name not in _DEFAULTS:
+    if option not in _DEFAULTS:
         return
 
-    _DEFAULTS[name] = value is True
+    _DEFAULTS[option] = value is True

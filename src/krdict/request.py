@@ -112,7 +112,7 @@ def _get_search_type(search_type):
     if value == 'word':
         return value
 
-    return search_type
+    return str(search_type)
 
 def _map_value(mapper, value):
     if isinstance(value, list):

@@ -1,5 +1,7 @@
 from typing import Dict, List, Literal, TypedDict, Union, overload
 from . import scraper
+from .response import set_default
+from .request import set_key
 from .types import (
     Classification,
     KRDictException,
@@ -777,12 +779,6 @@ TVocabularyLevel = VocabularyLevel | Literal[
     'level2',
     'advanced',
     'level3'
-]
-TOption = Literal[
-    'fetch_multimedia',
-    'fetch_page_data',
-    'raise_scraper_errors',
-    'use_scraper'
 ]
 
 class OptionsDict(TypedDict, total=False):
@@ -1599,12 +1595,6 @@ def search(*,
 ) -> SearchResponse | KRDictError: ...
 
 
-def set_default(name: TOption, value: bool) -> None: ...
-
-
-def set_key(key: str | None) -> None: ...
-
-
 @overload
 def view(*,
     query: str,
@@ -1684,6 +1674,7 @@ def view(*,
     translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
     options: OptionsDict = None
 ) -> ViewResponse | KRDictError: ...
+
 
 __all__ = [
     'scraper',
