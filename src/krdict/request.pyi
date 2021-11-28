@@ -1,6 +1,6 @@
 from typing import Any, Literal, Tuple
 from requests import Response
-from . import TSearchType
+from .main import TSearchType
 
 def send_request(
     kwargs: dict[str, Any], 

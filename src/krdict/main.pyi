@@ -1,10 +1,6 @@
 from typing import Dict, List, Literal, TypedDict, Union, overload
-from . import scraper
-from .response import set_default
-from .request import set_key
 from .types import (
     Classification,
-    KRDictException,
     MeaningCategory,
     MultimediaType,
     OriginType,
@@ -1674,27 +1670,3 @@ def view(*,
     translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
     options: OptionsDict = None
 ) -> ViewResponse | KRDictError: ...
-
-
-__all__ = [
-    'scraper',
-    'advanced_search',
-    'search',
-    'set_default',
-    'set_key',
-    'view',
-    'Classification',
-    'KRDictException',
-    'MeaningCategory',
-    'MultimediaType',
-    'OriginType',
-    'PartOfSpeech',
-    'SearchMethod',
-    'SearchTarget',
-    'SearchType',
-    'SortMethod',
-    'SubjectCategory',
-    'TargetLanguage',
-    'TranslationLanguage',
-    'VocabularyLevel'
-]

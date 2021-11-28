@@ -1,6 +1,6 @@
 from typing import List, Literal, TypedDict, overload
 from ..types.scraper import ScraperTranslationLanguage
-from .. import (
+from ..main import (
     TMeaningCategory, SearchTranslation, TSortMethod, TSubjectCategory,
     TotalViewResponse, TotalWordSearchResponse, WordSearchResponse, ViewResponse
 )

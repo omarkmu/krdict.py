@@ -1,6 +1,6 @@
 from typing import Any, Literal, Optional, Tuple, Union
 from requests import Response
-from . import SearchResponse, TotalSearchResponse, TotalViewResponse, ViewResponse
+from .main import SearchResponse, TotalSearchResponse, TotalViewResponse, ViewResponse
 
 TOption = Literal[
     'fetch_multimedia',
