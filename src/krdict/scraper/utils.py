@@ -5,8 +5,8 @@ Provides utilities for scraping.
 import requests
 from lxml import html
 
-from .types.scraper import ScraperTranslationLanguage
-from .types import MeaningCategory, SubjectCategory
+from ..types.scraper import ScraperTranslationLanguage
+from ..types import MeaningCategory, SubjectCategory
 
 _ADVANCED_SEARCH_URL = (
     'https://krdict.korean.go.kr/dicSearchDetail/searchDetailWordsResult?'

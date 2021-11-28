@@ -2,8 +2,8 @@
 Retrieves information from the krdict website via scraping.
 """
 
-from .types import ScraperTranslationLanguage, SortMethod
-from ._scraper_utils import (
+from ..types import ScraperTranslationLanguage, SortMethod
+from .utils import (
     _build_advanced_search_url,
     _build_language_query,
     _build_sense_category_query,
