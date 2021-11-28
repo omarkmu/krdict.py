@@ -150,9 +150,8 @@ def send_request(kwargs, advanced=False, search_type=None):
     parameters which were sent to the API, and the search type.
 
     - ``kwargs``: The provided input keyword arguments.
-    - ``advanced``: Whether or not this an advanced search.
-    - ``search_type``: The type of search which should be performed
-
+    - ``advanced``: Whether or not this is an advanced search.
+    - ``search_type``: The type of search which should be performed.
     """
 
     search_type = _get_search_type(search_type or kwargs.get('search_type', 'word'))
@@ -174,7 +173,6 @@ def set_key(key):
     Sets the API key to use when a key is not specified in a request.
 
     - ``key``: The API key to use, or None to unset the key.
-
     """
 
     _DEFAULTS['API_KEY'] = '' if key is None else key
@@ -184,7 +182,6 @@ def transform_search_params(params):
     Transforms input search parameters into an API-compliant dict.
 
     - ``params``: The provided input parameters.
-
     """
 
     for key in list(params.keys()):
@@ -215,7 +212,6 @@ def transform_view_params(params):
     Transforms input view parameters into an API-compliant dict.
 
     - ``params``: The provided input parameters.
-
     """
 
     if 'target_code' in params:

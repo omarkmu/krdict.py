@@ -220,7 +220,6 @@ def parse_response(kwargs, api_response, request_params, search_type):
     - ``api_response``: Whether or not this an advanced search.
     - ``request_params``: The request parameters which were sent to the API.
     - ``search_type``: The type of search which was performed.
-
     """
 
     response = parse_xml(
@@ -252,7 +251,6 @@ def postprocessor(key, value, search_type, guarantee_keys):
     - ``value``: The unprocessed value.
     - ``search_type``: The type of search which produced this key-value pair.
     - ``guarantee_keys``: Whether to guarantee keys in dicts.
-
     """
 
     if value is None:
@@ -293,7 +291,6 @@ def set_default(option, value):
         No effect unless the 'use_scraper' option is True.
         - ``'use_scraper'``: Controls whether the scraper should be used to fetch more information.
     - ``value``: Boolean value; sets or unsets a default value.
-
     """
 
     option = option.upper()

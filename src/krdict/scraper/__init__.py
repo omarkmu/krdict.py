@@ -39,11 +39,10 @@ def extend_advanced_search(response, raise_errors):
 
     See the
     [documentation](https://krdictpy.readthedocs.io/en/stable/return_types/#wordsearchresponse)
-    for details about return types.
+    for details.
 
     - ``response``: The word search results to extend.
     - ``raise_errors``: Whether errors that occur during scraping should be raised or ignored.
-
     """
 
     if len(response['data']['results']) == 0:
@@ -84,11 +83,10 @@ def extend_search(response, raise_errors):
 
     See the
     [documentation](https://krdictpy.readthedocs.io/en/stable/return_types/#wordsearchresponse)
-    for details about return types.
+    for details.
 
     - ``response``: The word search results to extend.
     - ``raise_errors``: Whether errors that occur during scraping should be raised or ignored.
-
     """
 
     if len(response['data']['results']) == 0:
@@ -131,13 +129,12 @@ def extend_view(response, fetch_page_data, fetch_multimedia, raise_errors):
     This function modifies the response in-place, and returns the modified object.
 
     See the [documentation](https://krdictpy.readthedocs.io/en/stable/return_types/#viewresponse)
-    for details about return types.
+    for details.
 
     - ``response``: The word search results to extend.
     - ``fetch_page_data``: Whether page data (URLs and hanja information) should be scraped.
     - ``fetch_multimedia``: Whether multimedia URLs should be scraped.
     - ``raise_errors``: Whether errors that occur during scraping should be raised or ignored.
-
     """
 
     if len(response['data']['results']) == 0:
@@ -173,28 +170,12 @@ def fetch_today_word(**kwargs):
 
     See the
     [documentation](https://krdictpy.readthedocs.io/en/stable/return_types/#wordofthedayresponse)
-    for details about return types.
+    for details.
 
     - ``guarantee_keys``: Sets whether keys that are missing from the response should be inserted
     with default values. A value of ``True`` guarantees that every key that is not required
-    is included, including keys set by the scraper. Default values:
-        - The empty string ``""`` for string values.
-        - Zero ``0`` for integer values.
-        - An empty list ``[]`` for list values.
-        - ``None`` for dictionary values. This only applies to the ``translation`` field.
-    - ``translation_language``: A language to include a translation for. Possible values:
-        - ``'chinese'``
-        - ``'english'``
-        - ``'japanese'``
-        - ``'french'``
-        - ``'spanish'``
-        - ``'arabic'``
-        - ``'mongolian'``
-        - ``'vietnamese'``
-        - ``'thai'``
-        - ``'indonesian'``
-        - ``'russian'``
-
+    is included, including keys set by the scraper.
+    - ``translation_language``: The language for which translations should be included.
     """
 
     [lang_query, nation, exonym] = _build_language_query(kwargs.get('translation_language'))
@@ -236,17 +217,12 @@ def fetch_meaning_category_words(**kwargs):
 
     - ``guarantee_keys``: Sets whether keys that are missing from the response should be inserted
     with default values. A value of ``True`` guarantees that every key that is not required
-    is included, including keys set by the scraper. Default values:
-        - The empty string ``""`` for string values.
-        - Zero ``0`` for integer values.
-        - An empty list ``[]`` for list values.
-        - ``None`` for dictionary values. This only applies to the ``translation`` field.
+    is included, including keys set by the scraper.
     - ``category``: The meaning category to fetch.
     - ``page``: The page at which the search should start ``[1, 1000]``.
     - ``per_page``: The maximum number of search results to return ``[10, 100]``.
     - ``sort``: The sort method that should be used.
-    - ``translation_language``: A language to include translations for.
-
+    - ``translation_language``: A language for which translations should be included.
     """
 
     page = kwargs.get('page', 1)
@@ -284,17 +260,12 @@ def fetch_subject_category_words(**kwargs):
 
     - ``guarantee_keys``: Sets whether keys that are missing from the response should be inserted
     with default values. A value of ``True`` guarantees that every key that is not required
-    is included, including keys set by the scraper. Default values:
-        - The empty string ``""`` for string values.
-        - Zero ``0`` for integer values.
-        - An empty list ``[]`` for list values.
-        - ``None`` for dictionary values. This only applies to the ``translation`` field.
+    is included, including keys set by the scraper.
     - ``category``: The subject category to fetch.
     - ``page``: The page at which the search should start ``[1, 1000]``.
     - ``per_page``: The maximum number of search results to return ``[10, 100]``.
     - ``sort``: The sort method that should be used.
-    - ``translation_language``: A language to include translations for.
-
+    - ``translation_language``: A language for which translations should be included.
     """
 
     page = kwargs.get('page', 1)

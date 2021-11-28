@@ -12,7 +12,6 @@ class KRDictException(Exception):
     - ``error_code``: The error code returned by the API.
     - ``request_params``: A dict containing the transformed parameters
     that were sent to the API.
-
     """
 
     def __init__(self, message, error_code, params):

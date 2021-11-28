@@ -11,62 +11,39 @@ def advanced_search(**kwargs):
     Returns a dict with contents dependent on the value of the ``search_type``
     parameter and whether an error occurred.
 
-    See the [documentation](https://krdictpy.readthedocs.io/en/stable/return_types/)
-    for details about return types.
+    See the [documentation](https://krdictpy.readthedocs.io/en/stable/return_types) for details.
 
     - ``query``: The search query.
     - ``raise_api_errors``: Sets whether a ``KRDictException`` will be raised if an API error
     occurs. A value of ``True`` guarantees that the result is not an error object.
     - ``guarantee_keys``: Sets whether keys that are missing from the response should be inserted
     with default values. A value of ``True`` guarantees that every key that is not required
-    is included, including keys set by the scraper. Default values:
-        - The empty string `""` for string values.
-        - Zero `0` for integer values.
-        - An empty list `[]` for list values.
+    is included, including keys set by the scraper.
     - ``key``: The API key. If a key was set with ``set_key``, this can be omitted.
     - ``page``: The page at which the search should start ``[1, 1000]``.
     - ``per_page``: The maximum number of search results to return ``[10, 100]``.
-    - ``sort``: The sort method that should be used ``'alphabetical' | 'dict'``.
+    - ``sort``: The sort method that should be used.
     - ``search_type``: The type of search to perform
-    ``'word' | 'idiom_proverb' | 'definition' | 'example'``.
-        - Note: Values other than ``'word'`` are unsupported and not recommended for use.
-    - ``translation_language``: A language or list of languages to include translations for.
-    See the
-    [documentation](https://krdictpy.readthedocs.io/en/stable/parameters/#translationlanguage).
+        - Note: Search types other than ``SearchType.WORD`` are unsupported and not
+        recommended for use.
+    - ``translation_language``: A language or list of languages for which translations
+    should be included.
     - ``search_target``: The target field of the search query.
-    See the
-    [documentation](https://krdictpy.readthedocs.io/en/stable/parameters/#searchtarget).
     - ``target_language``: The original language to search by. If ``search_target``
-    is set to any value other than ``'original_language'``, this parameter has no effect.
-    See the
-    [documentation](https://krdictpy.readthedocs.io/en/stable/parameters/#targetlanguage).
+    is set to any value other than ``SearchTarget.ORIGINAL_LANGUAGE``, this parameter
+    has no effect.
     - ``search_method``: The method used to match against the query.
-    ``'exact' |'include' |'start' |'end'``
     - ``classification``: An entry classification to filter by.
-    ``'all' | 'word' | 'phrase' | 'expression'``
     - ``origin_type``: A word origin type to filter by.
-    ``'all' | 'native' | 'hanja' | 'loanword' | 'hybrid'``
     - ``vocabulary_grade``: A vocabulary level to filter by.
-    ``'all' | 'beginner' | 'intermediate' | 'advanced'``
     - ``part_of_speech``: A part of speech to filter by.
-    See the
-    [documentation](https://krdictpy.readthedocs.io/en/stable/parameters/#partofspeech).
     - ``multimedia_info``: A multimedia type to filter by.
-    See the
-    [documentation](https://krdictpy.readthedocs.io/en/stable/parameters/#multimediatype).
     - ``min_syllables``: The minimum number of syllables in result words ``[1, 80]``.
     - ``max_syllables``: The maximum number of syllables in results words. A value of ``0`` denotes
     no maximum ``[0, 80]``.
     - ``meaning_category``: The meaning category to filter by.
-    See the
-    [documentation](https://krdictpy.readthedocs.io/en/stable/parameters/#meaningcategory).
     - ``subject_category``: A subject category to filter by.
-    See the
-    [documentation](https://krdictpy.readthedocs.io/en/stable/parameters/#subjectcategory).
     - ``options``: Additional options to apply.
-    See the
-    [documentation](https://krdictpy.readthedocs.io/en/stable/parameters/#optionsdict).
-
     """
 
     return parse_response(kwargs, *send_request(kwargs, True))
@@ -77,31 +54,23 @@ def search(**kwargs):
     Returns a dict with contents dependent on the value of the ``search_type``
     parameter and whether an error occurred.
 
-    See the [documentation](https://krdictpy.readthedocs.io/en/stable/return_types/)
-    for details about return types.
+    See the [documentation](https://krdictpy.readthedocs.io/en/stable/return_types)
+    for details.
 
     - ``query``: The search query.
     - ``raise_api_errors``: Sets whether a ``KRDictException`` will be raised if an API error
     occurs. A value of ``True`` guarantees that the result is not an error object.
     - ``guarantee_keys``: Sets whether keys that are missing from the response should be inserted
     with default values. A value of ``True`` guarantees that every key that is not required
-    is included, including keys set by the scraper. Default values:
-        - The empty string `""` for string values.
-        - Zero `0` for integer values.
-        - An empty list `[]` for list values.
+    is included, including keys set by the scraper.
     - ``key``: The API key. If a key was set with ``set_key``, this can be omitted.
     - ``page``: The page at which the search should start ``[1, 1000]``.
     - ``per_page``: The maximum number of search results to return ``[10, 100]``.
-    - ``sort``: The sort method that should be used ``'alphabetical' | 'dict'``.
+    - ``sort``: The sort method that should be used.
     - ``search_type``: The type of search to perform
-    ``'word' | 'idiom_proverb' | 'definition' | 'example'``.
-    - ``translation_language``: A language or list of languages to include translations for.
-    See the
-    [documentation](https://krdictpy.readthedocs.io/en/stable/parameters/#translationlanguage).
+    - ``translation_language``: A language or list of languages for which translations
+    should be included.
     - ``options``: Additional options to apply.
-    See the
-    [documentation](https://krdictpy.readthedocs.io/en/stable/parameters/#optionsdict).
-
     """
 
     return parse_response(kwargs, *send_request(kwargs, False))
@@ -112,8 +81,8 @@ def view(**kwargs):
     Returns either a dict with information about a dictionary entry, or an error object
     if an error occurred.
 
-    See the [documentation](https://krdictpy.readthedocs.io/en/stable/return_types/)
-    for details about return types.
+    See the [documentation](https://krdictpy.readthedocs.io/en/stable/return_types)
+    for details.
 
     - ``query``: The search query.
     - ``homograph_num``: The superscript number used to distinguish homographs.
@@ -122,18 +91,11 @@ def view(**kwargs):
     A value of ``True`` guarantees that the result is not an error object.
     - ``guarantee_keys``: Sets whether keys that are missing from the response should be inserted
     with default values. A value of ``True`` guarantees that every key that is not required
-    is included, including keys set by the scraper. Default values:
-        - The empty string `""` for string values.
-        - Zero `0` for integer values.
-        - An empty list `[]` for list values.
-    - ``key``: The API key. If a key was set with set_key, this can be omitted.
-    - ``translation_language``: A language or list of languages to include translations for.
-    See the
-    [documentation](https://krdictpy.readthedocs.io/en/stable/parameters/#translationlanguage).
+    is included, including keys set by the scraper.
+    - ``key``: The API key. If a key was set with ``set_key``, this can be omitted.
+    - ``translation_language``: A language or list of languages for which translations
+    should be included.
     - ``options``: Additional options to apply.
-    See the
-    [documentation](https://krdictpy.readthedocs.io/en/stable/parameters/#optionsdict).
-
     """
 
     return parse_response(kwargs, *send_request(kwargs, False, 'view'))
