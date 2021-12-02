@@ -1,17 +1,17 @@
-from collections.abc import Mapping
+from collections.abc import ItemsView
 from enum import Enum
-from typing import Any, Generic, Optional, Type, TypeVar, Union, overload
+from typing import Any, Dict, Generic, Optional, Type, TypeVar, Union, overload
 
 T = TypeVar('T')
 EnumType = TypeVar('EnumType', bound='EnumBase')
 UnderlyingType = TypeVar('UnderlyingType')
 
 class EnumBase(Generic[UnderlyingType]):
-    __aliases__: Mapping[str, UnderlyingType]
+    __aliases__: Dict[str, UnderlyingType]
 
     @classmethod
     @property
-    def aliases(cls) -> Mapping[str, UnderlyingType]: ...
+    def aliases(cls) -> ItemsView[str, UnderlyingType]: ...
 
     @overload
     @classmethod
@@ -34,7 +34,3 @@ class IntEnum(int, EnumBase[int], Enum):
 
 class StrEnum(str, EnumBase[str], Enum):
     pass
-
-class EnumProxy:
-    __populated__: bool
-    def __init__(self, populate: bool): ...

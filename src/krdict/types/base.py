@@ -2,29 +2,7 @@
 Contains base class for KRDict enumeration helpers.
 """
 
-# pylint: disable=too-few-public-methods
-
-from collections.abc import Mapping
 from enum import Enum
-
-class _ReadOnlyDict(Mapping):
-    def __init__(self, data):
-        self._dict = data
-
-    def __getitem__(self, key):
-        return self._dict[key]
-
-    def __len__(self):
-        return len(self._dict)
-
-    def __iter__(self):
-        return iter(self._dict)
-
-    def __str__(self):
-        return str(self._dict)
-
-    def __repr__(self):
-        return repr(self._dict)
 
 class EnumBase(Enum):
     """Base class for enumerations."""
@@ -34,14 +12,14 @@ class EnumBase(Enum):
     @classmethod
     @property
     def aliases(cls):
-        """The alias dictionary of the enumeration."""
-        return _ReadOnlyDict(cls.__aliases__)
+        """The aliases of the enumeration."""
+        return cls.__aliases__.items() # pylint: disable=no-member
 
     @classmethod
     def get(cls, key, default=None):
         """
-        Returns the enumeration instance associated with a literal,
-        or the provided default value if the literal is not associated with any enumeration.
+        Returns the enumeration instance associated with a value,
+        or the provided default value if the value is not associated with any enumeration.
         """
 
         if isinstance(key, cls):
@@ -66,8 +44,8 @@ class EnumBase(Enum):
     @classmethod
     def get_value(cls, key, default=None):
         """
-        Returns the enumeration value associated with a literal,
-        or the provided default value if the literal is not associated with any enumeration.
+        Returns the enumeration value associated with a value,
+        or the provided default value if the value is not associated with any enumeration.
         """
 
         enum_instance = cls.get(key)
@@ -81,9 +59,3 @@ class StrEnum(str, EnumBase):
 
     def __str__(self):
         return Enum.__str__(self)
-
-class EnumProxy:
-    """Base class for enumeration proxies."""
-
-    def __init__(self, populate):
-        self.__populated__ = populate
