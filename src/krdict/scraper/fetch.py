@@ -2,7 +2,7 @@
 Handles fetching and reading information from the krdict website.
 """
 
-from .request import send_request, _ADVANCED_PARAM_MAP
+from .request import send_request, map_advanced_param
 from ..types import (
     isiterable,
     SortMethod,
@@ -54,7 +54,6 @@ _SENSE_CAT_MAX = [
     133,
     153
 ]
-_SUBJECT_CAT_VALUES = _ADVANCED_PARAM_MAP['subject_cat']['value']
 
 
 def _build_language_query(lang):
@@ -94,22 +93,22 @@ def _build_subject_category_query(category):
     if not isiterable(category, exclude=(str,)):
         category = (category,)
 
-    value = ''
+    value = []
 
     for cat in category:
         cat_value = SubjectCategory.get_value(cat, cat)
 
         if cat_value == '0':
-            value = ''
+            value = []
 
             for i in range(1, 107):
-                value += f'&actCategory={_SUBJECT_CAT_VALUES[str(i)]}'
+                value.append(f'&actCategory={map_advanced_param("subject_cat", i)}')
 
-            return value
+            return ''.join(value)
 
-        value += f'&actCategory={_SUBJECT_CAT_VALUES[str(cat_value)]}'
+        value.append(f'&actCategory={map_advanced_param("subject_cat", cat_value)}')
 
-    return value
+    return ''.join(value)
 
 
 def fetch_today_word(**kwargs):

@@ -462,7 +462,7 @@ _ADVANCED_PARAM_MAP = {
 }
 
 
-def _get_advanced_param(adv_mapper, value):
+def _get_advanced_param(adv_mapper, value, value_only=False):
     if adv_mapper.get('name') != 'query' and ',' in value:
         params = []
 
@@ -476,12 +476,12 @@ def _get_advanced_param(adv_mapper, value):
         return ''.join(params)
 
     if 'value' in adv_mapper:
-        value = adv_mapper['value'].get(str(value), value)
+        value = adv_mapper['value'].get(value, value)
 
-    if 'convert' in adv_mapper:
+    if 'convert' in adv_mapper and not value_only:
         return adv_mapper['convert'](value)
 
-    return f'&{adv_mapper["name"]}={value}'
+    return value if value_only else f'&{adv_mapper["name"]}={value}'
 
 def _get_advanced_all_params(adv_mapper):
     if not 'all_params' in adv_mapper:
@@ -529,6 +529,14 @@ def _build_search_url(params):
 def _build_video_url(target_code, dfn_idx, media_idx):
     return _VIDEO_URL.format(target_code, dfn_idx + 1, media_idx + 1)
 
+
+def map_advanced_param(param, value):
+    """
+    Maps an advanced parameter value to
+    the value expected on the krdict website.
+    """
+
+    return _get_advanced_param(_ADVANCED_PARAM_MAP[param], str(value), True)
 
 def send_request(url, raise_errors):
     """

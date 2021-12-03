@@ -23,13 +23,8 @@ def _extract_between(text, sep):
     return text[sep_1 + 1:sep_2]
 
 def _extract_digits(text):
-    value = ''
-
-    for char in text:
-        if char.isdigit():
-            value += char
-
-    return int(value) if len(value) > 0 else 0
+    value = [char for char in text if char.isdigit()]
+    return int(''.join(value)) if len(value) > 0 else 0
 
 def _read_search_definitions(elem_list, translation_lang, guarantee_keys):
     definitions = []
@@ -127,7 +122,7 @@ def _read_search_header(elem, parent_elem, guarantee_keys):
 
 def _read_search_pronunciation(elem):
     urls = []
-    pronunciation = elem.text.strip()
+    pronunciation = [elem.text.strip()]
 
     for sound in elem.cssselect('a.sound'):
         url = extract_href(sound)
@@ -135,7 +130,9 @@ def _read_search_pronunciation(elem):
         if url is not None:
             urls.append(url)
 
-        pronunciation += sound.tail.strip()
+        pronunciation.append(sound.tail.strip())
+
+    pronunciation = ''.join(pronunciation)
 
     if pronunciation.startswith('['):
         pronunciation = pronunciation[1:]
