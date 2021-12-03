@@ -1,4 +1,4 @@
-from typing import Dict, List, Literal, TypedDict, Union, overload
+from typing import Dict, Iterable, List, Literal, TypedDict, Union, overload
 from .types import (
     Classification,
     MeaningCategory,
@@ -1157,19 +1157,19 @@ def advanced_search(*,
     per_page: int = None,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.WORD, 'word'],
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     search_target: TSearchTarget = None,
     target_language: TTargetLanguage = None,
     search_method: TSearchMethod = None,
-    classification: TClassification | List[TClassification] = None,
-    origin_type: TOriginType | List[TOriginType] = None,
-    vocabulary_grade: TVocabularyLevel | List[TVocabularyLevel] = None,
-    part_of_speech: TPartOfSpeech | List[TPartOfSpeech] = None,
-    multimedia_info: TMultimediaType | List[TMultimediaType] = None,
+    classification: TClassification | Iterable[TClassification] = None,
+    origin_type: TOriginType | Iterable[TOriginType] = None,
+    vocabulary_grade: TVocabularyLevel | Iterable[TVocabularyLevel] = None,
+    part_of_speech: TPartOfSpeech | Iterable[TPartOfSpeech] = None,
+    multimedia_info: TMultimediaType | Iterable[TMultimediaType] = None,
     min_syllables: int = None,
     max_syllables: int = None,
     meaning_category: TMeaningCategory = None,
-    subject_category: TSubjectCategory | List[TSubjectCategory] = None,
+    subject_category: TSubjectCategory | Iterable[TSubjectCategory] = None,
     options: OptionsDict = None
 ) -> TotalWordSearchResponse: ...
 @overload
@@ -1182,19 +1182,19 @@ def advanced_search(*,
     per_page: int = None,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: TSearchType = None,
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     search_target: TSearchTarget = None,
     target_language: TTargetLanguage = None,
     search_method: TSearchMethod = None,
-    classification: TClassification | List[TClassification] = None,
-    origin_type: TOriginType | List[TOriginType] = None,
-    vocabulary_grade: TVocabularyLevel | List[TVocabularyLevel] = None,
-    part_of_speech: TPartOfSpeech | List[TPartOfSpeech] = None,
-    multimedia_info: TMultimediaType | List[TMultimediaType] = None,
+    classification: TClassification | Iterable[TClassification] = None,
+    origin_type: TOriginType | Iterable[TOriginType] = None,
+    vocabulary_grade: TVocabularyLevel | Iterable[TVocabularyLevel] = None,
+    part_of_speech: TPartOfSpeech | Iterable[TPartOfSpeech] = None,
+    multimedia_info: TMultimediaType | Iterable[TMultimediaType] = None,
     min_syllables: int = None,
     max_syllables: int = None,
     meaning_category: TMeaningCategory = None,
-    subject_category: TSubjectCategory | List[TSubjectCategory] = None,
+    subject_category: TSubjectCategory | Iterable[TSubjectCategory] = None,
     options: OptionsDict = None
 ) -> TotalSearchResponse: ...
 
@@ -1208,19 +1208,19 @@ def advanced_search(*,
     per_page: int = None,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.WORD, 'word'],
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     search_target: TSearchTarget = None,
     target_language: TTargetLanguage = None,
     search_method: TSearchMethod = None,
-    classification: TClassification | List[TClassification] = None,
-    origin_type: TOriginType | List[TOriginType] = None,
-    vocabulary_grade: TVocabularyLevel | List[TVocabularyLevel] = None,
-    part_of_speech: TPartOfSpeech | List[TPartOfSpeech] = None,
-    multimedia_info: TMultimediaType | List[TMultimediaType] = None,
+    classification: TClassification | Iterable[TClassification] = None,
+    origin_type: TOriginType | Iterable[TOriginType] = None,
+    vocabulary_grade: TVocabularyLevel | Iterable[TVocabularyLevel] = None,
+    part_of_speech: TPartOfSpeech | Iterable[TPartOfSpeech] = None,
+    multimedia_info: TMultimediaType | Iterable[TMultimediaType] = None,
     min_syllables: int = None,
     max_syllables: int = None,
     meaning_category: TMeaningCategory = None,
-    subject_category: TSubjectCategory | List[TSubjectCategory] = None,
+    subject_category: TSubjectCategory | Iterable[TSubjectCategory] = None,
     options: OptionsDict = None
 ) -> TotalWordSearchResponse | KRDictError: ...
 @overload
@@ -1233,19 +1233,19 @@ def advanced_search(*,
     per_page: int = None,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: TSearchType = None,
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     search_target: TSearchTarget = None,
     target_language: TTargetLanguage = None,
     search_method: TSearchMethod = None,
-    classification: TClassification | List[TClassification] = None,
-    origin_type: TOriginType | List[TOriginType] = None,
-    vocabulary_grade: TVocabularyLevel | List[TVocabularyLevel] = None,
-    part_of_speech: TPartOfSpeech | List[TPartOfSpeech] = None,
-    multimedia_info: TMultimediaType | List[TMultimediaType] = None,
+    classification: TClassification | Iterable[TClassification] = None,
+    origin_type: TOriginType | Iterable[TOriginType] = None,
+    vocabulary_grade: TVocabularyLevel | Iterable[TVocabularyLevel] = None,
+    part_of_speech: TPartOfSpeech | Iterable[TPartOfSpeech] = None,
+    multimedia_info: TMultimediaType | Iterable[TMultimediaType] = None,
     min_syllables: int = None,
     max_syllables: int = None,
     meaning_category: TMeaningCategory = None,
-    subject_category: TSubjectCategory | List[TSubjectCategory] = None,
+    subject_category: TSubjectCategory | Iterable[TSubjectCategory] = None,
     options: OptionsDict = None
 ) -> TotalSearchResponse | KRDictError: ...
 
@@ -1259,19 +1259,19 @@ def advanced_search(*,
     per_page: int = None,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.WORD, 'word'],
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     search_target: TSearchTarget = None,
     target_language: TTargetLanguage = None,
     search_method: TSearchMethod = None,
-    classification: TClassification | List[TClassification] = None,
-    origin_type: TOriginType | List[TOriginType] = None,
-    vocabulary_grade: TVocabularyLevel | List[TVocabularyLevel] = None,
-    part_of_speech: TPartOfSpeech | List[TPartOfSpeech] = None,
-    multimedia_info: TMultimediaType | List[TMultimediaType] = None,
+    classification: TClassification | Iterable[TClassification] = None,
+    origin_type: TOriginType | Iterable[TOriginType] = None,
+    vocabulary_grade: TVocabularyLevel | Iterable[TVocabularyLevel] = None,
+    part_of_speech: TPartOfSpeech | Iterable[TPartOfSpeech] = None,
+    multimedia_info: TMultimediaType | Iterable[TMultimediaType] = None,
     min_syllables: int = None,
     max_syllables: int = None,
     meaning_category: TMeaningCategory = None,
-    subject_category: TSubjectCategory | List[TSubjectCategory] = None,
+    subject_category: TSubjectCategory | Iterable[TSubjectCategory] = None,
     options: OptionsDict = None
 ) -> WordSearchResponse: ...
 @overload
@@ -1284,19 +1284,19 @@ def advanced_search(*,
     per_page: int = None,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: TSearchType = None,
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     search_target: TSearchTarget = None,
     target_language: TTargetLanguage = None,
     search_method: TSearchMethod = None,
-    classification: TClassification | List[TClassification] = None,
-    origin_type: TOriginType | List[TOriginType] = None,
-    vocabulary_grade: TVocabularyLevel | List[TVocabularyLevel] = None,
-    part_of_speech: TPartOfSpeech | List[TPartOfSpeech] = None,
-    multimedia_info: TMultimediaType | List[TMultimediaType] = None,
+    classification: TClassification | Iterable[TClassification] = None,
+    origin_type: TOriginType | Iterable[TOriginType] = None,
+    vocabulary_grade: TVocabularyLevel | Iterable[TVocabularyLevel] = None,
+    part_of_speech: TPartOfSpeech | Iterable[TPartOfSpeech] = None,
+    multimedia_info: TMultimediaType | Iterable[TMultimediaType] = None,
     min_syllables: int = None,
     max_syllables: int = None,
     meaning_category: TMeaningCategory = None,
-    subject_category: TSubjectCategory | List[TSubjectCategory] = None,
+    subject_category: TSubjectCategory | Iterable[TSubjectCategory] = None,
     options: OptionsDict = None
 ) -> SearchResponse: ...
 
@@ -1310,19 +1310,19 @@ def advanced_search(*,
     per_page: int = None,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.WORD, 'word'],
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     search_target: TSearchTarget = None,
     target_language: TTargetLanguage = None,
     search_method: TSearchMethod = None,
-    classification: TClassification | List[TClassification] = None,
-    origin_type: TOriginType | List[TOriginType] = None,
-    vocabulary_grade: TVocabularyLevel | List[TVocabularyLevel] = None,
-    part_of_speech: TPartOfSpeech | List[TPartOfSpeech] = None,
-    multimedia_info: TMultimediaType | List[TMultimediaType] = None,
+    classification: TClassification | Iterable[TClassification] = None,
+    origin_type: TOriginType | Iterable[TOriginType] = None,
+    vocabulary_grade: TVocabularyLevel | Iterable[TVocabularyLevel] = None,
+    part_of_speech: TPartOfSpeech | Iterable[TPartOfSpeech] = None,
+    multimedia_info: TMultimediaType | Iterable[TMultimediaType] = None,
     min_syllables: int = None,
     max_syllables: int = None,
     meaning_category: TMeaningCategory = None,
-    subject_category: TSubjectCategory | List[TSubjectCategory] = None,
+    subject_category: TSubjectCategory | Iterable[TSubjectCategory] = None,
     options: OptionsDict = None
 ) -> WordSearchResponse | KRDictError: ...
 @overload
@@ -1335,19 +1335,19 @@ def advanced_search(*,
     per_page: int = None,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: TSearchType = None,
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     search_target: TSearchTarget = None,
     target_language: TTargetLanguage = None,
     search_method: TSearchMethod = None,
-    classification: TClassification | List[TClassification] = None,
-    origin_type: TOriginType | List[TOriginType] = None,
-    vocabulary_grade: TVocabularyLevel | List[TVocabularyLevel] = None,
-    part_of_speech: TPartOfSpeech | List[TPartOfSpeech] = None,
-    multimedia_info: TMultimediaType | List[TMultimediaType] = None,
+    classification: TClassification | Iterable[TClassification] = None,
+    origin_type: TOriginType | Iterable[TOriginType] = None,
+    vocabulary_grade: TVocabularyLevel | Iterable[TVocabularyLevel] = None,
+    part_of_speech: TPartOfSpeech | Iterable[TPartOfSpeech] = None,
+    multimedia_info: TMultimediaType | Iterable[TMultimediaType] = None,
     min_syllables: int = None,
     max_syllables: int = None,
     meaning_category: TMeaningCategory = None,
-    subject_category: TSubjectCategory | List[TSubjectCategory] = None,
+    subject_category: TSubjectCategory | Iterable[TSubjectCategory] = None,
     options: OptionsDict = None
 ) -> SearchResponse | KRDictError: ...
 
@@ -1362,7 +1362,7 @@ def search(*,
     per_page: int = None,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.WORD, 'word'],
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     options: OptionsDict = None
 ) -> TotalWordSearchResponse: ...
 @overload
@@ -1375,7 +1375,7 @@ def search(*,
     per_page: int = None,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.DEFINITION, 'dfn', 'definition'],
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     options: OptionsDict = None
 ) -> TotalDefinitionSearchResponse: ...
 @overload
@@ -1388,7 +1388,7 @@ def search(*,
     per_page: int = None,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.IDIOM_PROVERB, 'ip', 'idiom_proverb', 'idiom/proverb'],
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     options: OptionsDict = None
 ) -> TotalIdiomProverbSearchResponse: ...
 @overload
@@ -1401,7 +1401,7 @@ def search(*,
     per_page: int = None,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: TSearchType = None,
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     options: OptionsDict = None
 ) -> TotalSearchResponse: ...
 
@@ -1415,7 +1415,7 @@ def search(*,
     per_page: int = None,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.WORD, 'word'],
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     options: OptionsDict = None
 ) -> TotalWordSearchResponse | KRDictError: ...
 @overload
@@ -1428,7 +1428,7 @@ def search(*,
     per_page: int = None,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.DEFINITION, 'dfn', 'definition'],
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     options: OptionsDict = None
 ) -> TotalDefinitionSearchResponse | KRDictError: ...
 @overload
@@ -1441,7 +1441,7 @@ def search(*,
     per_page: int = None,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.IDIOM_PROVERB, 'ip', 'idiom_proverb', 'idiom/proverb'],
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     options: OptionsDict = None
 ) -> TotalIdiomProverbSearchResponse | KRDictError: ...
 @overload
@@ -1454,7 +1454,7 @@ def search(*,
     per_page: int = None,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: TSearchType = None,
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     options: OptionsDict = None
 ) -> TotalSearchResponse | KRDictError: ...
 
@@ -1468,7 +1468,7 @@ def search(*,
     per_page: int = None,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.WORD, 'word'],
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     options: OptionsDict = None
 ) -> WordSearchResponse: ...
 @overload
@@ -1481,7 +1481,7 @@ def search(*,
     per_page: int = None,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.DEFINITION, 'dfn', 'definition'],
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     options: OptionsDict = None
 ) -> DefinitionSearchResponse: ...
 @overload
@@ -1494,7 +1494,7 @@ def search(*,
     per_page: int = None,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.EXAMPLE, 'exam', 'example'],
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     options: OptionsDict = None
 ) -> ExampleSearchResponse: ...
 @overload
@@ -1507,7 +1507,7 @@ def search(*,
     per_page: int = None,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.IDIOM_PROVERB, 'ip', 'idiom_proverb', 'idiom/proverb'],
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     options: OptionsDict = None
 ) -> IdiomProverbSearchResponse: ...
 @overload
@@ -1520,7 +1520,7 @@ def search(*,
     per_page: int = None,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: TSearchType = None,
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     options: OptionsDict = None
 ) -> SearchResponse: ...
 
@@ -1534,7 +1534,7 @@ def search(*,
     per_page: int = None,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.WORD, 'word'],
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     options: OptionsDict = None
 ) -> WordSearchResponse | KRDictError: ...
 @overload
@@ -1547,7 +1547,7 @@ def search(*,
     per_page: int = None,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.DEFINITION, 'dfn', 'definition'],
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     options: OptionsDict = None
 ) -> DefinitionSearchResponse | KRDictError: ...
 @overload
@@ -1560,7 +1560,7 @@ def search(*,
     per_page: int = None,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.EXAMPLE, 'exam', 'example'],
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     options: OptionsDict = None
 ) -> ExampleSearchResponse | KRDictError: ...
 @overload
@@ -1573,7 +1573,7 @@ def search(*,
     per_page: int = None,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.IDIOM_PROVERB, 'ip', 'idiom_proverb', 'idiom/proverb'],
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     options: OptionsDict = None
 ) -> IdiomProverbSearchResponse | KRDictError: ...
 @overload
@@ -1586,7 +1586,7 @@ def search(*,
     per_page: int = None,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: TSearchType = None,
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     options: OptionsDict = None
 ) -> SearchResponse | KRDictError: ...
 
@@ -1598,7 +1598,7 @@ def view(*,
     guarantee_keys: Literal[True],
     homograph_num: int = None,
     key: str = None,
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     options: OptionsDict = None
 ) -> TotalViewResponse: ...
 @overload
@@ -1608,7 +1608,7 @@ def view(*,
     guarantee_keys: Literal[True],
     homograph_num: int = None,
     key: str = None,
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     options: OptionsDict = None
 ) -> TotalViewResponse | KRDictError: ...
 
@@ -1618,7 +1618,7 @@ def view(*,
     raise_api_errors: Literal[True],
     guarantee_keys: Literal[True],
     key: str = None,
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     options: OptionsDict = None
 ) -> TotalViewResponse: ...
 @overload
@@ -1627,7 +1627,7 @@ def view(*,
     raise_api_errors: bool = False,
     guarantee_keys: Literal[True],
     key: str = None,
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     options: OptionsDict = None
 ) -> TotalViewResponse | KRDictError: ...
 
@@ -1638,7 +1638,7 @@ def view(*,
     guarantee_keys: bool = False,
     homograph_num: int = None,
     key: str = None,
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     options: OptionsDict = None
 ) -> ViewResponse: ...
 @overload
@@ -1648,7 +1648,7 @@ def view(*,
     guarantee_keys: bool = False,
     homograph_num: int = None,
     key: str = None,
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     options: OptionsDict = None
 ) -> ViewResponse | KRDictError: ...
 
@@ -1658,7 +1658,7 @@ def view(*,
     raise_api_errors: Literal[True],
     guarantee_keys: bool = False,
     key: str = None,
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     options: OptionsDict = None
 ) -> ViewResponse: ...
 @overload
@@ -1667,6 +1667,6 @@ def view(*,
     raise_api_errors: bool = False,
     guarantee_keys: bool = False,
     key: str = None,
-    translation_language: TTranslationLanguage | List[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     options: OptionsDict = None
 ) -> ViewResponse | KRDictError: ...

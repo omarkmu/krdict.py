@@ -1,4 +1,5 @@
-from typing import List, Literal, TypedDict, overload
+from typing import Iterable, List, Literal, TypedDict, overload
+from ..types import SortMethod, SubjectCategory
 from ..types.scraper import ScraperTranslationLanguage
 from ..main import TMeaningCategory, SearchTranslation, TSortMethod, TSubjectCategory
 
@@ -126,18 +127,18 @@ def fetch_today_word(*,
 def fetch_meaning_category_words(*,
     guarantee_keys: Literal[True],
     category: TMeaningCategory,
-    page: int = None,
-    per_page: int = None,
-    sort: TSortMethod = None,
+    page: int = 1,
+    per_page: int = 10,
+    sort: TSortMethod = SortMethod.ALPHABETICAL,
     translation_language: TScraperTranslationLanguage = None
 ) -> TotalScrapedWordSearchResponse: ...
 @overload
 def fetch_meaning_category_words(*,
     guarantee_keys: bool = False,
     category: TMeaningCategory,
-    page: int = None,
-    per_page: int = None,
-    sort: TSortMethod = None,
+    page: int = 1,
+    per_page: int = 10,
+    sort: TSortMethod = SortMethod.ALPHABETICAL,
     translation_language: TScraperTranslationLanguage = None
 ) -> ScrapedWordSearchResponse: ...
 
@@ -145,18 +146,18 @@ def fetch_meaning_category_words(*,
 @overload
 def fetch_subject_category_words(*,
     guarantee_keys: Literal[True],
-    category: TSubjectCategory | List[TSubjectCategory],
-    page: int = None,
-    per_page: int = None,
-    sort: TSortMethod = None,
+    category: TSubjectCategory | Iterable[TSubjectCategory] = SubjectCategory.ALL,
+    page: int = 1,
+    per_page: int = 10,
+    sort: TSortMethod = SortMethod.ALPHABETICAL,
     translation_language: TScraperTranslationLanguage = None
 ) -> TotalScrapedWordSearchResponse: ...
 @overload
 def fetch_subject_category_words(*,
     guarantee_keys: bool = False,
-    category: TSubjectCategory | List[TSubjectCategory],
-    page: int = None,
-    per_page: int = None,
-    sort: TSortMethod = None,
+    category: TSubjectCategory | Iterable[TSubjectCategory] = SubjectCategory.ALL,
+    page: int = 1,
+    per_page: int = 10,
+    sort: TSortMethod = SortMethod.ALPHABETICAL,
     translation_language: TScraperTranslationLanguage = None
 ) -> ScrapedWordSearchResponse: ...
