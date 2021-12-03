@@ -2,9 +2,14 @@
 Handles fetching and reading information from the krdict website.
 """
 
-from ..types import SortMethod, MeaningCategory, SubjectCategory
-from ..types.scraper import ScraperTranslationLanguage
 from .request import send_request, _ADVANCED_PARAM_MAP
+from ..types import (
+    isiterable,
+    SortMethod,
+    MeaningCategory,
+    SubjectCategory,
+    ScraperTranslationLanguage
+)
 from .utils import (
     extract_href,
     read_search_results,
@@ -86,8 +91,8 @@ def _build_sense_category_query(category):
     return f'&lgCategoryCode={code_large}&miCategoryCode={code_mid}'
 
 def _build_subject_category_query(category):
-    if not isinstance(category, list):
-        category = [category]
+    if not isiterable(category, exclude=(str,)):
+        category = (category,)
 
     value = ''
 

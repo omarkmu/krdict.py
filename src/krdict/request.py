@@ -5,6 +5,7 @@ Transforms input parameters into API-compliant dicts.
 import requests
 
 from .types import (
+    isiterable,
     Classification,
     MeaningCategory,
     MultimediaType,
@@ -115,7 +116,7 @@ def _get_search_type(search_type):
     return str(search_type)
 
 def _map_value(mapper, value):
-    if isinstance(value, list):
+    if isiterable(value, exclude=(str,)):
         return ','.join(map(lambda x: _map_value(mapper, x), value))
 
     if 'type' in mapper:
