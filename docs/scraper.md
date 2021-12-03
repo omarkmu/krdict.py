@@ -113,7 +113,7 @@ Fetches words that belong to the provided meaning category.
 ```python
 def fetch_meaning_category_words(*,
     guarantee_keys: bool = False,
-    category: MeaningCategory = MeaningCategory.ALL,
+    category: MeaningCategory,
     page: int = 1,
     per_page: int = 10,
     sort: SortMethod = SortMethod.ALPHABETICAL,

@@ -423,12 +423,15 @@ def aliases() -> Mapping: ...
 Returns the enumeration instance associated with a string or integer, or 
 `default` if the value is not associated with any enumeration value.
 
+If an enumeration value of the same type is used as the `key`, that
+enumeration value is returned.
+
 A string key can be the name of an enumeration value, an [alias](#aliases), or
 the value of the enumeration in the case of string enumerations.
 
 ```python
 @staticmethod
-def get(key: str | int, default: T = None) -> EnumType | T: ...
+def get(key: EnumInstance | str | int, default: T = None) -> EnumType | T: ...
 ```
 
 ### get_value
@@ -436,12 +439,15 @@ def get(key: str | int, default: T = None) -> EnumType | T: ...
 Returns the enumeration value associated with a string or integer, or
 `default` if the value is not associated with any enumeration value.
 
+If an enumeration value of the same type is used as the `key`, the value associated with
+that same enumeration value is returned.
+
 Accepts the same `key` values as [`get`](#get) and returns either a string
 or an integer depending on the underlying type of the enumeration type.
 
 ```python
 @staticmethod
-def get_value(key: str | int, default: T = None) -> int | str | T: ...
+def get_value(key: EnumInstance | str | int, default: T = None) -> int | str | T: ...
 ```
 
 ## Other Types

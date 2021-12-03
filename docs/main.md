@@ -20,19 +20,19 @@ def advanced_search(*,
     per_page: int = 10,
     sort: SortMethod = SortMethod.ALPHABETICAL,
     search_type: SearchType = SearchType.WORD,
-    translation_language: TranslationLanguage | List[TranslationLanguage] = None,
+    translation_language: TranslationLanguage | Iterable[TranslationLanguage] = None,
     search_target: SearchTarget = SearchTarget.HEADWORD,
     target_language: TargetLanguage = TargetLanguage.ALL,
     search_method: SearchMethod = SearchMethod.EXACT,
-    classification: Classification | List[Classification] = Classification.ALL,
-    origin_type: OriginType | List[OriginType] = OriginType.ALL,
-    vocabulary_grade: VocabularyLevel | List[VocabularyLevel] = VocabularyLevel.ALL,
-    part_of_speech: PartOfSpeech | List[PartOfSpeech] = PartOfSpeech.ALL,
-    multimedia_info: MultimediaType | List[MultimediaType] = MultimediaType.ALL,
+    classification: Classification | Iterable[Classification] = Classification.ALL,
+    origin_type: OriginType | Iterable[OriginType] = OriginType.ALL,
+    vocabulary_grade: VocabularyLevel | Iterable[VocabularyLevel] = VocabularyLevel.ALL,
+    part_of_speech: PartOfSpeech | Iterable[PartOfSpeech] = PartOfSpeech.ALL,
+    multimedia_info: MultimediaType | Iterable[MultimediaType] = MultimediaType.ALL,
     min_syllables: int = 1,
     max_syllables: int = 0,
     meaning_category: MeaningCategory = MeaningCategory.ALL,
-    subject_category: SubjectCategory | List[SubjectCategory] = SubjectCategory.ALL,
+    subject_category: SubjectCategory | Iterable[SubjectCategory] = SubjectCategory.ALL,
     options: OptionsDict = None
 ) -> SearchResponse | KRDictError: ...
 ```
@@ -99,7 +99,7 @@ def search(*,
     per_page: int = 10,
     sort: SortMethod = SortMethod.ALPHABETICAL,
     search_type: SearchType = SearchType.WORD,
-    translation_language: TranslationLanguage | List[TranslationLanguage] = None,
+    translation_language: TranslationLanguage | Iterable[TranslationLanguage] = None,
     options: OptionsDict = None
 ) -> SearchResponse | KRDictError: ...
 ```
@@ -179,7 +179,7 @@ def view(*,
     raise_api_errors: bool = False,
     guarantee_keys: bool = False,
     key: str = None,
-    translation_language: TranslationLanguage | List[TranslationLanguage] = None,
+    translation_language: TranslationLanguage | Iterable[TranslationLanguage] = None,
     options: OptionsDict = None
 ) -> ViewResponse | KRDictError: ...
 
@@ -188,7 +188,7 @@ def view(*,
     raise_api_errors: bool = False,
     guarantee_keys: bool = False,
     key: str = None,
-    translation_language: TranslationLanguage | List[TranslationLanguage] = None,
+    translation_language: TranslationLanguage | Iterable[TranslationLanguage] = None,
     options: OptionsDict = None
 ) -> ViewResponse | KRDictError: ...
 ```
@@ -206,8 +206,8 @@ guarantees that every key marked as *not required* is included, including keys s
     - Zero `0` for integer values.
     - An empty list `[]` for list values.
 - `key`: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
-- `translation_language` ([`TranslationLanguage`](parameters.md#translationlanguage)): A language or list of
-languages to include translations for.
+- `translation_language` ([`TranslationLanguage`](parameters.md#translationlanguage)): A language for which translations
+should be included.
 - `options` ([`OptionsDict`](parameters.md#optionsdict)): Additional options to apply.
 
 
