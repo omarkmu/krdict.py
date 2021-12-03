@@ -46,8 +46,8 @@ while has_next:
     results += data['results']
     has_next = data['per_page'] * data['page'] < total_results
 
-    print(f'Collected {len(data["results"])} results from page {page - 1}. '
-        + f'{"Querying next page." if has_next else "All results collected."}')
+    print((f'Collected {len(data["results"])} results from page {page - 1}. '
+        f'{"Querying next page." if has_next else "All results collected."}'))
 
 print(f'{len(results)} results collected. Total results: {total_results}.')
 ```
@@ -67,12 +67,12 @@ using the [`search`](main.md#search) function.
 response = krdict.search(
     query='나무',
     # if you're using type checking,
-    # setting the search_type parameter in a keyword
-    # arguments call will define the search result.
+    # setting the search_type parameter in a call with
+    # keyword arguments will define the type of the search result.
     # when calling with an unpacked dictionary (**{...}),
     # the more specific type cannot be inferred.
-    search_type='definition',
-    translation_language='english',
+    search_type=krdict.SearchType.DEFINITION,
+    translation_language=krdict.TranslationLanguage.ENGLISH,
     raise_api_errors=True
 )
 
@@ -110,7 +110,7 @@ using the [`search`](main.md#search) function.
 ```python
 response = krdict.search(
     query='나무',
-    search_type='example',
+    search_type=krdict.SearchType.EXAMPLE,
     raise_api_errors=True
 )
 
@@ -138,8 +138,8 @@ using the [`search`](main.md#search) function.
 ```python
 response = krdict.search(
     query='나무',
-    search_type='idiom_proverb',
-    translation_language='english',
+    search_type=krdict.SearchType.IDIOM_PROVERB,
+    translation_language=krdict.TranslationLanguage.ENGLISH,
     raise_api_errors=True
 )
 
@@ -182,14 +182,20 @@ response = krdict.advanced_search(
     # achieve near-perfect results using the query '.' and the 'definition'
     # search target. in this example, all matches are returned.
     query='.',
-    search_type='word',
-    search_target='definition',
-    vocabulary_grade='beginner',
-    multimedia_info=['photo', 'illustration', 'video', 'animation', 'sound'],
+    search_type=krdict.SearchType.WORD,
+    search_target=krdict.SearchTarget.DEFINITION,
+    vocabulary_grade=krdict.VocabularyLevel.BEGINNER,
+    multimedia_info=(
+        krdict.MultimediaType.PHOTO,
+        krdict.MultimediaType.ILLUSTRATION,
+        krdict.MultimediaType.VIDEO,
+        krdict.MultimediaType.ANIMATION,
+        krdict.MultimediaType.SOUND
+    ),
     # the search method must be set to 'include' for the desired behavior;
     # the default value is 'exact', which returns only exact matches.
-    search_method='include',
-    translation_language='english',
+    search_method=krdict.SearchMethod.INCLUDE,
+    translation_language=krdict.TranslationLanguage.ENGLISH,
     raise_api_errors=True
 )
 
@@ -226,10 +232,10 @@ using the [`advanced_search`](main.md#advanced_search) function.
 ```python
 response = krdict.advanced_search(
     query='機',
-    search_type='word',
-    search_target='original_language',
-    search_method='include',
-    translation_language='english',
+    search_type=krdict.SearchType.WORD,
+    search_target=krdict.SearchTarget.ORIGINAL_LANGUAGE,
+    search_method=krdict.SearchMethod.INCLUDE,
+    translation_language=krdict.TranslationLanguage.ENGLISH,
     raise_api_errors=True
 )
 
@@ -277,14 +283,14 @@ response = krdict.view(
     # the homograph_num parameter defaults to 0.
     # it is included here for completeness.
     homograph_num=0,
-    translation_language='english',
+    translation_language=krdict.TranslationLanguage.ENGLISH,
     raise_api_errors=True
 )
 
 # or, equivalently:
 # response = krdict.view(
 #     target_code=42075,
-#     translation_language='english',
+#     translation_language=krdict.TranslationLanguage.ENGLISH,
 #     raise_api_errors=True
 # )
 
@@ -317,7 +323,7 @@ and extended information about 한자 such as readings, stroke count, and radica
 response = krdict.view(
     query='단풍나무',
     homograph_num=0,
-    translation_language='english',
+    translation_language=krdict.TranslationLanguage.ENGLISH,
     raise_api_errors=True,
     # the scraper can be applied to the search and advanced_search
     # functions similarly; for those functions, the only
@@ -349,21 +355,23 @@ then fetches extended information about the word of the day
 using the [`view`](main.md#view) function.
 
 ```python
-wotd_response = krdict.scraper.fetch_today_word(translation_language='english')
-wotd_translation = ''
+wotd_response = krdict.scraper.fetch_today_word(
+    translation_language=krdict.TranslationLanguage.ENGLISH
+)
 
+wotd_translation = ''
 if 'translation' in wotd_response['data']:
     wotd_translation = f' ({wotd_response["data"]["translation"].get("word", "")})'
 
-print(f'Word of the Day: {wotd_response["data"]["word"]}{wotd_translation}'
-    + f'\n{wotd_response["data"]["definition"]}'
-    + f'\n{wotd_response["data"]["url"]}')
+print((f'Word of the Day: {wotd_response["data"]["word"]}{wotd_translation}'
+    f'\n{wotd_response["data"]["definition"]}'
+    f'\n{wotd_response["data"]["url"]}'))
 
 response = krdict.view(
     # with the target code from the scraped word of the day response,
     # we can use the API and the scraper to get extended information.
     target_code=wotd_response['data']['target_code'],
-    translation_language='english',
+    translation_language=krdict.TranslationLanguage.ENGLISH,
     raise_api_errors=True,
     options={'use_scraper': True, 'fetch_multimedia': True}
 )
@@ -397,15 +405,12 @@ using the [`fetch_meaning_category_words`](scraper.md#fetch_meaning_category_wor
 
 ```python
 response = krdict.scraper.fetch_meaning_category_words(
-    category='인간 > 신체 부위',
-    translation_language='english'
+    # or: category=3,
+    # or: category='인간 > 신체 부위',
+    # or: category='human > body parts',
+    category=krdict.MeaningCategory.HUMAN_BODY_PARTS,
+    translation_language=krdict.TranslationLanguage.ENGLISH
 )
-
-# or, equivalently:
-# response = krdict.scraper.fetch_meaning_category_words(
-#     category=3,
-#     translation_language='english'
-# )
 
 _display_results(response)
 ```
@@ -441,16 +446,14 @@ using the [`fetch_subject_category_words`](scraper.md#fetch_subject_category_wor
 ```python
 response = krdict.scraper.fetch_subject_category_words(
     # category also accepts an array of multiple categories,
-    # or '전체'/0 to retrieve all categories' words.
-    category='인사하기',
-    translation_language='english'
-)
+    # or krdict.SubjectCategory.ALL to retrieve all categories' words.
 
-# or, equivalently:
-# response = krdict.scraper.fetch_subject_category_words(
-#     category=1,
-#     translation_language='english'
-# )
+    # or: category=1,
+    # or: category='인사하기',
+    # or: category='greeting',
+    category=krdict.SubjectCategory.ELEMENTARY_GREETING,
+    translation_language=krdict.TranslationLanguage.ENGLISH
+)
 
 _display_results(response)
 ```
