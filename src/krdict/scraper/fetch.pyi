@@ -1,9 +1,6 @@
 from typing import List, Literal, TypedDict, overload
 from ..types.scraper import ScraperTranslationLanguage
-from ..main import (
-    TMeaningCategory, SearchTranslation, TSortMethod, TSubjectCategory,
-    TotalViewResponse, TotalWordSearchResponse, WordSearchResponse, ViewResponse
-)
+from ..main import TMeaningCategory, SearchTranslation, TSortMethod, TSubjectCategory
 
 TScraperTranslationLanguage = ScraperTranslationLanguage | int | Literal[
     'english',
@@ -113,47 +110,6 @@ class TotalScrapedWordSearchResponse(TypedDict):
     data: TotalScrapedWordSearchData
 
 
-
-@overload
-def extend_advanced_search(
-    response: TotalWordSearchResponse,
-    raise_errors: bool
-) -> TotalWordSearchResponse: ...
-@overload
-def extend_advanced_search(
-    response: WordSearchResponse,
-    raise_errors: bool
-) -> WordSearchResponse: ...
-
-
-@overload
-def extend_search(
-    response: TotalWordSearchResponse,
-    raise_errors: bool
-) -> TotalWordSearchResponse: ...
-@overload
-def extend_search(
-    response: WordSearchResponse,
-    raise_errors: bool
-) -> WordSearchResponse: ...
-
-
-@overload
-def extend_view(
-    response: TotalViewResponse,
-    fetch_page_data: bool,
-    fetch_multimedia: bool,
-    raise_errors: bool
-) -> TotalViewResponse: ...
-@overload
-def extend_view(
-    response: ViewResponse,
-    fetch_page_data: bool,
-    fetch_multimedia: bool,
-    raise_errors: bool
-) -> ViewResponse: ...
-
-
 @overload
 def fetch_today_word(*,
     guarantee_keys: Literal[True],
@@ -204,13 +160,3 @@ def fetch_subject_category_words(*,
     sort: TSortMethod = None,
     translation_language: TScraperTranslationLanguage = None
 ) -> ScrapedWordSearchResponse: ...
-
-__all__ = [
-    'extend_advanced_search',
-    'extend_search',
-    'extend_view',
-    'fetch_today_word',
-    'fetch_meaning_category_words',
-    'fetch_subject_category_words',
-    'ScraperTranslationLanguage'
-]
