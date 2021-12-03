@@ -2,11 +2,10 @@ name: Test
 
 on:
   push:
-    paths-ignore:
-      - 'docs/**'
-    branches:
-      - '**'
-  workflow_dispatch:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    paths-ignore: ['docs/**']
 
 jobs:
   unittest:
