@@ -34,7 +34,11 @@ class KRDictTest(unittest.TestCase):
 
     def test_basic_search(self):
         """Basic search query returns proper results"""
-        response = krdict.search(query='나무', search_type='word', raise_api_errors=True)
+        response = krdict.search(
+            query='나무',
+            search_type=krdict.SearchType.WORD,
+            raise_api_errors=True
+        )
 
         self.assertIn('data', response)
         data = response['data']
@@ -58,7 +62,7 @@ class KRDictTest(unittest.TestCase):
         ]
 
         for idx, values in enumerate(expected_values):
-            [homograph_num, target_code, meaning_len, word, pos] = values
+            (homograph_num, target_code, meaning_len, word, pos) = values
             result = data['results'][idx]
 
             self.assertEqual(result['word'], word)
@@ -77,7 +81,11 @@ class KRDictTest(unittest.TestCase):
 
     def test_definition_search(self):
         """Definition search query returns proper results"""
-        response = krdict.search(query='나무', search_type='definition', raise_api_errors=True)
+        response = krdict.search(
+            query='나무',
+            search_type=krdict.SearchType.DEFINITION,
+            raise_api_errors=True
+        )
 
         self.assertIn('data', response)
         data = response['data']
@@ -93,7 +101,11 @@ class KRDictTest(unittest.TestCase):
 
     def test_example_search(self):
         """Example search query returns proper results"""
-        response = krdict.search(query='나무', search_type='example', raise_api_errors=True)
+        response = krdict.search(
+            query='나무',
+            search_type=krdict.SearchType.EXAMPLE,
+            raise_api_errors=True
+        )
 
         self.assertIn('data', response)
         data = response['data']
@@ -105,7 +117,11 @@ class KRDictTest(unittest.TestCase):
 
     def test_idiom_proverb_search(self):
         """Idiom/Proverb search query returns proper results"""
-        response = krdict.search(query='나무', search_type='idiom_proverb', raise_api_errors=True)
+        response = krdict.search(
+            query='나무',
+            search_type=krdict.SearchType.IDIOM_PROVERB,
+            raise_api_errors=True
+        )
 
         self.assertIn('data', response)
         data = response['data']
@@ -119,9 +135,10 @@ class KRDictTest(unittest.TestCase):
         """Setting page parameter returns proper page"""
         response = krdict.search(
             query='나무',
-            search_type='word',
+            search_type=krdict.SearchType.WORD,
             page=2,
-            raise_api_errors=True)
+            raise_api_errors=True
+        )
 
         self.assertIn('data', response)
         data = response['data']
@@ -132,9 +149,10 @@ class KRDictTest(unittest.TestCase):
         """Setting per_page parameter returns correct number of results"""
         response = krdict.search(
             query='나무',
-            search_type='word',
+            search_type=krdict.SearchType.WORD,
             per_page=15,
-            raise_api_errors=True)
+            raise_api_errors=True
+        )
 
         self.assertIn('data', response)
         data = response['data']
@@ -157,11 +175,21 @@ class KRDictTest(unittest.TestCase):
         self.assertEqual(response['data']['total_results'], 1)
         self.assertEqual(response['data']['results'][0]['target_code'], 32750)
 
-        response = krdict.advanced_search(query='나무', search_method='start', raise_api_errors=True)
+        response = krdict.advanced_search(
+            query='나무',
+            search_method=krdict.SearchMethod.START,
+            raise_api_errors=True
+        )
+
         self.assertIn('data', response)
         self.assertEqual(response['data']['total_results'], 17)
 
-        response = krdict.advanced_search(query='나무', search_method='end', raise_api_errors=True)
+        response = krdict.advanced_search(
+            query='나무',
+            search_method=krdict.SearchMethod.END,
+            raise_api_errors=True
+        )
+
         self.assertIn('data', response)
         self.assertEqual(response['data']['total_results'], 33)
 
@@ -169,9 +197,10 @@ class KRDictTest(unittest.TestCase):
         """Setting sort parameter to popular returns sorted results"""
         response = krdict.search(
             query='나무',
-            search_type='word',
-            sort='popular',
-            raise_api_errors=True)
+            search_type=krdict.SearchType.WORD,
+            sort=krdict.SortMethod.POPULAR,
+            raise_api_errors=True
+        )
 
         self.assertIn('data', response)
         data = response['data']
@@ -184,10 +213,14 @@ class KRDictTest(unittest.TestCase):
         """Setting translation_language parameter returns results with translations"""
         response = krdict.search(
             query='나무',
-            search_type='word',
+            search_type=krdict.SearchType.WORD,
             guarantee_keys=True,
             raise_api_errors=True,
-            translation_language=['english', 'japanese'])
+            translation_language=(
+                krdict.TranslationLanguage.ENGLISH,
+                krdict.TranslationLanguage.JAPANESE
+            )
+        )
 
         self.assertIn('data', response)
         data = response['data']

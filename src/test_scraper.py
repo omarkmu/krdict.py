@@ -22,10 +22,11 @@ class KRDictScraperTest(unittest.TestCase):
         response = krdict.advanced_search(query='나무',
             raise_api_errors=True,
             guarantee_keys=True,
-            search_type='word',
-            search_method='include',
-            sort='popular',
-            options={'use_scraper': True})
+            search_type=krdict.SearchType.WORD,
+            search_method=krdict.SearchMethod.INCLUDE,
+            sort=krdict.SortMethod.POPULAR,
+            options={'use_scraper': True}
+        )
 
         self.assertIn('data', response)
         data = response['data']
@@ -39,15 +40,16 @@ class KRDictScraperTest(unittest.TestCase):
 
     def test_scraper_category(self):
         """Advanced search query using categories with scraper returns proper results"""
-        response = krdict.advanced_search(query='가',
+        response = krdict.advanced_search(
+            query='가',
             raise_api_errors=True,
             guarantee_keys=True,
-            search_method='include',
-            subject_category='위치 표현하기',
-            search_type='word',
-            options={
-                'use_scraper': True
-            })
+            search_method=krdict.SearchMethod.INCLUDE,
+            subject_category=krdict.SubjectCategory.ELEMENTARY_DESCRIBING_LOCATION,
+            search_type=krdict.SearchType.WORD,
+            options={'use_scraper': True}
+        )
+
         self.assertIn('data', response)
         data = response['data']
 
@@ -80,7 +82,9 @@ class KRDictScraperTest(unittest.TestCase):
 
     def test_scraper_fetch_today_word_translation(self):
         """Fetching word of the day with translation with scraper returns proper results"""
-        response = krdict.scraper.fetch_today_word(translation_language='english')
+        response = krdict.scraper.fetch_today_word(
+            translation_language=krdict.scraper.ScraperTranslationLanguage.ENGLISH
+        )
 
         self.assertIn('data', response)
         data = response['data']
@@ -94,6 +98,8 @@ class KRDictScraperTest(unittest.TestCase):
         self.assertIn('translation', data)
         self.assertIn('definition', data['translation'])
         self.assertIn('language', data['translation'])
+
+        self.assertEqual(data['translation']['language'], '영어')
 
     def test_scraper_fetch_meaning_category_words(self):
         """Fetching meaning category words with scraper returns proper results"""
@@ -123,7 +129,8 @@ class KRDictScraperTest(unittest.TestCase):
             guarantee_keys=True,
             category=3,
             per_page=15,
-            translation_language='english')
+            translation_language=krdict.scraper.ScraperTranslationLanguage.ENGLISH
+        )
 
         self.assertIn('data', response)
         data = response['data']
@@ -183,7 +190,8 @@ class KRDictScraperTest(unittest.TestCase):
             guarantee_keys=True,
             category=1,
             per_page=15,
-            translation_language='english')
+            translation_language=krdict.scraper.ScraperTranslationLanguage.ENGLISH
+        )
 
         self.assertIn('data', response)
         data = response['data']
@@ -218,10 +226,12 @@ class KRDictScraperTest(unittest.TestCase):
 
     def test_scraper_view(self):
         """Basic view query with scraper returns proper results"""
-        response = krdict.view(target_code=55874,
+        response = krdict.view(
+            target_code=55874,
             guarantee_keys=True,
             raise_api_errors=True,
-            options={'use_scraper': True})
+            options={'use_scraper': True}
+        )
 
         self.assertIn('data', response)
         self.assertEqual(len(response['data']['results']), 1)
@@ -278,11 +288,8 @@ class KRDictScraperTest(unittest.TestCase):
             target_code=14997,
             raise_api_errors=True,
             guarantee_keys=True,
-            options={
-                'use_scraper': True,
-                'fetch_page_data': False,
-                'fetch_multimedia': True
-            })
+            options={'use_scraper': True, 'fetch_page_data': False, 'fetch_multimedia': True}
+        )
 
         self.assertIn('data', response)
         self.assertEqual(len(response['data']['results']), 1)
@@ -304,7 +311,8 @@ class KRDictScraperTest(unittest.TestCase):
             guarantee_keys=True,
             raise_api_errors=True,
             search_type='word',
-            options={'use_scraper': True})
+            options={'use_scraper': True}
+        )
 
         self.assertIn('data', response)
         data = response['data']
