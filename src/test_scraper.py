@@ -12,11 +12,11 @@ try:
 except ImportError:
     pass
 
-krdict.set_key(os.getenv('KRDICT_KEY'))
-
-
 class KRDictScraperTest(unittest.TestCase):
     """Contains test cases for the scraper module."""
+
+    def setUp(self):
+        krdict.set_key(os.getenv('KRDICT_KEY'))
 
     def test_scraper_advanced(self):
         """Advanced search query with scraper returns proper results"""

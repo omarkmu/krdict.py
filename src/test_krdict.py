@@ -12,13 +12,13 @@ try:
 except ImportError:
     pass
 
-krdict.set_key(os.getenv('KRDICT_KEY'))
-
-
 _BASE_VIEW_URL = 'https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo={}'
 
 class KRDictTest(unittest.TestCase):
     """Contains test cases for the main module."""
+
+    def setUp(self):
+        krdict.set_key(os.getenv('KRDICT_KEY'))
 
     def test_api_error(self):
         """Invalid query string results in an API error"""
