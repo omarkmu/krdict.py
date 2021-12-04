@@ -1,11 +1,9 @@
-from typing import List, Literal, TypedDict, overload
-from . import (
-    MeaningCategory, SearchTranslation, SortMethod, SubjectCategory,
-    TotalViewResponse, TotalWordSearchResponse, WordSearchResponse, ViewResponse
-)
+from typing import Iterable, List, Literal, TypedDict, overload
+from ..types import SortMethod, SubjectCategory
+from ..types.scraper import ScraperTranslationLanguage
+from ..main import TMeaningCategory, SearchTranslation, TSortMethod, TSubjectCategory
 
-ScraperTranslationLanguage = Literal[
-    'chinese',
+TScraperTranslationLanguage = ScraperTranslationLanguage | int | Literal[
     'english',
     'japanese',
     'french',
@@ -15,7 +13,8 @@ ScraperTranslationLanguage = Literal[
     'vietnamese',
     'thai',
     'indonesian',
-    'russian'
+    'russian',
+    'chinese'
 ]
 
 
@@ -112,94 +111,53 @@ class TotalScrapedWordSearchResponse(TypedDict):
     data: TotalScrapedWordSearchData
 
 
-
-@overload
-def extend_advanced_search(
-    response: TotalWordSearchResponse,
-    raise_errors: bool
-) -> TotalWordSearchResponse: ...
-@overload
-def extend_advanced_search(
-    response: WordSearchResponse,
-    raise_errors: bool
-) -> WordSearchResponse: ...
-
-
-@overload
-def extend_search(
-    response: TotalWordSearchResponse,
-    raise_errors: bool
-) -> TotalWordSearchResponse: ...
-@overload
-def extend_search(
-    response: WordSearchResponse,
-    raise_errors: bool
-) -> WordSearchResponse: ...
-
-
-@overload
-def extend_view(
-    response: TotalViewResponse,
-    fetch_page_data: bool,
-    fetch_multimedia: bool,
-    raise_errors: bool
-) -> TotalViewResponse: ...
-@overload
-def extend_view(
-    response: ViewResponse,
-    fetch_page_data: bool,
-    fetch_multimedia: bool,
-    raise_errors: bool
-) -> ViewResponse: ...
-
-
 @overload
 def fetch_today_word(*,
     guarantee_keys: Literal[True],
-    translation_language: ScraperTranslationLanguage = None
+    translation_language: TScraperTranslationLanguage = None
 ) -> TotalWordOfTheDayResponse: ...
 @overload
 def fetch_today_word(*,
     guarantee_keys: bool = False,
-    translation_language: ScraperTranslationLanguage = None
+    translation_language: TScraperTranslationLanguage = None
 ) -> WordOfTheDayResponse: ...
 
 
 @overload
 def fetch_meaning_category_words(*,
     guarantee_keys: Literal[True],
-    category: MeaningCategory | int,
-    page: int = None,
-    per_page: int = None,
-    sort: SortMethod = None,
-    translation_language: ScraperTranslationLanguage = None
+    category: TMeaningCategory,
+    page: int = 1,
+    per_page: int = 10,
+    sort: TSortMethod = SortMethod.ALPHABETICAL,
+    translation_language: TScraperTranslationLanguage = None
 ) -> TotalScrapedWordSearchResponse: ...
 @overload
 def fetch_meaning_category_words(*,
     guarantee_keys: bool = False,
-    category: MeaningCategory | int,
-    page: int = None,
-    per_page: int = None,
-    sort: SortMethod = None,
-    translation_language: ScraperTranslationLanguage = None
+    category: TMeaningCategory,
+    page: int = 1,
+    per_page: int = 10,
+    sort: TSortMethod = SortMethod.ALPHABETICAL,
+    translation_language: TScraperTranslationLanguage = None
 ) -> ScrapedWordSearchResponse: ...
 
 
 @overload
 def fetch_subject_category_words(*,
     guarantee_keys: Literal[True],
-    category: SubjectCategory | int | List[SubjectCategory | int],
-    page: int = None,
-    per_page: int = None,
-    sort: SortMethod = None,
-    translation_language: ScraperTranslationLanguage = None
+    category: TSubjectCategory | Iterable[TSubjectCategory] = SubjectCategory.ALL,
+    page: int = 1,
+    per_page: int = 10,
+    sort: TSortMethod = SortMethod.ALPHABETICAL,
+    translation_language: TScraperTranslationLanguage = None
 ) -> TotalScrapedWordSearchResponse: ...
 @overload
 def fetch_subject_category_words(*,
     guarantee_keys: bool = False,
-    category: SubjectCategory | int | List[SubjectCategory | int],
-    page: int = None,
-    per_page: int = None,
-    sort: SortMethod = None,
-    translation_language: ScraperTranslationLanguage = None
+    category: TSubjectCategory | Iterable[TSubjectCategory] = SubjectCategory.ALL,
+    page: int = 1,
+    per_page: int = 10,
+    sort: TSortMethod = SortMethod.ALPHABETICAL,
+    translation_language: TScraperTranslationLanguage = None
 ) -> ScrapedWordSearchResponse: ...

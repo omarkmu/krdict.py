@@ -2,6 +2,9 @@ A summary of the provided functions in the `krdict` module and the arguments the
 With the exception of [`set_key`](#set_key) and [`set_default`](#set_default),
 all of the functions listed below expect keyword arguments.
 
+The `krdict` module also exports all of the enumerations described in
+the [parameter types](#parameters) of the functions below.
+
 ---
 ## advanced_search
 
@@ -15,26 +18,26 @@ def advanced_search(*,
     key: str = None,
     page: int = 1,
     per_page: int = 10,
-    sort: SortMethod = 'alphabetical',
-    search_type: SearchType = 'word',
-    translation_language: TranslationLanguage | List[TranslationLanguage] = None,
-    search_target: SearchTarget = 'headword',
-    target_language: TargetLanguage = 'all',
-    search_method: SearchMethod = 'exact',
-    classification: Classification | List[Classification] = 'all',
-    origin_type: OriginType | List[OriginType] = 'all',
-    vocabulary_grade: VocabularyGrade | List[VocabularyGrade] = 'all',
-    part_of_speech: PartOfSpeech | List[PartOfSpeech] = 'all',
-    multimedia_info: MultimediaType | List[MultimediaType] = 'all',
+    sort: SortMethod = SortMethod.ALPHABETICAL,
+    search_type: SearchType = SearchType.WORD,
+    translation_language: TranslationLanguage | Iterable[TranslationLanguage] = None,
+    search_target: SearchTarget = SearchTarget.HEADWORD,
+    target_language: TargetLanguage = TargetLanguage.ALL,
+    search_method: SearchMethod = SearchMethod.EXACT,
+    classification: Classification | Iterable[Classification] = Classification.ALL,
+    origin_type: OriginType | Iterable[OriginType] = OriginType.ALL,
+    vocabulary_grade: VocabularyLevel | Iterable[VocabularyLevel] = VocabularyLevel.ALL,
+    part_of_speech: PartOfSpeech | Iterable[PartOfSpeech] = PartOfSpeech.ALL,
+    multimedia_info: MultimediaType | Iterable[MultimediaType] = MultimediaType.ALL,
     min_syllables: int = 1,
     max_syllables: int = 0,
-    meaning_category: MeaningCategory | int = 'all',
-    subject_category: SubjectCategory | int | List[SubjectCategory | int] = 'all',
+    meaning_category: MeaningCategory = MeaningCategory.ALL,
+    subject_category: SubjectCategory | Iterable[SubjectCategory] = SubjectCategory.ALL,
     options: OptionsDict = None
 ) -> SearchResponse | KRDictError: ...
 ```
 !!! warning
-    Use of any value other than `'word'` or `None` for the `search_type` parameter with advanced search is
+    Use of any search type other than `SearchType.WORD` for the `search_type` parameter with advanced search is
     undefined behavior. It is likely that incomplete or empty results will be returned.
     The parameter is included for completeness, but is not recommended for usage.
 
@@ -44,7 +47,7 @@ def advanced_search(*,
 - `raise_api_errors`: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
 A value of `True` guarantees that the result is not an error object.
 - `guarantee_keys`: Sets whether keys that are missing from the response should be inserted with default values. A value of `True`
-guarantees that every key marked as *not required* below is included, including keys set by the scraper. Default values:
+guarantees that every key marked as *not required* is included, including keys set by the scraper. Default values:
     - The empty string `""` for string values.
     - Zero `0` for integer values.
     - An empty list `[]` for list values.
@@ -53,18 +56,14 @@ guarantees that every key marked as *not required* below is included, including 
 - `per_page`: The maximum number of search results to return `[10, 100]`.
 - `sort` ([`SortMethod`](parameters.md#sortmethod)): The sort method that should be used.
 - `search_type` ([`SearchType`](parameters.md#searchtype)): The type of search to perform.
-- `translation_language` ([`TranslationLanguage`](parameters.md#translationlanguage)): A language to include translations for.
+- `translation_language` ([`TranslationLanguage`](parameters.md#translationlanguage)): A language for which translations should be included.
 - `search_target` ([`SearchTarget`](parameters.md#searchtarget)): The target field of the search query.
 - `target_language` ([`TargetLanguage`](parameters.md#targetlanguage)): The original language to search by. If `search_target`
 is set to any value other than `'original_language'`, this parameter has no effect.
 - `search_method` ([`SearchMethod`](parameters.md#searchmethod)): The method used to match against the query.
-    - `'exact'`: Returns entries that are an exact match of the query.
-    - `'include'`: Returns entries that include the query.
-    - `'start'`: Returns entries that start with the query.
-    - `'end'`: Returns entries that end with the query.
 - `classification` ([`Classification`](parameters.md#classification)): An entry classification to filter by.
 - `origin_type` ([`OriginType`](parameters.md#origintype)): A word origin type to filter by.
-- `vocabulary_grade` ([`VocabularyGrade`](parameters.md#vocabularygrade)): A vocabulary level to filter by.
+- `vocabulary_grade` ([`VocabularyLevel`](parameters.md#vocabularygrade)): A vocabulary level to filter by.
 - `part_of_speech` ([`PartOfSpeech`](parameters.md#partofspeech)): A part of speech to filter by.
 - `multimedia_info` ([`MultimediaType`](parameters.md#multimediatype)): A multimedia type to filter by.
 - `min_syllables`: The minimum number of syllables in result words `[1, 80]`.
@@ -98,9 +97,9 @@ def search(*,
     key: str = None,
     page: int = 1,
     per_page: int = 10,
-    sort: SortMethod = 'alphabetical',
-    search_type: SearchType = 'word',
-    translation_language: TranslationLanguage | List[TranslationLanguage] = None,
+    sort: SortMethod = SortMethod.ALPHABETICAL,
+    search_type: SearchType = SearchType.WORD,
+    translation_language: TranslationLanguage | Iterable[TranslationLanguage] = None,
     options: OptionsDict = None
 ) -> SearchResponse | KRDictError: ...
 ```
@@ -111,7 +110,7 @@ def search(*,
 - `raise_api_errors`: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
 A value of `True` guarantees that the result is not an error object.
 - `guarantee_keys`: Sets whether keys that are missing from the response should be inserted with default values. A value of `True`
-guarantees that every key marked as *not required* below is included, including keys set by the scraper. Default values:
+guarantees that every key marked as *not required* is included, including keys set by the scraper. Default values:
     - The empty string `""` for string values.
     - Zero `0` for integer values.
     - An empty list `[]` for list values.
@@ -120,7 +119,7 @@ guarantees that every key marked as *not required* below is included, including 
 - `per_page`: The maximum number of search results to return `[10, 100]`.
 - `sort` ([`SortMethod`](parameters.md#sortmethod)): The sort method that should be used.
 - `search_type` ([`SearchType`](parameters.md#searchtype)): The type of search to perform.
-- `translation_language` ([`TranslationLanguage`](parameters.md#translationlanguage)): A language to include translations for.
+- `translation_language` ([`TranslationLanguage`](parameters.md#translationlanguage)): A language for which translations should be included.
 - `options` ([`OptionsDict`](parameters.md#optionsdict)): Additional options to apply.
 
 
@@ -180,7 +179,7 @@ def view(*,
     raise_api_errors: bool = False,
     guarantee_keys: bool = False,
     key: str = None,
-    translation_language: TranslationLanguage | List[TranslationLanguage] = None,
+    translation_language: TranslationLanguage | Iterable[TranslationLanguage] = None,
     options: OptionsDict = None
 ) -> ViewResponse | KRDictError: ...
 
@@ -189,7 +188,7 @@ def view(*,
     raise_api_errors: bool = False,
     guarantee_keys: bool = False,
     key: str = None,
-    translation_language: TranslationLanguage | List[TranslationLanguage] = None,
+    translation_language: TranslationLanguage | Iterable[TranslationLanguage] = None,
     options: OptionsDict = None
 ) -> ViewResponse | KRDictError: ...
 ```
@@ -202,13 +201,13 @@ def view(*,
 - `raise_api_errors`: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
 A value of `True` guarantees that the result is not an error object.
 - `guarantee_keys`: Sets whether keys that are missing from the response should be inserted with default values. A value of `True`
-guarantees that every key marked as *not required* below is included, including keys set by the scraper. Default values:
+guarantees that every key marked as *not required* is included, including keys set by the scraper. Default values:
     - The empty string `""` for string values.
     - Zero `0` for integer values.
     - An empty list `[]` for list values.
 - `key`: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
-- `translation_language` ([`TranslationLanguage`](parameters.md#translationlanguage)): A language or list of
-languages to include translations for.
+- `translation_language` ([`TranslationLanguage`](parameters.md#translationlanguage)): A language for which translations
+should be included.
 - `options` ([`OptionsDict`](parameters.md#optionsdict)): Additional options to apply.
 
 

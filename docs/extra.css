@@ -5,3 +5,7 @@
 .wy-table-responsive {
     overflow: visible !important;
 }
+
+.wy-breadcrumbs-aside .icon.icon-github {
+    display: none;
+}

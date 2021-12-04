@@ -1,8 +1,8 @@
-A summary of return types of various [functions](functions.md).
+A summary of return types of various [functions](main.md).
 
 ## DefinitionSearchResponse
 
-The results of a definition [search](functions.md#search).
+The results of a definition [search](main.md#search).
 
 ```python
 {
@@ -66,7 +66,7 @@ The results of a definition [search](functions.md#search).
 
 ## ExampleSearchResponse
 
-The results of an example [search](functions.md#search).
+The results of an example [search](main.md#search).
 
 ```python
 {
@@ -115,7 +115,7 @@ The results of an example [search](functions.md#search).
 
 ## IdiomProverbSearchResponse
 
-The results of an idiom/proverb [search](functions.md#search).
+The results of an idiom/proverb [search](main.md#search).
 
 ```python
 {
@@ -180,7 +180,7 @@ The results of an idiom/proverb [search](functions.md#search).
 
 ## WordSearchResponse
 
-The results of a word [search](functions.md#search).
+The results of a word [search](main.md#search).
 
 ```python
 {
@@ -258,7 +258,7 @@ The results of a word [search](functions.md#search).
 
 ## ViewResponse
 
-The results of a [view](functions.md#view) query.
+The results of a [view](main.md#view) query.
 
 ```python
 {
