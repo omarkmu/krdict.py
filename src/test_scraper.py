@@ -17,6 +17,7 @@ krdict.set_key(os.getenv('KRDICT_KEY'))
 
 class KRDictScraperTest(unittest.TestCase):
     """Contains test cases for the scraper module."""
+
     def test_scraper_advanced(self):
         """Advanced search query with scraper returns proper results"""
         response = krdict.advanced_search(query='나무',

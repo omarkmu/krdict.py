@@ -217,12 +217,11 @@ def transform_view_params(params):
 
     if 'target_code' in params:
         params['method'] = 'target_code'
-    else:
-        if 'query' in params:
-            if 'homograph_num' in params:
-                params['query'] += str(params['homograph_num'])
-                del params['homograph_num']
-            else:
-                params['query'] += '0'
+    elif 'query' in params:
+        if 'homograph_num' in params:
+            params['query'] += str(params['homograph_num'])
+            del params['homograph_num']
+        else:
+            params['query'] += '0'
 
     transform_search_params(params)
