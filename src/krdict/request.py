@@ -98,23 +98,6 @@ _PARAM_MAPS = {
 _DEFAULTS = { 'API_KEY': '' }
 
 
-def _get_search_type(search_type):
-    value = SearchType.get_value(search_type)
-
-    if value == 'ip':
-        return 'idiom_proverb'
-
-    if value == 'dfn':
-        return 'definition'
-
-    if value == 'exam':
-        return 'example'
-
-    if value == 'word':
-        return value
-
-    return str(search_type)
-
 def _map_value(mapper, value):
     if isiterable(value, exclude=(str,)):
         return ','.join(map(lambda x: _map_value(mapper, x), value))
@@ -155,7 +138,10 @@ def send_request(kwargs, advanced=False, search_type=None):
     - ``search_type``: The type of search which should be performed.
     """
 
-    search_type = _get_search_type(search_type or kwargs.get('search_type', 'word'))
+    search_type = SearchType.get_value(
+        search_type or kwargs.get('search_type', 'word')
+    ) or search_type
+
     url = _VIEW_URL if search_type == 'view' else _SEARCH_URL
 
     params = _transform_params(kwargs, search_type)

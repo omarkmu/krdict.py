@@ -856,15 +856,15 @@ class WordSearchResponse(TypedDict):
     request_params: Dict[str, str]
     data: WordSearchResponseData
 class DefinitionSearchResponse(TypedDict):
-    response_type: Literal['definition']
+    response_type: Literal['dfn']
     request_params: Dict[str, str]
     data: DefinitionSearchResponseData
 class ExampleSearchResponse(TypedDict):
-    response_type: Literal['example']
+    response_type: Literal['exam']
     request_params: Dict[str, str]
     data: ExampleSearchResponseData
 class IdiomProverbSearchResponse(TypedDict):
-    response_type: Literal['idiom_proverb']
+    response_type: Literal['ip']
     request_params: Dict[str, str]
     data: IdiomProverbSearchResponseData
 
@@ -917,11 +917,11 @@ class TotalWordSearchResponse(TypedDict):
     request_params: Dict[str, str]
     data: TotalWordSearchResponseData
 class TotalDefinitionSearchResponse(TypedDict):
-    response_type: Literal['definition']
+    response_type: Literal['dfn']
     request_params: Dict[str, str]
     data: TotalDefinitionSearchResponseData
 class TotalIdiomProverbSearchResponse(TypedDict):
-    response_type: Literal['idiom_proverb']
+    response_type: Literal['ip']
     request_params: Dict[str, str]
     data: TotalIdiomProverbSearchResponseData
 

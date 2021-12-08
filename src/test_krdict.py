@@ -25,6 +25,7 @@ class KRDictTest(unittest.TestCase):
         response = krdict.search(query='')
         self.assertIn('error', response)
         self.assertIn('request_params', response)
+        self.assertIn('response_type', response)
         self.assertEqual(response['response_type'], 'error')
         self.assertNotIn('data', response)
 
@@ -39,6 +40,9 @@ class KRDictTest(unittest.TestCase):
             search_type=krdict.SearchType.WORD,
             raise_api_errors=True
         )
+
+        self.assertIn('response_type', response)
+        self.assertEqual(response['response_type'], 'word')
 
         self.assertIn('data', response)
         data = response['data']
@@ -87,6 +91,9 @@ class KRDictTest(unittest.TestCase):
             raise_api_errors=True
         )
 
+        self.assertIn('response_type', response)
+        self.assertEqual(response['response_type'], 'dfn')
+
         self.assertIn('data', response)
         data = response['data']
 
@@ -107,6 +114,9 @@ class KRDictTest(unittest.TestCase):
             raise_api_errors=True
         )
 
+        self.assertIn('response_type', response)
+        self.assertEqual(response['response_type'], 'exam')
+
         self.assertIn('data', response)
         data = response['data']
 
@@ -122,6 +132,9 @@ class KRDictTest(unittest.TestCase):
             search_type=krdict.SearchType.IDIOM_PROVERB,
             raise_api_errors=True
         )
+
+        self.assertIn('response_type', response)
+        self.assertEqual(response['response_type'], 'ip')
 
         self.assertIn('data', response)
         data = response['data']
@@ -253,6 +266,9 @@ class KRDictTest(unittest.TestCase):
         """Basic view query returns proper results"""
         response = krdict.view(target_code=32750, raise_api_errors=True)
 
+        self.assertIn('response_type', response)
+        self.assertEqual(response['response_type'], 'view')
+
         self.assertIn('data', response)
         data = response['data']
 
@@ -272,6 +288,9 @@ class KRDictTest(unittest.TestCase):
     def test_view_word_info(self):
         """Basic view query with word info returns proper results"""
         response = krdict.view(query='나무', raise_api_errors=True)
+
+        self.assertIn('response_type', response)
+        self.assertEqual(response['response_type'], 'view')
 
         self.assertIn('data', response)
         data = response['data']

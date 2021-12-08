@@ -36,7 +36,7 @@ The results of a definition [search](main.md#search).
         ]
     },
     "request_params": { ... },
-    "response_type": "definition"
+    "response_type": "dfn"
 }
 ```
 
@@ -89,7 +89,7 @@ The results of an example [search](main.md#search).
         ]
     },
     "request_params": { ... },
-    "response_type": "example"
+    "response_type": "exam"
 }
 ```
 
@@ -149,7 +149,7 @@ The results of an idiom/proverb [search](main.md#search).
         ]
     },
     "request_params": { ... },
-    "response_type": "idiom_proverb"
+    "response_type": "ip"
 }
 ```
 
