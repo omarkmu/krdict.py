@@ -1,12 +1,12 @@
-In addition to API bindings, krdict.py provides a scraper module that offers functions that
+In addition to API bindings, krdict.py provides a scraper package that offers functions that
 fetch information from the dictionary website and extend the results of word search queries,
 advanced search queries, and view queries.
 
-The extensions can be applied directly to the results of the main module's functions with the `use_scraper`
-[option](parameters.md#optionsdict), but are also accessible via the `krdict.scraper` module.
+The extensions can be applied directly to the results of the main package's functions with the `use_scraper`
+[option](parameters.md#optionsdict), but are also accessible via the `krdict.scraper` package.
 
 !!! warning
-    Because this module utilizes scraping, the reliability of results cannot be guaranteed.
+    Because this package utilizes scraping, the reliability of results cannot be guaranteed.
     At any time, functions may break entirely and remain broken until a patch is released. If there
     are errors or improper results, please submit an
     [issue](https://github.com/omarkmu/krdict.py/issues/new).

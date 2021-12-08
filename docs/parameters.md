@@ -404,7 +404,7 @@ Aliases:
 
 ## Enumeration Methods
 
-All of the enumeration types in the module define the following:
+All of the enumeration types in the package define the following:
 
 ### aliases
 

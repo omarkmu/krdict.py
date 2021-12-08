@@ -1,5 +1,5 @@
 """
-Contains types defined by the krdict.scraper module.
+Contains types defined by the krdict.scraper package.
 """
 
 from .base import IntEnum

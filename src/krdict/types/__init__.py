@@ -1,5 +1,5 @@
 """
-Contains types defined by the krdict module.
+Contains types defined by the krdict package.
 """
 
 from .base import IntEnum, StrEnum

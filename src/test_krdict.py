@@ -1,5 +1,5 @@
 """
-Handles testing the krdict module.
+Handles testing the krdict package.
 """
 
 import os
@@ -15,7 +15,7 @@ except ImportError:
 _BASE_VIEW_URL = 'https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo={}'
 
 class KRDictTest(unittest.TestCase):
-    """Contains test cases for the main module."""
+    """Contains test cases for the main package."""
 
     def setUp(self):
         krdict.set_key(os.getenv('KRDICT_KEY'))

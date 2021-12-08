@@ -1,5 +1,5 @@
 """
-Handles testing the krdict module.
+Handles testing the krdict package.
 """
 
 import os
@@ -13,7 +13,7 @@ except ImportError:
     pass
 
 class KRDictScraperTest(unittest.TestCase):
-    """Contains test cases for the scraper module."""
+    """Contains test cases for the scraper package."""
 
     def setUp(self):
         krdict.set_key(os.getenv('KRDICT_KEY'))

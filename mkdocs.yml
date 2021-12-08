@@ -5,7 +5,7 @@ extra_css: [extra.css]
 nav:
     - Home: index.md
     - Usage Examples: examples.md
-    - Modules:
+    - Packages:
         - Main: main.md
         - Scraper: scraper.md
     - Types:

@@ -1,8 +1,8 @@
-A summary of the provided functions in the `krdict` module and the arguments they expect.
+A summary of the provided functions in the `krdict` package and the arguments they expect.
 With the exception of [`set_key`](#set_key) and [`set_default`](#set_default),
 all of the functions listed below expect keyword arguments.
 
-The `krdict` module also exports all of the enumerations described in
+The `krdict` package also exports all of the enumerations described in
 the [parameter types](#parameters) of the functions below.
 
 ---
