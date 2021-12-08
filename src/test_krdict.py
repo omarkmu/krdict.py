@@ -265,7 +265,7 @@ class KRDictTest(unittest.TestCase):
         self.assertIn('word_type', word_info)
         self.assertIn('part_of_speech', word_info)
         self.assertIn('homograph_num', word_info)
-        self.assertIn('vocabulary_grade', word_info)
+        self.assertIn('vocabulary_level', word_info)
         self.assertIn('definition_info', word_info)
         self.assertEqual(len(word_info['definition_info']), 3)
 

@@ -26,7 +26,7 @@ def advanced_search(*,
     search_method: SearchMethod = SearchMethod.EXACT,
     classification: Classification | Iterable[Classification] = Classification.ALL,
     origin_type: OriginType | Iterable[OriginType] = OriginType.ALL,
-    vocabulary_grade: VocabularyLevel | Iterable[VocabularyLevel] = VocabularyLevel.ALL,
+    vocabulary_level: VocabularyLevel | Iterable[VocabularyLevel] = VocabularyLevel.ALL,
     part_of_speech: PartOfSpeech | Iterable[PartOfSpeech] = PartOfSpeech.ALL,
     multimedia_info: MultimediaType | Iterable[MultimediaType] = MultimediaType.ALL,
     min_syllables: int = 1,
@@ -63,7 +63,7 @@ is set to any value other than `'original_language'`, this parameter has no effe
 - `search_method` ([`SearchMethod`](parameters.md#searchmethod)): The method used to match against the query.
 - `classification` ([`Classification`](parameters.md#classification)): An entry classification to filter by.
 - `origin_type` ([`OriginType`](parameters.md#origintype)): A word origin type to filter by.
-- `vocabulary_grade` ([`VocabularyLevel`](parameters.md#vocabularygrade)): A vocabulary level to filter by.
+- `vocabulary_level` ([`VocabularyLevel`](parameters.md#vocabularylevel)): A vocabulary level to filter by.
 - `part_of_speech` ([`PartOfSpeech`](parameters.md#partofspeech)): A part of speech to filter by.
 - `multimedia_info` ([`MultimediaType`](parameters.md#multimediatype)): A multimedia type to filter by.
 - `min_syllables`: The minimum number of syllables in result words `[1, 80]`.

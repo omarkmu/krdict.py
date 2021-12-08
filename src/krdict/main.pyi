@@ -813,7 +813,7 @@ class _BaseSearchItem(TypedDict):
 class _WordSearchItem(TypedDict, total=False):
     origin: str
     pronunciation: str
-    vocabulary_grade: str
+    vocabulary_level: str
     pronunciation_urls: List[str]
 class WordSearchItem(_WordSearchItem, _BaseSearchItem):
     part_of_speech: str
@@ -890,7 +890,7 @@ class TotalSearchDefinition(TotalPartialSearchDefinition):
 class TotalWordSearchItem(_BaseSearchItem):
     origin: str
     pronunciation: str
-    vocabulary_grade: str
+    vocabulary_level: str
     pronunciation_urls: List[str]
     part_of_speech: str
     homograph_num: int
@@ -1033,7 +1033,7 @@ class ViewWordInfo(_ViewWordInfo):
     word_type: str
     part_of_speech: str
     homograph_num: int
-    vocabulary_grade: str
+    vocabulary_level: str
     definition_info: List[ViewDefinitionInfo]
 
 class ViewItem(TypedDict):
@@ -1125,7 +1125,7 @@ class TotalViewWordInfo(TypedDict):
     word_type: str
     part_of_speech: str
     homograph_num: int
-    vocabulary_grade: str
+    vocabulary_level: str
     definition_info: List[TotalViewDefinitionInfo]
 
 class TotalViewItem(TypedDict):
@@ -1162,7 +1162,7 @@ def advanced_search(*,
     search_method: TSearchMethod = SearchMethod.EXACT,
     classification: TClassification | Iterable[TClassification] = Classification.ALL,
     origin_type: TOriginType | Iterable[TOriginType] = OriginType.ALL,
-    vocabulary_grade: TVocabularyLevel | Iterable[TVocabularyLevel] = VocabularyLevel.ALL,
+    vocabulary_level: TVocabularyLevel | Iterable[TVocabularyLevel] = VocabularyLevel.ALL,
     part_of_speech: TPartOfSpeech | Iterable[TPartOfSpeech] = PartOfSpeech.ALL,
     multimedia_info: TMultimediaType | Iterable[TMultimediaType] = MultimediaType.ALL,
     min_syllables: int = 1,
@@ -1187,7 +1187,7 @@ def advanced_search(*,
     search_method: TSearchMethod = SearchMethod.EXACT,
     classification: TClassification | Iterable[TClassification] = Classification.ALL,
     origin_type: TOriginType | Iterable[TOriginType] = OriginType.ALL,
-    vocabulary_grade: TVocabularyLevel | Iterable[TVocabularyLevel] = VocabularyLevel.ALL,
+    vocabulary_level: TVocabularyLevel | Iterable[TVocabularyLevel] = VocabularyLevel.ALL,
     part_of_speech: TPartOfSpeech | Iterable[TPartOfSpeech] = PartOfSpeech.ALL,
     multimedia_info: TMultimediaType | Iterable[TMultimediaType] = MultimediaType.ALL,
     min_syllables: int = 1,
@@ -1213,7 +1213,7 @@ def advanced_search(*,
     search_method: TSearchMethod = SearchMethod.EXACT,
     classification: TClassification | Iterable[TClassification] = Classification.ALL,
     origin_type: TOriginType | Iterable[TOriginType] = OriginType.ALL,
-    vocabulary_grade: TVocabularyLevel | Iterable[TVocabularyLevel] = VocabularyLevel.ALL,
+    vocabulary_level: TVocabularyLevel | Iterable[TVocabularyLevel] = VocabularyLevel.ALL,
     part_of_speech: TPartOfSpeech | Iterable[TPartOfSpeech] = PartOfSpeech.ALL,
     multimedia_info: TMultimediaType | Iterable[TMultimediaType] = MultimediaType.ALL,
     min_syllables: int = 1,
@@ -1238,7 +1238,7 @@ def advanced_search(*,
     search_method: TSearchMethod = SearchMethod.EXACT,
     classification: TClassification | Iterable[TClassification] = Classification.ALL,
     origin_type: TOriginType | Iterable[TOriginType] = OriginType.ALL,
-    vocabulary_grade: TVocabularyLevel | Iterable[TVocabularyLevel] = VocabularyLevel.ALL,
+    vocabulary_level: TVocabularyLevel | Iterable[TVocabularyLevel] = VocabularyLevel.ALL,
     part_of_speech: TPartOfSpeech | Iterable[TPartOfSpeech] = PartOfSpeech.ALL,
     multimedia_info: TMultimediaType | Iterable[TMultimediaType] = MultimediaType.ALL,
     min_syllables: int = 1,
@@ -1264,7 +1264,7 @@ def advanced_search(*,
     search_method: TSearchMethod = SearchMethod.EXACT,
     classification: TClassification | Iterable[TClassification] = Classification.ALL,
     origin_type: TOriginType | Iterable[TOriginType] = OriginType.ALL,
-    vocabulary_grade: TVocabularyLevel | Iterable[TVocabularyLevel] = VocabularyLevel.ALL,
+    vocabulary_level: TVocabularyLevel | Iterable[TVocabularyLevel] = VocabularyLevel.ALL,
     part_of_speech: TPartOfSpeech | Iterable[TPartOfSpeech] = PartOfSpeech.ALL,
     multimedia_info: TMultimediaType | Iterable[TMultimediaType] = MultimediaType.ALL,
     min_syllables: int = 1,
@@ -1289,7 +1289,7 @@ def advanced_search(*,
     search_method: TSearchMethod = SearchMethod.EXACT,
     classification: TClassification | Iterable[TClassification] = Classification.ALL,
     origin_type: TOriginType | Iterable[TOriginType] = OriginType.ALL,
-    vocabulary_grade: TVocabularyLevel | Iterable[TVocabularyLevel] = VocabularyLevel.ALL,
+    vocabulary_level: TVocabularyLevel | Iterable[TVocabularyLevel] = VocabularyLevel.ALL,
     part_of_speech: TPartOfSpeech | Iterable[TPartOfSpeech] = PartOfSpeech.ALL,
     multimedia_info: TMultimediaType | Iterable[TMultimediaType] = MultimediaType.ALL,
     min_syllables: int = 1,
@@ -1315,7 +1315,7 @@ def advanced_search(*,
     search_method: TSearchMethod = SearchMethod.EXACT,
     classification: TClassification | Iterable[TClassification] = Classification.ALL,
     origin_type: TOriginType | Iterable[TOriginType] = OriginType.ALL,
-    vocabulary_grade: TVocabularyLevel | Iterable[TVocabularyLevel] = VocabularyLevel.ALL,
+    vocabulary_level: TVocabularyLevel | Iterable[TVocabularyLevel] = VocabularyLevel.ALL,
     part_of_speech: TPartOfSpeech | Iterable[TPartOfSpeech] = PartOfSpeech.ALL,
     multimedia_info: TMultimediaType | Iterable[TMultimediaType] = MultimediaType.ALL,
     min_syllables: int = 1,
@@ -1340,7 +1340,7 @@ def advanced_search(*,
     search_method: TSearchMethod = SearchMethod.EXACT,
     classification: TClassification | Iterable[TClassification] = Classification.ALL,
     origin_type: TOriginType | Iterable[TOriginType] = OriginType.ALL,
-    vocabulary_grade: TVocabularyLevel | Iterable[TVocabularyLevel] = VocabularyLevel.ALL,
+    vocabulary_level: TVocabularyLevel | Iterable[TVocabularyLevel] = VocabularyLevel.ALL,
     part_of_speech: TPartOfSpeech | Iterable[TPartOfSpeech] = PartOfSpeech.ALL,
     multimedia_info: TMultimediaType | Iterable[TMultimediaType] = MultimediaType.ALL,
     min_syllables: int = 1,

@@ -92,7 +92,7 @@ _NOT_REQUIRED_KEYS = {
     'item': [
         ('origin', str, ['word']),
         ('pronunciation', str, ['word']),
-        ('vocabulary_grade', str, ['word']),
+        ('vocabulary_level', str, ['word']),
         ('pronunciation_urls', list, ['word'])
     ],
     'multimedia_info': [
@@ -153,7 +153,7 @@ _REMAPS = {
     'subsense_info': 'subdefinition_info',
     'pos': 'part_of_speech',
     'start': 'page',
-    'word_grade': 'vocabulary_grade',
+    'word_grade': 'vocabulary_level',
     'translation': 'translations',
     'trans_lang': 'language',
     'trans_word': 'word',

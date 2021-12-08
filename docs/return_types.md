@@ -202,7 +202,7 @@ The results of a word [search](main.md#search).
                 "homograph_num": str,
                 "origin": str, # not required
                 "pronunciation": str, # not required
-                "vocabulary_grade": str, # not required
+                "vocabulary_level": str, # not required
                 "pronunciation_urls": List[str], # not required
                 "definitions": [
                     {
@@ -244,7 +244,7 @@ The results of a word [search](main.md#search).
 | results        | homograph_num      | int  |    ✓     | A superscript number used to distinguish homographs.
 | results        | origin             | str  |    ✗     | The origin (original language) of the entry.
 | results        | pronunciation      | str  |    ✗     | The 한글 pronunciation of the entry.
-| results        | vocabulary_grade   | str  |    ✗     | The vocabulary level of the entry.
+| results        | vocabulary_level   | str  |    ✗     | The vocabulary level of the entry.
 | results        | pronunciation_urls | list |    ✗     | A list of pronunciation audio URLs. Included only if scraping is enabled and URLs are available.
 | results        | definitions        | list |    ✓     | A list of definitions associated with an entry.
 | definitions    | definition         | str  |    ✓     | A definition associated with an entry.
@@ -277,7 +277,7 @@ The results of a [view](main.md#view) query.
                     "word_type": str,
                     "part_of_speech": str,
                     "homograph_num": int,
-                    "vocabulary_grade": str,
+                    "vocabulary_level": str,
                     "allomorph": str, # not required
                     "definition_info": [
                         {
@@ -440,7 +440,7 @@ The results of a [view](main.md#view) query.
 | word_info              | word_type              | str  |    ✓     | The origin type of the headword.
 | word_info              | part_of_speech         | str  |    ✓     | The Korean part of speech of the headword.
 | word_info              | homograph_num          | int  |    ✓     | A superscript number used to distinguish homographs.
-| word_info              | vocabulary_grade       | str  |    ✓     | The vocabulary level of the entry.
+| word_info              | vocabulary_level       | str  |    ✓     | The vocabulary level of the entry.
 | word_info              | allomorph              | str  |    ✗     | The allomorph of the headword.
 | word_info              | definition_info        | list |    ✓     | Contains information about the entry's definitions.
 | definition_info        | definition             | str  |    ✓     | A definition of the entry.
@@ -555,7 +555,7 @@ Information about the [word of the day](scraper.md#fetch_today_word).
         "url": str,
         "homograph_num": int,
         "part_of_speech": str, # not required
-        "vocabulary_grade": str, # not required
+        "vocabulary_level": str, # not required
         "origin": str, # not required
         "pronunciation": str, # not required
         "pronunciation_urls": List[str], # not required
@@ -578,7 +578,7 @@ Information about the [word of the day](scraper.md#fetch_today_word).
 | data        | url                | str  |    ✓     | The URL of the dictionary entry.
 | data        | homograph_num      | int  |    ✓     | A superscript number used to distinguish homographs.
 | data        | part_of_speech     | str  |    ✗     | The Korean part of speech of the headword.
-| data        | vocabulary_grade   | str  |    ✗     | The vocabulary level of the entry.
+| data        | vocabulary_level   | str  |    ✗     | The vocabulary level of the entry.
 | data        | origin             | str  |    ✗     | The origin (original language) of the word.
 | data        | pronunciation      | str  |    ✗     | The 한글 pronunciation of the entry.
 | data        | pronunciation_urls | list |    ✗     | A list of pronunciation audio URLs.
@@ -607,7 +607,7 @@ The results of a word search retrieved via scraping.
                 "part_of_speech": str, # not required
                 "homograph_num": str,
                 "origin": str, # not required
-                "vocabulary_grade": str, # not required
+                "vocabulary_level": str, # not required
                 "pronunciation": str, # not required
                 "pronunciation_urls": List[str], # not required
                 "definitions": [
@@ -642,7 +642,7 @@ The results of a word search retrieved via scraping.
 | results     | part_of_speech     | str  |    ✗     | The Korean part of speech of the entry.
 | results     | homograph_num      | int  |    ✓     | A superscript number used to distinguish homographs.
 | results     | origin             | str  |    ✗     | The origin (original language) of the entry.
-| results     | vocabulary_grade   | str  |    ✗     | The vocabulary level of the entry.
+| results     | vocabulary_level   | str  |    ✗     | The vocabulary level of the entry.
 | results     | pronunciation      | str  |    ✗     | The 한글 pronunciation of the entry.
 | results     | pronunciation_urls | list |    ✗     | A list of pronunciation audio URLs.
 | results     | definitions        | list |    ✓     | A list of definitions associated with an entry.

@@ -65,7 +65,7 @@ _PARAM_MAPS = {
         'name': 'type2',
         'type': OriginType
     },
-    'vocabulary_grade': {
+    'vocabulary_level': {
         'name': 'level',
         'type': VocabularyLevel
     },

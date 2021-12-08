@@ -35,7 +35,7 @@ def advanced_search(**kwargs):
     - ``search_method``: The method used to match against the query.
     - ``classification``: An entry classification to filter by.
     - ``origin_type``: A word origin type to filter by.
-    - ``vocabulary_grade``: A vocabulary level to filter by.
+    - ``vocabulary_level``: A vocabulary level to filter by.
     - ``part_of_speech``: A part of speech to filter by.
     - ``multimedia_info``: A multimedia type to filter by.
     - ``min_syllables``: The minimum number of syllables in result words ``[1, 80]``.

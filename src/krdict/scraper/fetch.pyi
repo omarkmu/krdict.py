@@ -20,7 +20,7 @@ TScraperTranslationLanguage = ScraperTranslationLanguage | int | Literal[
 
 class _WordOfTheDayData(TypedDict, total=False):
     part_of_speech: str
-    vocabulary_grade: str
+    vocabulary_level: str
     origin: str
     pronunciation: str
     pronunciation_urls: List[str]
@@ -39,7 +39,7 @@ class WordOfTheDayResponse(TypedDict):
 
 class TotalWordOfTheDayData(TypedDict):
     part_of_speech: str
-    vocabulary_grade: str
+    vocabulary_level: str
     origin: str
     pronunciation: str
     pronunciation_urls: List[str]
@@ -64,7 +64,7 @@ class ScrapedSearchDefinition(_ScrapedSearchDefinition):
 class _ScrapedSearchItem(TypedDict, total=False):
     part_of_speech: str
     origin: str
-    vocabulary_grade: str
+    vocabulary_level: str
 class ScrapedSearchItem(_ScrapedSearchItem):
     target_code: int
     word: str
@@ -92,7 +92,7 @@ class TotalScrapedSearchDefinition(TypedDict):
 class TotalScrapedSearchItem(TypedDict):
     part_of_speech: str
     origin: str
-    vocabulary_grade: str
+    vocabulary_level: str
     target_code: int
     word: str
     url: str

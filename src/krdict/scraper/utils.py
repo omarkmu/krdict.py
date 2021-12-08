@@ -5,7 +5,7 @@ Provides utilities for scraping.
 _VIEW_URL = 'https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo={}'
 _WOTD_NOT_REQUIRED = [
     ('part_of_speech', str),
-    ('vocabulary_grade', str),
+    ('vocabulary_level', str),
     ('origin', str),
     ('pronunciation', str),
     ('pronunciation_urls', list),
@@ -104,9 +104,9 @@ def _read_search_header(elem, parent_elem, guarantee_keys):
         result['origin'] = ''
 
     if len(star_elem) > 0:
-        result['vocabulary_grade'] = _read_vocabulary_grade(star_elem[0])
+        result['vocabulary_level'] = _read_vocabulary_level(star_elem[0])
     elif guarantee_keys:
-        result['vocabulary_grade'] = ''
+        result['vocabulary_level'] = ''
 
     if len(pronunciation) > 0 or len(pronunciation_urls) > 0:
         result['pronunciation'] = result['word'] if len(pronunciation) == 0 else pronunciation
@@ -141,7 +141,7 @@ def _read_search_pronunciation(elem):
 
     return urls, pronunciation
 
-def _read_vocabulary_grade(elem):
+def _read_vocabulary_level(elem):
     grade = len(elem.cssselect('i.ri-star-s-fill'))
     if grade == 1:
         return '고급'
@@ -284,7 +284,7 @@ def read_wotd_details(result, dt_elem, dd_elems, exonym, guarantee_keys):
         result['part_of_speech'] = em_elem[0].text_content()
 
     if len(grade_elem) == 1:
-        result['vocabulary_grade'] =  _read_vocabulary_grade(grade_elem[0])
+        result['vocabulary_level'] =  _read_vocabulary_level(grade_elem[0])
 
     _read_wotd_pronunciation(dt_elem, result)
 
