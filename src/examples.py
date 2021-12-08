@@ -186,7 +186,7 @@ def search_beginner_words_with_multimedia():
         search_type=krdict.SearchType.WORD,
         search_target=krdict.SearchTarget.DEFINITION,
         vocabulary_level=krdict.VocabularyLevel.BEGINNER,
-        multimedia_info=(
+        multimedia_type=(
             krdict.MultimediaType.PHOTO,
             krdict.MultimediaType.ILLUSTRATION,
             krdict.MultimediaType.VIDEO,

@@ -28,7 +28,7 @@ def advanced_search(*,
     origin_type: OriginType | Iterable[OriginType] = OriginType.ALL,
     vocabulary_level: VocabularyLevel | Iterable[VocabularyLevel] = VocabularyLevel.ALL,
     part_of_speech: PartOfSpeech | Iterable[PartOfSpeech] = PartOfSpeech.ALL,
-    multimedia_info: MultimediaType | Iterable[MultimediaType] = MultimediaType.ALL,
+    multimedia_type: MultimediaType | Iterable[MultimediaType] = MultimediaType.ALL,
     min_syllables: int = 1,
     max_syllables: int = 0,
     meaning_category: MeaningCategory = MeaningCategory.ALL,
@@ -65,7 +65,7 @@ is set to any value other than `'original_language'`, this parameter has no effe
 - `origin_type` ([`OriginType`](parameters.md#origintype)): A word origin type to filter by.
 - `vocabulary_level` ([`VocabularyLevel`](parameters.md#vocabularylevel)): A vocabulary level to filter by.
 - `part_of_speech` ([`PartOfSpeech`](parameters.md#partofspeech)): A part of speech to filter by.
-- `multimedia_info` ([`MultimediaType`](parameters.md#multimediatype)): A multimedia type to filter by.
+- `multimedia_type` ([`MultimediaType`](parameters.md#multimediatype)): A multimedia type to filter by.
 - `min_syllables`: The minimum number of syllables in result words `[1, 80]`.
 - `max_syllables`: The maximum number of syllables in results words. A value of `0` denotes no maximum `[0, 80]`.
 - `meaning_category` ([`MeaningCategory`](parameters.md#meaningcategory)): The meaning category to filter by.

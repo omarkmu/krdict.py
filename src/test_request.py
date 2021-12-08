@@ -106,7 +106,7 @@ class KRDictRequestTest(unittest.TestCase):
             'origin_type': krdict.OriginType.LOANWORD,
             'vocabulary_level': krdict.VocabularyLevel.ADVANCED,
             'part_of_speech': krdict.PartOfSpeech.NOUN,
-            'multimedia_info': krdict.MultimediaType.VIDEO,
+            'multimedia_type': krdict.MultimediaType.VIDEO,
             'meaning_category': krdict.MeaningCategory.ANIMALS_AND_PLANTS_ALL,
             'subject_category': krdict.SubjectCategory.ADVANCED_ART
         })

@@ -185,7 +185,7 @@ response = krdict.advanced_search(
     search_type=krdict.SearchType.WORD,
     search_target=krdict.SearchTarget.DEFINITION,
     vocabulary_level=krdict.VocabularyLevel.BEGINNER,
-    multimedia_info=(
+    multimedia_type=(
         krdict.MultimediaType.PHOTO,
         krdict.MultimediaType.ILLUSTRATION,
         krdict.MultimediaType.VIDEO,

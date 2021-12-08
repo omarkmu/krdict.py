@@ -73,7 +73,7 @@ _PARAM_MAPS = {
         'name': 'pos',
         'type': PartOfSpeech
     },
-    'multimedia_info': {
+    'multimedia_type': {
         'name': 'multimedia',
         'type': MultimediaType
     },
