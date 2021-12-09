@@ -3,34 +3,10 @@ Handles processing of search results, including key remapping,
 type conversion, and restructuring.
 """
 
-from xmltodict import parse as parse_xml
+from collections import deque
+from lxml import etree
 from .types import KRDictException
 from .scraper import extend_view, extend_search, extend_advanced_search
-
-
-def _handle_conju_info(elem):
-    if 'conjugation_info' not in elem:
-        return elem
-
-    for key in list(elem['conjugation_info'].keys()):
-        elem[key] = elem['conjugation_info'][key]
-
-    del elem['conjugation_info']
-
-    if 'pronunciation_info' in elem:
-        pron_info = elem['pronunciation_info']
-        del elem['pronunciation_info']
-        elem['pronunciation_info'] = pron_info
-
-    if 'abbreviation_info' in elem:
-        abbr_info = elem['abbreviation_info']
-        del elem['abbreviation_info']
-        elem['abbreviation_info'] = abbr_info
-
-    return elem
-
-def _handle_link_type(elem):
-    return elem == 'C'
 
 
 _CONVERT_LIST = [
@@ -60,80 +36,6 @@ _CONVERT_NUM = [
     'target_code',
     'total_results'
 ]
-_CONVERT_SINGLE = [
-    'part_of_speech'
-]
-_HANDLERS = {
-    'conju_info': _handle_conju_info,
-    'link_type': _handle_link_type
-}
-_NOT_REQUIRED_KEYS = {
-    'abbreviation_info': [
-        ('pronunciation_info', list)
-    ],
-    'channel': [
-        ('search_url', str, ['word'])
-    ],
-    'conjugation_info': [
-        ('pronunciation_info', list),
-        ('abbreviation_info', list)
-    ],
-    'definition_info': [
-        ('reference', str),
-        ('translations', list),
-        ('example_info', list),
-        ('pattern_info', list),
-        ('related_info', list),
-        ('multimedia_info', list)
-    ],
-    'derivative_info': [
-        ('target_code', int)
-    ],
-    'item': [
-        ('origin', str, ['word']),
-        ('pronunciation', str, ['word']),
-        ('vocabulary_level', str, ['word']),
-        ('pronunciation_urls', list, ['word'])
-    ],
-    'multimedia_info': [
-        ('media_urls', list)
-    ],
-    'original_language_info': [
-        ('hanja_info', list)
-    ],
-    'pronunciation_info': [
-        ('url', str)
-    ],
-    'pattern_info': [
-        ('pattern_reference', str)
-    ],
-    'related_info': [
-        ('target_code', int)
-    ],
-    'reference_info': [
-        ('target_code', int)
-    ],
-    'sense': [
-        ('translations', list)
-    ],
-    'subdefinition_info': [
-        ('example_info', list),
-        ('related_info', list)
-    ],
-    'translation': [
-        ('word', str)
-    ],
-    'word_info': [
-        ('allomorph', str),
-        ('original_language_info', list),
-        ('pronunciation_info', list),
-        ('conjugation_info', list),
-        ('derivative_info', list),
-        ('reference_info', list),
-        ('category_info', list),
-        ('subword_info', list)
-    ]
-}
 _REMAPS = {
     'channel': 'data',
     'conju_info': 'conjugation_info',
@@ -169,23 +71,6 @@ _DEFAULTS = {
 }
 
 
-def _guarantee(value, search_type, keys):
-    for tup in keys:
-        key = tup[0]
-        key_type = tup[1]
-
-        if len(tup) == 3 and search_type not in tup[2]:
-            continue
-        if key in value:
-            continue
-
-        if key_type == str:
-            value[key] = ''
-        elif key_type == int:
-            value[key] = 0
-        elif key_type == list:
-            value[key] = []
-
 def _postprocess(response, params, options, search_type):
     if 'error' in response:
         return response
@@ -211,6 +96,49 @@ def _postprocess(response, params, options, search_type):
 
     return response
 
+def _parse_xml(xml):
+    result = {}
+    root = etree.fromstring(xml.encode('utf-8'), None) # pylint: disable=c-extension-no-member
+
+    stack = deque()
+    stack.append((root, result))
+
+    while len(stack) > 0:
+        node, children = stack.pop()
+
+        for child in node.iterchildren():
+            key = _REMAPS.get(child.tag, child.tag)
+            value = child.text and child.text.strip()
+
+            # add the node to the stack if it has children
+            if len(child):
+                value = {}
+                stack.append((child, value))
+            elif not value:
+                # skip empty elements with no children
+                continue
+
+            # convert expected lists to lists
+            if key in _CONVERT_LIST and key not in children:
+                children[key] = []
+
+            # convert expected numbers to numbers
+            if key in _CONVERT_NUM and isinstance(value, str):
+                value = int(value)
+
+            if isinstance(children.get(key), list):
+                children[key].append(value)
+            else:
+                children[key] = value
+
+    return {_REMAPS.get(root.tag, root.tag): result}
+
+def _build_response(raw_response, request_params, search_type):
+    # TODO: build class object
+    raw_response['request_params'] = request_params
+    raw_response['response_type'] = search_type if 'error' not in raw_response else 'error'
+
+    return raw_response
 
 def parse_response(kwargs, api_response, request_params, search_type):
     """
@@ -222,61 +150,17 @@ def parse_response(kwargs, api_response, request_params, search_type):
     - ``search_type``: The type of search which was performed.
     """
 
-    response = parse_xml(
-        api_response.text,
-        dict_constructor=dict,
-        postprocessor=(
-            lambda _, k, v:
-            postprocessor(k, v, search_type, kwargs.get('guarantee_keys', False))
-        )
-    )
+    raw_response = _parse_xml(api_response.text)
 
-    if kwargs.get('raise_api_errors', False) and 'error' in response:
-        error = response['error']
+    if kwargs.get('raise_api_errors', False) and 'error' in raw_response:
+        error = raw_response['error']
         raise KRDictException(error['message'], error['error_code'], request_params)
 
-    response['request_params'] = request_params
-    response['response_type'] = search_type if 'error' not in response else 'error'
+    if 'data' in raw_response and 'results' not in raw_response['data']:
+        raw_response['data']['results'] = []
 
-    if 'data' in response and 'results' not in response['data']:
-        response['data']['results'] = []
-
+    response = _build_response(raw_response, request_params, search_type)
     return _postprocess(response, request_params, kwargs.get('options', {}), search_type)
-
-def postprocessor(key, value, search_type, guarantee_keys):
-    """
-    Performs postprocessing on elements converted from XML.
-
-    - ``key``: The original XML node name.
-    - ``value``: The unprocessed value.
-    - ``search_type``: The type of search which produced this key-value pair.
-    - ``guarantee_keys``: Whether to guarantee keys in dicts.
-    """
-
-    if value is None:
-        return None
-
-    if key in _HANDLERS:
-        value = _HANDLERS[key](value)
-
-    if isinstance(value, dict):
-        for c_key in value:
-            if c_key in _CONVERT_LIST and not isinstance(value[c_key], list):
-                value[c_key] = [value[c_key]]
-            elif c_key in _CONVERT_SINGLE and isinstance(value[c_key], list):
-                value[c_key] = value[c_key][0]
-
-        if guarantee_keys and key in _NOT_REQUIRED_KEYS:
-            _guarantee(value, search_type, _NOT_REQUIRED_KEYS[key])
-
-        key = _REMAPS.get(key, key)
-    else:
-        key = _REMAPS.get(key, key)
-        value = int(value) if key in _CONVERT_NUM else value
-
-
-
-    return key, value
 
 def set_default(option, value):
     """
