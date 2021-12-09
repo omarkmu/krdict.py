@@ -4,18 +4,65 @@ Handles making requests to the dictionary website.
 
 import requests
 from lxml import html
+from ..types import (
+    isiterable,
+    SortMethod,
+    MeaningCategory,
+    SubjectCategory,
+    ScraperTranslationLanguage
+)
 
 _ADVANCED_SEARCH_URL = (
     'https://krdict.korean.go.kr/dicSearchDetail/searchDetailWordsResult?'
     'searchFlag=Y&searchOp=AND&syllablePosition='
 )
+_BASE_URL = 'https://krdict.korean.go.kr{}/mainAction'
+_CAT_MEANING_URL = (
+    'https://krdict.korean.go.kr{}/dicSearchDetail/searchDetailSenseCategoryResult?'
+    'searchFlag=Y{}&currentPage={}&blockCount={}&sort={}{}'
+)
+_CAT_SUBJECT_URL = (
+    'https://krdict.korean.go.kr{}/dicSearchDetail/searchDetailActCategoryResult?'
+    'searchFlag=Y{}&currentPage={}&blockCount={}&sort={}{}'
+)
 _SEARCH_URL = (
     'https://krdict.korean.go.kr/dicSearch/search?'
-    'mainSearchWord={}&currentPage={}&blockCount={}&sort={}')
+    'mainSearchWord={}&currentPage={}&blockCount={}&sort={}'
+)
 _VIDEO_URL = (
     'https://krdict.korean.go.kr/dicSearch/viewMovieConfirm?'
     'searchKindValue=video&ParaWordNo={}&ParaSenseSeq={}&multiMediaSeq={}'
 )
+
+_LANG_INFO = (
+    ('eng', 6, '영어'),
+    ('jpn', 7, '일본어'),
+    ('fra', 8, '프랑스어'),
+    ('spa', 9, '스페인어'),
+    ('ara', 10, '아랍어'),
+    ('mon', 1, '몽골어'),
+    ('vie', 2, '베트남어'),
+    ('tha', 3, '타이어'),
+    ('ind', 4, '인도네시아어'),
+    ('rus', 5, '러시아어'),
+    ('chn', 11, '중국어')
+)
+_SENSE_CAT_MAX = [
+    17,
+    30,
+    41,
+    50,
+    59,
+    76,
+    83,
+    92,
+    100,
+    110,
+    118,
+    125,
+    133,
+    153
+]
 
 _ADVANCED_PARAM_MAP = {
     'q': {
@@ -494,6 +541,14 @@ def _get_advanced_all_params(adv_mapper):
 
     return adv_mapper['all_params']
 
+def _get_language_info(lang):
+    lang = ScraperTranslationLanguage.get_value(lang)
+
+    if not lang or lang == 0:
+        return (None, 0, None)
+
+    return _LANG_INFO[lang - 1]
+
 
 def _build_advanced_search_url(params):
     url = [_ADVANCED_SEARCH_URL]
@@ -526,66 +581,100 @@ def _build_search_url(params):
         'W' if params.get('sort') != 'popular' else 'C'
     )
 
+def _build_sense_category_query(category):
+    category = MeaningCategory.get_value(category, category)
+
+    if category <= 0 or category > 153:
+        return '&lgCategoryCode=0&miCategoryCode=-1'
+
+    if category == 1:
+        return '&lgCategoryCode=1&miCategoryCode=-1'
+
+    code_large = 0
+    code_mid = 1000 + category if category < 129 else 1100 + category
+
+    for idx, cat_max in enumerate(_SENSE_CAT_MAX):
+        if category == cat_max + 1:
+            code_large = idx + 2
+            code_mid = -1
+            break
+
+        if category <= cat_max:
+            code_large = idx + 1
+            break
+
+    return f'&lgCategoryCode={code_large}&miCategoryCode={code_mid}'
+
+def _build_subject_category_query(category):
+    if not isiterable(category, exclude=(str,)):
+        category = (category,)
+
+    value = []
+
+    for cat in category:
+        cat_value = SubjectCategory.get_value(cat, cat)
+
+        if cat_value == '0':
+            value = []
+
+            for i in range(1, 107):
+                value.append(f'&actCategory={map_advanced_param("subject_cat", i)}')
+
+            return ''.join(value)
+
+        value.append(f'&actCategory={map_advanced_param("subject_cat", cat_value)}')
+
+    return ''.join(value)
+
+
 def _build_video_url(target_code, dfn_idx, media_idx):
     return _VIDEO_URL.format(target_code, dfn_idx + 1, media_idx + 1)
 
 
 def map_advanced_param(param, value):
     """
-    Maps an advanced parameter value to
-    the value expected on the krdict website.
+    Maps an advanced parameter value to the value expected by the API.
     """
 
     return _get_advanced_param(_ADVANCED_PARAM_MAP[param], str(value), True)
 
-def send_request(url, raise_errors):
+def send_request(kwargs, response_type):
     """
     Sends a request to a URL and parses the response with lxml.
     """
 
+    lang_info = _get_language_info(kwargs.get('translation_language'))
+    page = int(kwargs.get('page', 1))
+    per_page = int(kwargs.get('per_page', 10))
+
+    nation, code, _ = lang_info
+
+    url: str
+
+    if response_type == 'word_of_the_day':
+        url = _BASE_URL.format(f'/{nation}' if nation else '')
+
+    elif response_type in ('meaning_category', 'subject_category'):
+        is_meaning = response_type == 'meaning_category'
+        query_builder = (
+            _build_sense_category_query if is_meaning else _build_subject_category_query
+        )
+
+        url = (_CAT_MEANING_URL if is_meaning else _CAT_SUBJECT_URL).format(
+            f'/{nation}' if nation else '',
+            f'&nation={nation}&nationCode={code}' if nation else '',
+            page,
+            per_page,
+            'C' if SortMethod.get_value(kwargs.get('sort')) == 'popular' else 'W',
+            query_builder(kwargs.get('category', 0))
+        )
+
+    else:
+        raise ValueError
+
     try:
         response = requests.get(url, headers={'Accept-Language': '*'})
         response.raise_for_status()
-        doc = html.fromstring(response.text)
-
-        return doc
-    except requests.exceptions.RequestException:
-        if raise_errors:
-            raise
-
-        return None
-
-def send_extend_request(request_type, response, raise_errors):
-    """
-    Sends a request from an existing response and parses the response with lxml.
-    """
-
-    if len(response['data']['results']) == 0:
-        return None, None, request_type, response
-
-    url = None
-    if request_type == 'advanced':
-        url = _build_advanced_search_url(response['request_params'])
-    elif request_type == 'search':
-        url = _build_search_url(response['request_params'])
-    elif request_type == 'view':
-        url = response['data']['url']
-
-    return send_request(url, raise_errors), url, request_type, response
-
-def send_image_request(multimedia, raise_errors):
-    """
-    Sends a request for image multimedia information and parses the response with lxml.
-    """
-
-    if 'url' not in multimedia:
-        return None
-
-    return send_request(multimedia['url'], raise_errors)
-
-def send_video_request(target_code, dfn_idx, media_idx, raise_errors):
-    """
-    Sends a request for video multimedia information and parses the response with lxml.
-    """
-
-    return send_request(_build_video_url(target_code, dfn_idx + 1, media_idx + 1), raise_errors)
+        return (html.fromstring(response.text), url, lang_info, page, per_page)
+    except requests.exceptions.RequestException as exc:
+        raise exc

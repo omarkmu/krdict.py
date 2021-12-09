@@ -62,7 +62,7 @@ def search(**kwargs):
     - ``page``: The page at which the search should start ``[1, 1000]``.
     - ``per_page``: The maximum number of search results to return ``[10, 100]``.
     - ``sort``: The sort method that should be used.
-    - ``search_type``: The type of search to perform
+    - ``search_type``: The type of search to perform.
     - ``translation_language``: A language or list of languages for which translations
     should be included.
     """
