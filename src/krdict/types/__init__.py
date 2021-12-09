@@ -7,6 +7,14 @@ from .meaning_category import MeaningCategory
 from .subject_category import SubjectCategory
 from .exceptions import KRDictException
 from .scraper import ScraperTranslationLanguage
+from .main import (
+    DefinitionResponse,
+    ErrorResponse,
+    ExampleResponse,
+    IdiomProverbResponse,
+    ViewResponse,
+    WordResponse
+)
 
 
 def isiterable(obj, exclude=None):
@@ -329,7 +337,12 @@ class VocabularyLevel(StrEnum):
 
 
 __all__ = [
+    'isiterable',
     'Classification',
+    'DefinitionResponse',
+    'ErrorResponse',
+    'ExampleResponse',
+    'IdiomProverbResponse',
     'KRDictException',
     'MeaningCategory',
     'MultimediaType',
@@ -343,6 +356,7 @@ __all__ = [
     'SubjectCategory',
     'TargetLanguage',
     'TranslationLanguage',
+    'ViewResponse',
     'VocabularyLevel',
-    'isiterable'
+    'WordResponse'
 ]

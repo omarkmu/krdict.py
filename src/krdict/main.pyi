@@ -1,6 +1,10 @@
-from typing import Dict, Iterable, List, Literal, TypedDict, Union, overload
+from typing import Iterable, Literal, Union, overload
 from .types import (
     Classification,
+    DefinitionResponse,
+    ErrorResponse,
+    ExampleResponse,
+    IdiomProverbResponse,
     MeaningCategory,
     MultimediaType,
     OriginType,
@@ -8,11 +12,13 @@ from .types import (
     SearchMethod,
     SearchTarget,
     SearchType,
-    SubjectCategory,
     SortMethod,
+    SubjectCategory,
     TargetLanguage,
     TranslationLanguage,
-    VocabularyLevel
+    ViewResponse,
+    VocabularyLevel,
+    WordResponse
 )
 
 TClassification = Classification | Literal[
@@ -775,382 +781,18 @@ TVocabularyLevel = VocabularyLevel | Literal[
     'advanced',
     'level3'
 ]
-
-class OptionsDict(TypedDict, total=False):
-    use_scraper: bool
-    raise_scraper_errors: bool
-    fetch_multimedia: bool
-    fetch_page_data: bool
-
-
-class KRDictErrorInfo(TypedDict):
-    error_code: int
-    message: str
-class KRDictError(TypedDict):
-    response_type: Literal['error']
-    request_params: Dict[str, str]
-    error: KRDictErrorInfo
-
-class _SearchTranslation(TypedDict, total=False):
-    word: str
-class SearchTranslation(_SearchTranslation):
-    definition: str
-    language: str
-
-class _BaseSearchDefinition(TypedDict, total=False):
-    translations: List[SearchTranslation]
-class PartialSearchDefinition(_BaseSearchDefinition):
-    definition: str
-class SearchDefinition(PartialSearchDefinition):
-    order: int
-
-
-class _BaseSearchItem(TypedDict):
-    target_code: int
-    word: str
-    url: str
-
-class _WordSearchItem(TypedDict, total=False):
-    origin: str
-    pronunciation: str
-    vocabulary_level: str
-    pronunciation_urls: List[str]
-class WordSearchItem(_WordSearchItem, _BaseSearchItem):
-    part_of_speech: str
-    homograph_num: int
-    definitions: List[SearchDefinition]
-
-class DefinitionSearchItem(_BaseSearchItem):
-    homograph_num: int
-    definitions: List[PartialSearchDefinition]
-
-class ExampleSearchItem(_BaseSearchItem):
-    homograph_num: int
-    example: str
-
-class IdiomProverbSearchItem(_BaseSearchItem):
-    definitions: List[SearchDefinition]
-
-
-class _BaseSearchResponseData(TypedDict):
-    title: str
-    url: str
-    description: str
-    last_build_date: str
-    page: int
-    per_page: int
-    total_results: int
-class _WordSearchResponseData(_BaseSearchResponseData, total=False):
-    search_url: str
-class WordSearchResponseData(_WordSearchResponseData):
-    results: List[WordSearchItem]
-class DefinitionSearchResponseData(_BaseSearchResponseData):
-    results: List[DefinitionSearchItem]
-class ExampleSearchResponseData(_BaseSearchResponseData):
-    results: List[ExampleSearchItem]
-class IdiomProverbSearchResponseData(_BaseSearchResponseData):
-    results: List[IdiomProverbSearchItem]
-
-class WordSearchResponse(TypedDict):
-    response_type: Literal['word']
-    request_params: Dict[str, str]
-    data: WordSearchResponseData
-class DefinitionSearchResponse(TypedDict):
-    response_type: Literal['dfn']
-    request_params: Dict[str, str]
-    data: DefinitionSearchResponseData
-class ExampleSearchResponse(TypedDict):
-    response_type: Literal['exam']
-    request_params: Dict[str, str]
-    data: ExampleSearchResponseData
-class IdiomProverbSearchResponse(TypedDict):
-    response_type: Literal['ip']
-    request_params: Dict[str, str]
-    data: IdiomProverbSearchResponseData
-
-
-SearchResponse = Union[
-    WordSearchResponse,
-    DefinitionSearchResponse,
-    ExampleSearchResponse,
-    IdiomProverbSearchResponse
+TSearchResponse = Union[
+    WordResponse,
+    DefinitionResponse,
+    ExampleResponse,
+    IdiomProverbResponse
 ]
 
 
-class TotalSearchTranslation(TypedDict):
-    word: str
-    definition: str
-    language: str
-class TotalPartialSearchDefinition(TypedDict):
-    definition: str
-    translations: List[TotalSearchTranslation]
-class TotalSearchDefinition(TotalPartialSearchDefinition):
-    order: int
-
-class TotalWordSearchItem(_BaseSearchItem):
-    origin: str
-    pronunciation: str
-    vocabulary_level: str
-    pronunciation_urls: List[str]
-    part_of_speech: str
-    homograph_num: int
-    definitions: List[TotalSearchDefinition]
-
-class TotalDefinitionSearchItem(_BaseSearchItem):
-    homograph_num: int
-    definitions: List[TotalPartialSearchDefinition]
-
-class TotalIdiomProverbSearchItem(_BaseSearchItem):
-    definitions: List[TotalSearchDefinition]
-
-class TotalWordSearchResponseData(_BaseSearchResponseData):
-    search_url: str
-    results: List[TotalWordSearchItem]
-class TotalDefinitionSearchResponseData(_BaseSearchResponseData):
-    results: List[TotalDefinitionSearchItem]
-class TotalIdiomProverbSearchResponseData(_BaseSearchResponseData):
-    results: List[TotalIdiomProverbSearchItem]
-
-
-class TotalWordSearchResponse(TypedDict):
-    response_type: Literal['word']
-    request_params: Dict[str, str]
-    data: TotalWordSearchResponseData
-class TotalDefinitionSearchResponse(TypedDict):
-    response_type: Literal['dfn']
-    request_params: Dict[str, str]
-    data: TotalDefinitionSearchResponseData
-class TotalIdiomProverbSearchResponse(TypedDict):
-    response_type: Literal['ip']
-    request_params: Dict[str, str]
-    data: TotalIdiomProverbSearchResponseData
-
-
-TotalSearchResponse = Union[
-    TotalWordSearchResponse,
-    TotalDefinitionSearchResponse,
-    ExampleSearchResponse,
-    TotalIdiomProverbSearchResponse
-]
-
-
-class HanjaInfo(TypedDict):
-    hanja: str
-    radical: str
-    stroke_count: int
-    readings: List[str]
-
-class _ViewOriginalLanguageInfo(TypedDict, total=False):
-    hanja_info: List[HanjaInfo]
-class ViewOriginalLanguageInfo(_ViewOriginalLanguageInfo):
-    original_language: str
-    language_type: str
-
-class _ViewPronunciationInfo(TypedDict, total=False):
-    url: str
-class ViewPronunciationInfo(_ViewPronunciationInfo):
-    pronunciation: str
-
-class _ViewAbbreviationInfo(TypedDict, total=False):
-    pronunciation_info: List[ViewPronunciationInfo]
-class ViewAbbreviationInfo(_ViewAbbreviationInfo):
-    abbreviation: str
-
-class _ViewConjugationInfo(TypedDict, total=False):
-    pronunciation_info: List[ViewPronunciationInfo]
-    abbreviation_info: List[ViewAbbreviationInfo]
-class ViewConjugationInfo(_ViewConjugationInfo):
-    conjugation: str
-
-class _ViewReferenceInfo(TypedDict, total=False):
-    target_code: int
-class ViewReferenceInfo(_ViewReferenceInfo):
-    word: str
-    url: str
-    has_target_code: bool
-
-class ViewCategoryInfo(TypedDict):
-    type: str
-    name: str
-
-class _ViewPatternInfo(TypedDict, total=False):
-    pattern_reference: str
-class ViewPatternInfo(_ViewPatternInfo):
-    pattern: str
-
-class ViewExampleInfo(TypedDict):
-    type: str
-    example: str
-
-class ViewRelatedInfo(ViewReferenceInfo):
-    type: str
-
-class _ViewMultimediaInfo(TypedDict, total=False):
-    media_urls: List[str]
-class ViewMultimediaInfo(_ViewMultimediaInfo):
-    label: str
-    type: str
-    url: str
-
-class ViewPartialRelatedInfo(TypedDict):
-    word: str
-    type: str
-
-class _ViewSubdefinitionInfo(TypedDict, total=False):
-    translations: List[SearchTranslation]
-    example_info: List[ViewExampleInfo]
-    related_info: List[ViewPartialRelatedInfo]
-class ViewSubdefinitionInfo(_ViewSubdefinitionInfo):
-    definition: str
-
-class ViewSubwordInfo(TypedDict):
-    subword: str
-    subword_unit: str
-    subdefinition_info: List[ViewSubdefinitionInfo]
-
-class _ViewDefinitionInfo(TypedDict, total=False):
-    reference: str
-    translations: List[SearchTranslation]
-    example_info: List[ViewExampleInfo]
-    pattern_info: List[ViewPatternInfo]
-    related_info: List[ViewRelatedInfo]
-    multimedia_info: List[ViewMultimediaInfo]
-class ViewDefinitionInfo(_ViewDefinitionInfo):
-    definition: str
-
-class _ViewWordInfo(TypedDict, total=False):
-    allomorph: str
-    original_language_info: List[ViewOriginalLanguageInfo]
-    pronunciation_info: List[ViewPronunciationInfo]
-    conjugation_info: List[ViewConjugationInfo]
-    derivative_info: List[ViewReferenceInfo]
-    reference_info: List[ViewReferenceInfo]
-    category_info: List[ViewCategoryInfo]
-    subword_info: List[ViewSubwordInfo]
-class ViewWordInfo(_ViewWordInfo):
-    word: str
-    word_unit: str
-    word_type: str
-    part_of_speech: str
-    homograph_num: int
-    vocabulary_level: str
-    definition_info: List[ViewDefinitionInfo]
-
-class ViewItem(TypedDict):
-    target_code: int
-    word_info: ViewWordInfo
-
-class ViewResponseData(TypedDict):
-    title: str
-    url: str
-    description: str
-    last_build_date: str
-    total_results: int
-    results: List[ViewItem]
-
-class ViewResponse(TypedDict):
-    response_type: Literal['view']
-    data: ViewResponseData
-    request_params: Dict[str, str]
-
-
-class TotalViewOriginalLanguageInfo(TypedDict):
-    hanja_info: List[HanjaInfo]
-    original_language: str
-    language_type: str
-
-class TotalViewPronunciationInfo(TypedDict):
-    url: str
-    pronunciation: str
-
-class TotalViewAbbreviationInfo(TypedDict):
-    pronunciation_info: List[TotalViewPronunciationInfo]
-    abbreviation: str
-
-class TotalViewConjugationInfo(TypedDict):
-    pronunciation_info: List[TotalViewPronunciationInfo]
-    abbreviation_info: List[TotalViewAbbreviationInfo]
-    conjugation: str
-
-class TotalViewReferenceInfo(TypedDict):
-    target_code: int
-    word: str
-    url: str
-    has_target_code: bool
-
-class TotalViewPatternInfo(TypedDict):
-    pattern_reference: str
-    pattern: str
-
-class TotalViewRelatedInfo(TotalViewReferenceInfo):
-    type: str
-
-class TotalViewMultimediaInfo(TypedDict):
-    media_urls: List[str]
-    label: str
-    type: str
-    url: str
-
-class TotalViewSubdefinitionInfo(TypedDict):
-    translations: List[TotalSearchTranslation]
-    example_info: List[ViewExampleInfo]
-    related_info: List[ViewPartialRelatedInfo]
-    definition: str
-
-class TotalViewSubwordInfo(TypedDict):
-    subword: str
-    subword_unit: str
-    subdefinition_info: List[TotalViewSubdefinitionInfo]
-
-class TotalViewDefinitionInfo(TypedDict):
-    reference: str
-    translations: List[TotalSearchTranslation]
-    example_info: List[ViewExampleInfo]
-    pattern_info: List[TotalViewPatternInfo]
-    related_info: List[TotalViewRelatedInfo]
-    multimedia_info: List[TotalViewMultimediaInfo]
-    definition: str
-
-class TotalViewWordInfo(TypedDict):
-    allomorph: str
-    original_language_info: List[TotalViewOriginalLanguageInfo]
-    pronunciation_info: List[TotalViewPronunciationInfo]
-    conjugation_info: List[TotalViewConjugationInfo]
-    derivative_info: List[TotalViewReferenceInfo]
-    reference_info: List[TotalViewReferenceInfo]
-    category_info: List[ViewCategoryInfo]
-    subword_info: List[TotalViewSubwordInfo]
-    word: str
-    word_unit: str
-    word_type: str
-    part_of_speech: str
-    homograph_num: int
-    vocabulary_level: str
-    definition_info: List[TotalViewDefinitionInfo]
-
-class TotalViewItem(TypedDict):
-    target_code: int
-    word_info: TotalViewWordInfo
-
-class TotalViewResponseData(TypedDict):
-    title: str
-    url: str
-    description: str
-    last_build_date: str
-    total_results: int
-    results: List[TotalViewItem]
-
-class TotalViewResponse(TypedDict):
-    response_type: Literal['view']
-    data: TotalViewResponseData
-    request_params: Dict[str, str]
-
-
 @overload
 def advanced_search(*,
     query: str,
     raise_api_errors: Literal[True],
-    guarantee_keys: Literal[True],
     key: str = None,
     page: int = 1,
     per_page: int = 10,
@@ -1168,14 +810,12 @@ def advanced_search(*,
     min_syllables: int = 1,
     max_syllables: int = 0,
     meaning_category: TMeaningCategory = MeaningCategory.ALL,
-    subject_category: TSubjectCategory | Iterable[TSubjectCategory] = SubjectCategory.ALL,
-    options: OptionsDict = None
-) -> TotalWordSearchResponse: ...
+    subject_category: TSubjectCategory | Iterable[TSubjectCategory] = SubjectCategory.ALL
+) -> WordResponse: ...
 @overload
 def advanced_search(*,
     query: str,
     raise_api_errors: Literal[True],
-    guarantee_keys: Literal[True],
     key: str = None,
     page: int = 1,
     per_page: int = 10,
@@ -1193,15 +833,13 @@ def advanced_search(*,
     min_syllables: int = 1,
     max_syllables: int = 0,
     meaning_category: TMeaningCategory = MeaningCategory.ALL,
-    subject_category: TSubjectCategory | Iterable[TSubjectCategory] = SubjectCategory.ALL,
-    options: OptionsDict = None
-) -> TotalSearchResponse: ...
+    subject_category: TSubjectCategory | Iterable[TSubjectCategory] = SubjectCategory.ALL
+) -> TSearchResponse: ...
 
 @overload
 def advanced_search(*,
     query: str,
     raise_api_errors: bool = False,
-    guarantee_keys: Literal[True],
     key: str = None,
     page: int = 1,
     per_page: int = 10,
@@ -1219,14 +857,12 @@ def advanced_search(*,
     min_syllables: int = 1,
     max_syllables: int = 0,
     meaning_category: TMeaningCategory = MeaningCategory.ALL,
-    subject_category: TSubjectCategory | Iterable[TSubjectCategory] = SubjectCategory.ALL,
-    options: OptionsDict = None
-) -> TotalWordSearchResponse | KRDictError: ...
+    subject_category: TSubjectCategory | Iterable[TSubjectCategory] = SubjectCategory.ALL
+) -> WordResponse | ErrorResponse: ...
 @overload
 def advanced_search(*,
     query: str,
     raise_api_errors: bool = False,
-    guarantee_keys: Literal[True],
     key: str = None,
     page: int = 1,
     per_page: int = 10,
@@ -1244,428 +880,151 @@ def advanced_search(*,
     min_syllables: int = 1,
     max_syllables: int = 0,
     meaning_category: TMeaningCategory = MeaningCategory.ALL,
-    subject_category: TSubjectCategory | Iterable[TSubjectCategory] = SubjectCategory.ALL,
-    options: OptionsDict = None
-) -> TotalSearchResponse | KRDictError: ...
-
-@overload
-def advanced_search(*,
-    query: str,
-    raise_api_errors: Literal[True],
-    guarantee_keys: bool = False,
-    key: str = None,
-    page: int = 1,
-    per_page: int = 10,
-    sort: TSortMethod = SortMethod.ALPHABETICAL,
-    search_type: Literal[SearchType.WORD, 'word'],
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
-    search_target: TSearchTarget = SearchTarget.HEADWORD,
-    target_language: TTargetLanguage = TargetLanguage.ALL,
-    search_method: TSearchMethod = SearchMethod.EXACT,
-    classification: TClassification | Iterable[TClassification] = Classification.ALL,
-    origin_type: TOriginType | Iterable[TOriginType] = OriginType.ALL,
-    vocabulary_level: TVocabularyLevel | Iterable[TVocabularyLevel] = VocabularyLevel.ALL,
-    part_of_speech: TPartOfSpeech | Iterable[TPartOfSpeech] = PartOfSpeech.ALL,
-    multimedia_type: TMultimediaType | Iterable[TMultimediaType] = MultimediaType.ALL,
-    min_syllables: int = 1,
-    max_syllables: int = 0,
-    meaning_category: TMeaningCategory = MeaningCategory.ALL,
-    subject_category: TSubjectCategory | Iterable[TSubjectCategory] = SubjectCategory.ALL,
-    options: OptionsDict = None
-) -> WordSearchResponse: ...
-@overload
-def advanced_search(*,
-    query: str,
-    raise_api_errors: Literal[True],
-    guarantee_keys: bool = False,
-    key: str = None,
-    page: int = 1,
-    per_page: int = 10,
-    sort: TSortMethod = SortMethod.ALPHABETICAL,
-    search_type: TSearchType = None,
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
-    search_target: TSearchTarget = SearchTarget.HEADWORD,
-    target_language: TTargetLanguage = TargetLanguage.ALL,
-    search_method: TSearchMethod = SearchMethod.EXACT,
-    classification: TClassification | Iterable[TClassification] = Classification.ALL,
-    origin_type: TOriginType | Iterable[TOriginType] = OriginType.ALL,
-    vocabulary_level: TVocabularyLevel | Iterable[TVocabularyLevel] = VocabularyLevel.ALL,
-    part_of_speech: TPartOfSpeech | Iterable[TPartOfSpeech] = PartOfSpeech.ALL,
-    multimedia_type: TMultimediaType | Iterable[TMultimediaType] = MultimediaType.ALL,
-    min_syllables: int = 1,
-    max_syllables: int = 0,
-    meaning_category: TMeaningCategory = MeaningCategory.ALL,
-    subject_category: TSubjectCategory | Iterable[TSubjectCategory] = SubjectCategory.ALL,
-    options: OptionsDict = None
-) -> SearchResponse: ...
-
-@overload
-def advanced_search(*,
-    query: str,
-    raise_api_errors: bool = False,
-    guarantee_keys: bool = False,
-    key: str = None,
-    page: int = 1,
-    per_page: int = 10,
-    sort: TSortMethod = SortMethod.ALPHABETICAL,
-    search_type: Literal[SearchType.WORD, 'word'],
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
-    search_target: TSearchTarget = SearchTarget.HEADWORD,
-    target_language: TTargetLanguage = TargetLanguage.ALL,
-    search_method: TSearchMethod = SearchMethod.EXACT,
-    classification: TClassification | Iterable[TClassification] = Classification.ALL,
-    origin_type: TOriginType | Iterable[TOriginType] = OriginType.ALL,
-    vocabulary_level: TVocabularyLevel | Iterable[TVocabularyLevel] = VocabularyLevel.ALL,
-    part_of_speech: TPartOfSpeech | Iterable[TPartOfSpeech] = PartOfSpeech.ALL,
-    multimedia_type: TMultimediaType | Iterable[TMultimediaType] = MultimediaType.ALL,
-    min_syllables: int = 1,
-    max_syllables: int = 0,
-    meaning_category: TMeaningCategory = MeaningCategory.ALL,
-    subject_category: TSubjectCategory | Iterable[TSubjectCategory] = SubjectCategory.ALL,
-    options: OptionsDict = None
-) -> WordSearchResponse | KRDictError: ...
-@overload
-def advanced_search(*,
-    query: str,
-    raise_api_errors: bool = False,
-    guarantee_keys: bool = False,
-    key: str = None,
-    page: int = 1,
-    per_page: int = 10,
-    sort: TSortMethod = SortMethod.ALPHABETICAL,
-    search_type: TSearchType = None,
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
-    search_target: TSearchTarget = SearchTarget.HEADWORD,
-    target_language: TTargetLanguage = TargetLanguage.ALL,
-    search_method: TSearchMethod = SearchMethod.EXACT,
-    classification: TClassification | Iterable[TClassification] = Classification.ALL,
-    origin_type: TOriginType | Iterable[TOriginType] = OriginType.ALL,
-    vocabulary_level: TVocabularyLevel | Iterable[TVocabularyLevel] = VocabularyLevel.ALL,
-    part_of_speech: TPartOfSpeech | Iterable[TPartOfSpeech] = PartOfSpeech.ALL,
-    multimedia_type: TMultimediaType | Iterable[TMultimediaType] = MultimediaType.ALL,
-    min_syllables: int = 1,
-    max_syllables: int = 0,
-    meaning_category: TMeaningCategory = MeaningCategory.ALL,
-    subject_category: TSubjectCategory | Iterable[TSubjectCategory] = SubjectCategory.ALL,
-    options: OptionsDict = None
-) -> SearchResponse | KRDictError: ...
+    subject_category: TSubjectCategory | Iterable[TSubjectCategory] = SubjectCategory.ALL
+) -> TSearchResponse | ErrorResponse: ...
 
 
 @overload
 def search(*,
     query: str,
     raise_api_errors: Literal[True],
-    guarantee_keys: Literal[True],
     key: str = None,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.WORD, 'word'],
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
-    options: OptionsDict = None
-) -> TotalWordSearchResponse: ...
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None
+) -> WordResponse: ...
 @overload
 def search(*,
     query: str,
     raise_api_errors: Literal[True],
-    guarantee_keys: Literal[True],
     key: str = None,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.DEFINITION, 'dfn', 'definition'],
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
-    options: OptionsDict = None
-) -> TotalDefinitionSearchResponse: ...
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None
+) -> DefinitionResponse: ...
 @overload
 def search(*,
     query: str,
     raise_api_errors: Literal[True],
-    guarantee_keys: Literal[True],
-    key: str = None,
-    page: int = 1,
-    per_page: int = 10,
-    sort: TSortMethod = SortMethod.ALPHABETICAL,
-    search_type: Literal[SearchType.IDIOM_PROVERB, 'ip', 'idiom_proverb', 'idiom/proverb'],
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
-    options: OptionsDict = None
-) -> TotalIdiomProverbSearchResponse: ...
-@overload
-def search(*,
-    query: str,
-    raise_api_errors: Literal[True],
-    guarantee_keys: Literal[True],
-    key: str = None,
-    page: int = 1,
-    per_page: int = 10,
-    sort: TSortMethod = SortMethod.ALPHABETICAL,
-    search_type: TSearchType = None,
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
-    options: OptionsDict = None
-) -> TotalSearchResponse: ...
-
-@overload
-def search(*,
-    query: str,
-    raise_api_errors: bool = False,
-    guarantee_keys: Literal[True],
-    key: str = None,
-    page: int = 1,
-    per_page: int = 10,
-    sort: TSortMethod = SortMethod.ALPHABETICAL,
-    search_type: Literal[SearchType.WORD, 'word'],
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
-    options: OptionsDict = None
-) -> TotalWordSearchResponse | KRDictError: ...
-@overload
-def search(*,
-    query: str,
-    raise_api_errors: bool = False,
-    guarantee_keys: Literal[True],
-    key: str = None,
-    page: int = 1,
-    per_page: int = 10,
-    sort: TSortMethod = SortMethod.ALPHABETICAL,
-    search_type: Literal[SearchType.DEFINITION, 'dfn', 'definition'],
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
-    options: OptionsDict = None
-) -> TotalDefinitionSearchResponse | KRDictError: ...
-@overload
-def search(*,
-    query: str,
-    raise_api_errors: bool = False,
-    guarantee_keys: Literal[True],
-    key: str = None,
-    page: int = 1,
-    per_page: int = 10,
-    sort: TSortMethod = SortMethod.ALPHABETICAL,
-    search_type: Literal[SearchType.IDIOM_PROVERB, 'ip', 'idiom_proverb', 'idiom/proverb'],
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
-    options: OptionsDict = None
-) -> TotalIdiomProverbSearchResponse | KRDictError: ...
-@overload
-def search(*,
-    query: str,
-    raise_api_errors: bool = False,
-    guarantee_keys: Literal[True],
-    key: str = None,
-    page: int = 1,
-    per_page: int = 10,
-    sort: TSortMethod = SortMethod.ALPHABETICAL,
-    search_type: TSearchType = None,
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
-    options: OptionsDict = None
-) -> TotalSearchResponse | KRDictError: ...
-
-@overload
-def search(*,
-    query: str,
-    raise_api_errors: Literal[True],
-    guarantee_keys: bool = False,
-    key: str = None,
-    page: int = 1,
-    per_page: int = 10,
-    sort: TSortMethod = SortMethod.ALPHABETICAL,
-    search_type: Literal[SearchType.WORD, 'word'],
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
-    options: OptionsDict = None
-) -> WordSearchResponse: ...
-@overload
-def search(*,
-    query: str,
-    raise_api_errors: Literal[True],
-    guarantee_keys: bool = False,
-    key: str = None,
-    page: int = 1,
-    per_page: int = 10,
-    sort: TSortMethod = SortMethod.ALPHABETICAL,
-    search_type: Literal[SearchType.DEFINITION, 'dfn', 'definition'],
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
-    options: OptionsDict = None
-) -> DefinitionSearchResponse: ...
-@overload
-def search(*,
-    query: str,
-    raise_api_errors: Literal[True],
-    guarantee_keys: bool = False,
     key: str = None,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.EXAMPLE, 'exam', 'example'],
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
-    options: OptionsDict = None
-) -> ExampleSearchResponse: ...
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None
+) -> ExampleResponse: ...
 @overload
 def search(*,
     query: str,
     raise_api_errors: Literal[True],
-    guarantee_keys: bool = False,
     key: str = None,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.IDIOM_PROVERB, 'ip', 'idiom_proverb', 'idiom/proverb'],
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
-    options: OptionsDict = None
-) -> IdiomProverbSearchResponse: ...
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None
+) -> IdiomProverbResponse: ...
 @overload
 def search(*,
     query: str,
     raise_api_errors: Literal[True],
-    guarantee_keys: bool = False,
     key: str = None,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: TSearchType = None,
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
-    options: OptionsDict = None
-) -> SearchResponse: ...
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None
+) -> TSearchResponse: ...
 
 @overload
 def search(*,
     query: str,
     raise_api_errors: bool = False,
-    guarantee_keys: bool = False,
     key: str = None,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.WORD, 'word'],
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
-    options: OptionsDict = None
-) -> WordSearchResponse | KRDictError: ...
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None
+) -> WordResponse | ErrorResponse: ...
 @overload
 def search(*,
     query: str,
     raise_api_errors: bool = False,
-    guarantee_keys: bool = False,
     key: str = None,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.DEFINITION, 'dfn', 'definition'],
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
-    options: OptionsDict = None
-) -> DefinitionSearchResponse | KRDictError: ...
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None
+) -> DefinitionResponse | ErrorResponse: ...
 @overload
 def search(*,
     query: str,
     raise_api_errors: bool = False,
-    guarantee_keys: bool = False,
     key: str = None,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.EXAMPLE, 'exam', 'example'],
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
-    options: OptionsDict = None
-) -> ExampleSearchResponse | KRDictError: ...
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None
+) -> ExampleResponse | ErrorResponse: ...
 @overload
 def search(*,
     query: str,
     raise_api_errors: bool = False,
-    guarantee_keys: bool = False,
     key: str = None,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.IDIOM_PROVERB, 'ip', 'idiom_proverb', 'idiom/proverb'],
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
-    options: OptionsDict = None
-) -> IdiomProverbSearchResponse | KRDictError: ...
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None
+) -> IdiomProverbResponse | ErrorResponse: ...
 @overload
 def search(*,
     query: str,
     raise_api_errors: bool = False,
-    guarantee_keys: bool = False,
     key: str = None,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: TSearchType = None,
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
-    options: OptionsDict = None
-) -> SearchResponse | KRDictError: ...
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None
+) -> TSearchResponse | ErrorResponse: ...
 
 
 @overload
 def view(*,
     query: str,
     raise_api_errors: Literal[True],
-    guarantee_keys: Literal[True],
     homograph_num: int = 0,
     key: str = None,
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
-    options: OptionsDict = None
-) -> TotalViewResponse: ...
-@overload
-def view(*,
-    query: str,
-    raise_api_errors: bool = False,
-    guarantee_keys: Literal[True],
-    homograph_num: int = 0,
-    key: str = None,
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
-    options: OptionsDict = None
-) -> TotalViewResponse | KRDictError: ...
-
-@overload
-def view(*,
-    target_code: int,
-    raise_api_errors: Literal[True],
-    guarantee_keys: Literal[True],
-    key: str = None,
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
-    options: OptionsDict = None
-) -> TotalViewResponse: ...
-@overload
-def view(*,
-    target_code: int,
-    raise_api_errors: bool = False,
-    guarantee_keys: Literal[True],
-    key: str = None,
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
-    options: OptionsDict = None
-) -> TotalViewResponse | KRDictError: ...
-
-@overload
-def view(*,
-    query: str,
-    raise_api_errors: Literal[True],
-    guarantee_keys: bool = False,
-    homograph_num: int = 0,
-    key: str = None,
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
-    options: OptionsDict = None
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None
 ) -> ViewResponse: ...
 @overload
 def view(*,
     query: str,
     raise_api_errors: bool = False,
-    guarantee_keys: bool = False,
     homograph_num: int = 0,
     key: str = None,
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
-    options: OptionsDict = None
-) -> ViewResponse | KRDictError: ...
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None
+) -> ViewResponse | ErrorResponse: ...
 
 @overload
 def view(*,
     target_code: int,
     raise_api_errors: Literal[True],
-    guarantee_keys: bool = False,
     key: str = None,
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
-    options: OptionsDict = None
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None
 ) -> ViewResponse: ...
 @overload
 def view(*,
     target_code: int,
     raise_api_errors: bool = False,
-    guarantee_keys: bool = False,
     key: str = None,
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
-    options: OptionsDict = None
-) -> ViewResponse | KRDictError: ...
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None
+) -> ViewResponse | ErrorResponse: ...

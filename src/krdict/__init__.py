@@ -4,10 +4,13 @@ Provides functions that query the Korean Learners' Dictionary API.
 
 from . import scraper
 from .request import set_key
-from .response import set_default
 from .main import advanced_search, search, view
 from .types import (
     Classification,
+    DefinitionResponse,
+    ErrorResponse,
+    ExampleResponse,
+    IdiomProverbResponse,
     KRDictException,
     MeaningCategory,
     MultimediaType,
@@ -20,17 +23,22 @@ from .types import (
     SubjectCategory,
     TargetLanguage,
     TranslationLanguage,
-    VocabularyLevel
+    ViewResponse,
+    VocabularyLevel,
+    WordResponse
 )
 
 __all__ = [
     'scraper',
     'advanced_search',
     'search',
-    'set_default',
     'set_key',
     'view',
     'Classification',
+    'DefinitionResponse',
+    'ErrorResponse',
+    'ExampleResponse',
+    'IdiomProverbResponse',
     'KRDictException',
     'MeaningCategory',
     'MultimediaType',
@@ -43,5 +51,7 @@ __all__ = [
     'SubjectCategory',
     'TargetLanguage',
     'TranslationLanguage',
-    'VocabularyLevel'
+    'ViewResponse',
+    'VocabularyLevel',
+    'WordResponse'
 ]

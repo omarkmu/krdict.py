@@ -114,10 +114,6 @@ def _transform_params(params, search_type):
         params['key'] = _DEFAULTS['API_KEY']
     if 'raise_api_errors' in params:
         del params['raise_api_errors']
-    if 'guarantee_keys' in params:
-        del params['guarantee_keys']
-    if 'options' in params:
-        del params['options']
 
     if search_type == 'view':
         transform_view_params(params)

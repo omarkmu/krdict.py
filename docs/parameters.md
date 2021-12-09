@@ -449,26 +449,3 @@ or an integer depending on the underlying type of the enumeration type.
 @staticmethod
 def get_value(key: EnumInstance | str | int, default: T = None) -> int | str | T: ...
 ```
-
-## Other Types
-
-### OptionsDict
-
-Additional options to apply to a query. All of the keys are not required.
-```python
-{
-    'fetch_multimedia': bool, # default: False
-    'fetch_page_data': bool, # default: True
-    'raise_scraper_errors': bool, # default: False
-    'use_scraper': bool # default: False
-}
-```
-
-- `'fetch_multimedia'`: Controls whether multimedia is scraped during view queries. No effect unless the `'use_scraper'` option is `True`.
-- `'fetch_page_data'`: Controls whether pronunciation URLs and extended language information are scraped. No effect unless the `'use_scraper'` option is `True`.
-- `'raise_scraper_errors'`: Controls whether errors that occur during scraping are raised. No effect unless the `'use_scraper'` option is `True`.
-- `'use_scraper'`: Controls whether the scraper should be used to fetch more information.
-
-See also: [`set_default`](main.md#set_default).
-
-
