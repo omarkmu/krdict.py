@@ -3,14 +3,6 @@ Provides utilities for scraping.
 """
 
 _VIEW_URL = 'https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo={}'
-_WOTD_NOT_REQUIRED = [
-    ('part_of_speech', str),
-    ('vocabulary_level', str),
-    ('origin', str),
-    ('pronunciation', str),
-    ('pronunciation_urls', list),
-    ('translation', dict)
-]
 
 
 def _extract_between(text, sep):
@@ -26,7 +18,7 @@ def _extract_digits(text):
     value = [char for char in text if char.isdigit()]
     return int(''.join(value)) if len(value) > 0 else 0
 
-def _read_search_definitions(elem_list, translation_lang, guarantee_keys):
+def _read_search_definitions(elem_list, translation_lang):
     definitions = []
     step = 3 if translation_lang else 1
     order = 1
@@ -44,34 +36,30 @@ def _read_search_definitions(elem_list, translation_lang, guarantee_keys):
 
             if len(dfn_trns) > 0:
                 translation = {}
-                translation['definition'] = dfn_trns
+                translation['trans_dfn'] = dfn_trns
 
                 if len(word_trns) > 0:
-                    translation['word'] = word_trns.strip()
-                elif guarantee_keys:
-                    translation['word'] = None
+                    translation['trans_word'] = word_trns.strip()
 
-                translation['language'] = translation_lang
+                translation['trans_lang'] = translation_lang
 
         strong_elem = dfn_elem.cssselect('strong')
         dfn = strong_elem[0].tail.strip()[2:] if strong_elem else dfn_elem.text.strip()
 
         dfn_obj = {
-            'definition': dfn.strip(),
-            'order': order
+            'sense_order': order,
+            'definition': dfn.strip()
         }
 
         if translation is not None:
             dfn_obj['translation'] = translation
-        elif guarantee_keys:
-            dfn_obj['translation'] = None
 
         definitions.append(dfn_obj)
         order += 1
 
     return definitions
 
-def _read_search_header(elem, parent_elem, guarantee_keys):
+def _read_search_header(elem, parent_elem):
     a_elem = elem.cssselect('a')[0]
 
     headword_elem = a_elem.cssselect('span')[0]
@@ -86,37 +74,27 @@ def _read_search_header(elem, parent_elem, guarantee_keys):
     result = {
         'target_code': target_code,
         'word': headword_elem.text.strip(),
-        'url': _VIEW_URL.format(target_code)
+        'link': _VIEW_URL.format(target_code)
     }
 
     [pronunciation_urls, pronunciation] = _read_search_pronunciation(details_elem)
 
     if len(pos_elem) > 0:
-        result['part_of_speech'] = pos_elem[0].text.strip()[1:-1]
-    elif guarantee_keys:
-        result['part_of_speech'] = ''
+        result['pos'] = pos_elem[0].text.strip()[1:-1]
 
-    result['homograph_num'] = int(sup_elem[0].text.strip() if len(sup_elem) > 0 else 0)
+    result['sup_no'] = int(sup_elem[0].text.strip() if len(sup_elem) > 0 else 0)
 
     if len(hanja_elem) > 0:
         result['origin'] = hanja_elem[0].text.strip()[1:-1]
-    elif guarantee_keys:
-        result['origin'] = ''
 
     if len(star_elem) > 0:
-        result['vocabulary_level'] = _read_vocabulary_level(star_elem[0])
-    elif guarantee_keys:
-        result['vocabulary_level'] = ''
+        result['word_grade'] = _read_vocabulary_level(star_elem[0])
 
     if len(pronunciation) > 0 or len(pronunciation_urls) > 0:
         result['pronunciation'] = result['word'] if len(pronunciation) == 0 else pronunciation
-    elif guarantee_keys:
-        result['pronunciation'] = ''
 
     if len(pronunciation_urls) > 0:
         result['pronunciation_urls'] = pronunciation_urls
-    elif guarantee_keys:
-        result['pronunciation_urls'] = []
 
     return result
 
@@ -272,7 +250,7 @@ def read_view_hanja_info(cur_obj, dl_elem):
     cur_obj['hanja_info'].append(info)
     cur_obj['original_language'] += hanja
 
-def read_wotd_details(result, dt_elem, dd_elems, exonym, guarantee_keys):
+def read_wotd_details(result, dt_elem, dd_elems, exonym):
     """
     Reads informaton about the word of the day.
     """
@@ -280,11 +258,11 @@ def read_wotd_details(result, dt_elem, dd_elems, exonym, guarantee_keys):
     em_elem = dt_elem.cssselect('em')
     grade_elem = dt_elem.cssselect('span.star')
 
-    if len(em_elem) == 1:
-        result['part_of_speech'] = em_elem[0].text_content()
+    if len(em_elem) > 0:
+        result['pos'] = em_elem[0].text_content()
 
     if len(grade_elem) == 1:
-        result['vocabulary_level'] =  _read_vocabulary_level(grade_elem[0])
+        result['word_grade'] =  _read_vocabulary_level(grade_elem[0])
 
     _read_wotd_pronunciation(dt_elem, result)
 
@@ -293,24 +271,14 @@ def read_wotd_details(result, dt_elem, dd_elems, exonym, guarantee_keys):
         dfn_trns = dd_elems[2].text.strip()
 
         if len(dfn_trns) > 0:
-            result['translation'] = {'definition': dfn_trns}
+            result['translation'] = {'trans_dfn': dfn_trns}
 
             if len(word_trns) > 0:
-                result['translation']['word'] = word_trns
+                result['translation']['trans_word'] = word_trns
 
-            result['translation']['language'] = exonym
+            result['translation']['trans_lang'] = exonym
 
-    if guarantee_keys:
-        for key, key_type in _WOTD_NOT_REQUIRED:
-            if key in result:
-                continue
-
-            result[key] = '' if key_type == str else ([] if key_type == list else None)
-
-        if result['translation'] and 'word' not in result['translation']:
-            result['translation']['word'] = ''
-
-def read_search_results(doc, translation_lang, guarantee_keys):
+def read_search_results(doc, translation_lang):
     """
     Reads search result information.
     """
@@ -326,8 +294,8 @@ def read_search_results(doc, translation_lang, guarantee_keys):
         if len(dt_elem) == 0 or len(dd_elem) == 0:
             continue
 
-        result = _read_search_header(dt_elem[0], result_elem, guarantee_keys)
-        result['definitions'] = _read_search_definitions(dd_elem, translation_lang, guarantee_keys)
+        result = _read_search_header(dt_elem[0], result_elem)
+        result['sense'] = _read_search_definitions(dd_elem, translation_lang)
         results.append(result)
 
     total = _extract_digits(total_text[0].text) if len(total_text) > 0 else 0

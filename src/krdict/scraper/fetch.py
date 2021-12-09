@@ -8,7 +8,9 @@ from ..types import (
     SortMethod,
     MeaningCategory,
     SubjectCategory,
-    ScraperTranslationLanguage
+    ScrapedWordResponse,
+    ScraperTranslationLanguage,
+    WordOfTheDayResponse
 )
 from .utils import (
     extract_href,
@@ -119,9 +121,6 @@ def fetch_today_word(**kwargs):
     [documentation](https://krdictpy.readthedocs.io/en/stable/return_types/#wordofthedayresponse)
     for details.
 
-    - ``guarantee_keys``: Sets whether keys that are missing from the response should be inserted
-    with default values. A value of ``True`` guarantees that every key that is not required
-    is included, including keys set by the scraper.
     - ``translation_language``: The language for which translations should be included.
     """
 
@@ -143,18 +142,17 @@ def fetch_today_word(**kwargs):
         'definition': dd_elems[dfn_idx].text_content().strip()
     }
 
-    result['url'] = _TRANSLATED_VIEW_URL.format(nation, result['target_code'], lang_query)
-    result['homograph_num'] = int(sup_elems[0].text_content() or 0 if len(sup_elems) > 0 else 0)
+    result['link'] = _TRANSLATED_VIEW_URL.format(nation, result['target_code'], lang_query)
+    result['sup_no'] = int(sup_elems[0].text_content() or 0 if len(sup_elems) > 0 else 0)
 
     read_wotd_details(
         result,
         dt_elem,
         dd_elems,
-        exonym,
-        kwargs.get('guarantee_keys', False)
+        exonym
     )
 
-    return {'data': result, 'response_type': 'word_of_the_day'}
+    return WordOfTheDayResponse(result)
 
 def fetch_meaning_category_words(**kwargs):
     """
@@ -164,9 +162,6 @@ def fetch_meaning_category_words(**kwargs):
     [documentation](https://krdictpy.readthedocs.io/en/stable/scraper/#fetch_meaning_category_words)
     for details.
 
-    - ``guarantee_keys``: Sets whether keys that are missing from the response should be inserted
-    with default values. A value of ``True`` guarantees that every key that is not required
-    is included, including keys set by the scraper.
     - ``category``: The meaning category to fetch.
     - ``page``: The page at which the search should start ``[1, 1000]``.
     - ``per_page``: The maximum number of search results to return ``[10, 100]``.
@@ -186,18 +181,15 @@ def fetch_meaning_category_words(**kwargs):
         _build_sense_category_query(kwargs.get('category', 0)))
 
     doc = send_request(url, True)
-    [results, total] = read_search_results(doc, exonym, kwargs.get('guarantee_keys', False))
+    [results, total] = read_search_results(doc, exonym)
 
-    return {
-        'data': {
-            'search_url': url,
-            'page': int(page),
-            'per_page': int(per_page),
-            'total_results': total,
-            'results': results
-        },
-        'response_type': 'scraped_word'
-    }
+    return ScrapedWordResponse({
+        'link': url,
+        'start': int(page),
+        'num': int(per_page),
+        'total': total,
+        'item': results
+    })
 
 def fetch_subject_category_words(**kwargs):
     """
@@ -207,9 +199,6 @@ def fetch_subject_category_words(**kwargs):
     [documentation](https://krdictpy.readthedocs.io/en/stable/scraper/#fetch_subject_category_words)
     for details.
 
-    - ``guarantee_keys``: Sets whether keys that are missing from the response should be inserted
-    with default values. A value of ``True`` guarantees that every key that is not required
-    is included, including keys set by the scraper.
     - ``category``: The subject category to fetch.
     - ``page``: The page at which the search should start ``[1, 1000]``.
     - ``per_page``: The maximum number of search results to return ``[10, 100]``.
@@ -229,15 +218,12 @@ def fetch_subject_category_words(**kwargs):
         _build_subject_category_query(kwargs.get('category', 0)))
 
     doc = send_request(url, True)
-    [results, total] = read_search_results(doc, exonym, kwargs.get('guarantee_keys', False))
+    [results, total] = read_search_results(doc, exonym)
 
-    return {
-        'data': {
-            'search_url': url,
-            'page': int(page),
-            'per_page': int(per_page),
-            'total_results': total,
-            'results': results
-        },
-        'response_type': 'scraped_word'
-    }
+    return ScrapedWordResponse({
+        'link': url,
+        'start': int(page),
+        'num': int(per_page),
+        'total': total,
+        'item': results
+    })

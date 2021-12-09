@@ -4,12 +4,12 @@ Contains response types defined by the krdict package.
 
 from typing import Literal
 
-# pylint: disable=too-few-public-methods
+# pylint: disable=too-few-public-methods,too-many-instance-attributes
 
 
 def _to_dict(obj):
     if isinstance(obj, _ResponseEntity):
-        return obj.to_dict()
+        return obj.asdict()
 
     if isinstance(obj, list):
         return list(map(_to_dict, obj))
@@ -29,7 +29,7 @@ class _ResponseEntity:
 
         return repr(attrs)
 
-    def to_dict(self):
+    def asdict(self):
         """
         Converts the response object to a dict and returns the created dict.
         """
@@ -62,9 +62,9 @@ class _ResponseData(_ResponseEntity):
 
 class _SearchTranslation(_ResponseEntity):
     def __init__(self, raw):
+        self.word: str = raw.get('trans_word', '')
         self.definition: str = raw['trans_dfn']
         self.language: str = raw['trans_lang']
-        self.word: str = raw.get('trans_word', '')
 
 class _PartialSearchDefinition(_ResponseEntity):
     def __init__(self, raw):
@@ -214,7 +214,7 @@ class _ViewDefinitionInfo(_ResponseEntity):
         self.related_info = list(map(_ViewRelatedInfo, raw.get('rel_info', [])))
         self.multimedia_info = list(map(_ViewMultimediaInfo, raw.get('multimedia_info', [])))
 
-class _ViewWordInfo(_ResponseEntity): # pylint: disable=too-many-instance-attributes
+class _ViewWordInfo(_ResponseEntity):
     def __init__(self, raw):
         self.word: str = raw['word']
         self.word_unit: str = raw['word_unit']

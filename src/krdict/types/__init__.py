@@ -6,7 +6,11 @@ from .base import IntEnum, StrEnum
 from .meaning_category import MeaningCategory
 from .subject_category import SubjectCategory
 from .exceptions import KRDictException
-from .scraper import ScraperTranslationLanguage
+from .scraper import (
+    ScrapedWordResponse,
+    ScraperTranslationLanguage,
+    WordOfTheDayResponse
+)
 from .main import (
     DefinitionResponse,
     ErrorResponse,
@@ -348,6 +352,7 @@ __all__ = [
     'MultimediaType',
     'OriginType',
     'PartOfSpeech',
+    'ScrapedWordResponse',
     'ScraperTranslationLanguage',
     'SearchMethod',
     'SearchTarget',
@@ -358,5 +363,6 @@ __all__ = [
     'TranslationLanguage',
     'ViewResponse',
     'VocabularyLevel',
+    'WordOfTheDayResponse',
     'WordResponse'
 ]

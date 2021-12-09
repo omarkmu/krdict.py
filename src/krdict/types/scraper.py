@@ -2,7 +2,78 @@
 Contains types defined by the krdict.scraper package.
 """
 
+from typing import Literal
 from .base import IntEnum
+from .main import _ResponseEntity, _SearchTranslation
+
+# pylint: disable=too-few-public-methods,too-many-instance-attributes
+
+
+class _ScrapedSearchDefinition(_ResponseEntity):
+    def __init__(self, raw):
+        self.order: int = raw['sense_order']
+        self.definition: str = raw['definition']
+        self.translations = (
+            [_SearchTranslation(raw['translation'])]
+            if 'translation' in raw else []
+        )
+
+class _ScrapedSearchItem(_ResponseEntity):
+    def __init__(self, raw):
+        self.target_code: int = raw['target_code']
+        self.word: str = raw['word']
+        self.url: str = raw['link']
+        self.part_of_speech: str = raw.get('pos', '')
+        self.homograph_num: int = raw['sup_no']
+        self.origin: str = raw.get('origin', '')
+        self.vocabulary_level: str = raw.get('word_grade', '')
+        self.pronunciation: str = raw.get('pronunciation', '')
+        self.pronunciation_urls: list[str] = raw.get('pronunciation_urls', [])
+        self.definitions = list(map(_ScrapedSearchDefinition, raw['sense']))
+
+class _ScrapedWordSearchData(_ResponseEntity):
+    def __init__(self, raw):
+        self.url: str = raw['link']
+        self.page: int = raw['start']
+        self.per_page: int = raw['num']
+        self.total_results: int = raw['total']
+        self.results = list(map(_ScrapedSearchItem, raw['item']))
+
+class _WordOfTheDayData(_ResponseEntity):
+    def __init__(self, raw):
+        self.target_code: int = raw['target_code']
+        self.word: str = raw['word']
+        self.url: str = raw['link']
+        self.part_of_speech: str = raw.get('pos', '')
+        self.homograph_num: int = raw['sup_no']
+        self.origin: str = raw.get('origin', '')
+        self.vocabulary_level: str = raw.get('word_grade', '')
+        self.pronunciation: str = raw.get('pronunciation', '')
+        self.pronunciation_urls: list[str] = raw.get('pronunciation_urls', [])
+        self.definition: str = raw['definition']
+        self.translation = _SearchTranslation(raw['translation']) if 'translation' in raw else None
+
+
+
+class WordOfTheDayResponse(_ResponseEntity):
+    """
+    Contains information about the word of the day.
+    """
+
+    def __init__(self, raw):
+        self.data = _WordOfTheDayData(raw)
+        self.response_type: Literal['word_of_the_day'] = 'word_of_the_day'
+        self.raw: dict = raw
+
+class ScrapedWordResponse(_ResponseEntity):
+    """
+    Contains information about a scraped word search response.
+    """
+
+    def __init__(self, raw):
+        self.data = _ScrapedWordSearchData(raw)
+        self.response_type: Literal['scraped_word'] = 'scraped_word'
+        self.raw: dict = raw
 
 class ScraperTranslationLanguage(IntEnum):
     """Enumeration class that contains translation languages that can be used by the scraper."""
