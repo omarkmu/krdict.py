@@ -5,6 +5,7 @@ Handles making requests to the dictionary website.
 import requests
 from lxml import html
 from ..types import (
+    SearchType,
     isiterable,
     SortMethod,
     MeaningCategory,
@@ -26,8 +27,8 @@ _CAT_SUBJECT_URL = (
     'searchFlag=Y{}&currentPage={}&blockCount={}&sort={}{}'
 )
 _SEARCH_URL = (
-    'https://krdict.korean.go.kr/dicSearch/search?'
-    'mainSearchWord={}&currentPage={}&blockCount={}&sort={}'
+    'https://krdict.korean.go.kr{}/dicSearch/search?'
+    '{}mainSearchWord={}&currentPage={}&blockCount={}&sort={}&searchType={}'
 )
 _VIDEO_URL = (
     'https://krdict.korean.go.kr/dicSearch/viewMovieConfirm?'
@@ -507,9 +508,15 @@ _ADVANCED_PARAM_MAP = {
         }
     }
 }
+_SEARCH_TYPE_MAP = {
+    'word': 'W',
+    'exam': 'E',
+    'dfn': 'S',
+    'ip': 'P'
+}
 
 
-def _get_advanced_param(adv_mapper, value, value_only=False):
+def _get_advanced_param(adv_mapper, value):
     if adv_mapper.get('name') != 'query' and ',' in value:
         params = []
 
@@ -525,10 +532,10 @@ def _get_advanced_param(adv_mapper, value, value_only=False):
     if 'value' in adv_mapper:
         value = adv_mapper['value'].get(value, value)
 
-    if 'convert' in adv_mapper and not value_only:
+    if 'convert' in adv_mapper:
         return adv_mapper['convert'](value)
 
-    return value if value_only else f'&{adv_mapper["name"]}={value}'
+    return f'&{adv_mapper["name"]}={value}'
 
 def _get_advanced_all_params(adv_mapper):
     if not 'all_params' in adv_mapper:
@@ -549,6 +556,11 @@ def _get_language_info(lang):
 
     return _LANG_INFO[lang - 1]
 
+def _get_lang_query(nation, code):
+    if not nation:
+        return '', ''
+
+    return f'/{nation}', f'nation={nation}&nationCode={code}&'
 
 def _build_advanced_search_url(params):
     url = [_ADVANCED_SEARCH_URL]
@@ -573,13 +585,35 @@ def _build_advanced_search_url(params):
 
     return ''.join(url)
 
-def _build_search_url(params):
-    return _SEARCH_URL.format(
-        params.get('q'),
-        params.get('start', 1),
-        params.get('num', 10),
-        'W' if params.get('sort') != 'popular' else 'C'
+def _build_search_url(kwargs, lang_info):
+    nation, code, _ = lang_info
+
+    query = kwargs.get('query')
+    page = kwargs.get('page', 1)
+    per_page = kwargs.get('per_page', 10)
+
+    sort = 'C' if SortMethod.get_value(kwargs.get('sort')) == 'popular' else 'W'
+    search_type = _SEARCH_TYPE_MAP.get(SearchType.get_value(kwargs.get('search_type'), 'word'), 'W')
+
+    url = _SEARCH_URL.format(
+        *_get_lang_query(nation, code),
+        query,
+        page,
+        per_page,
+        sort,
+        search_type
     )
+    url_kr = _SEARCH_URL.format(
+        '',
+        '',
+        query,
+        page,
+        per_page,
+        sort,
+        search_type
+    )
+
+    return url, url_kr
 
 def _build_sense_category_query(category):
     category = MeaningCategory.get_value(category, category)
@@ -609,34 +643,53 @@ def _build_subject_category_query(category):
     if not isiterable(category, exclude=(str,)):
         category = (category,)
 
+    subject_map = _ADVANCED_PARAM_MAP['subject_cat']['value']
     value = []
 
     for cat in category:
         cat_value = SubjectCategory.get_value(cat, cat)
 
-        if cat_value == '0':
+        if cat_value == 0:
             value = []
 
             for i in range(1, 107):
-                value.append(f'&actCategory={map_advanced_param("subject_cat", i)}')
+                value.append(f'&actCategory={subject_map[str(i)]}')
 
             return ''.join(value)
 
-        value.append(f'&actCategory={map_advanced_param("subject_cat", cat_value)}')
+        value.append(f'&actCategory={subject_map[str(cat_value)]}')
 
     return ''.join(value)
 
+def _build_category_query(kwargs, lang_info, response_type):
+    nation, code, _ = lang_info
+
+    page = kwargs.get('page', 1)
+    per_page = kwargs.get('per_page', 10)
+
+    is_meaning = response_type == 'meaning_category'
+    query_builder = (
+        _build_sense_category_query if is_meaning else _build_subject_category_query
+    )
+
+    base_url = _CAT_MEANING_URL if is_meaning else _CAT_SUBJECT_URL
+    sort = 'C' if SortMethod.get_value(kwargs.get('sort')) == 'popular' else 'W'
+    category_query = query_builder(kwargs.get('category', 0))
+
+    url = base_url.format(
+        *_get_lang_query(nation, code),
+        page,
+        per_page,
+        sort,
+        category_query
+    )
+
+    url_kr = base_url.format('', '', page, per_page, sort, category_query)
+    return url, url_kr
 
 def _build_video_url(target_code, dfn_idx, media_idx):
     return _VIDEO_URL.format(target_code, dfn_idx + 1, media_idx + 1)
 
-
-def map_advanced_param(param, value):
-    """
-    Maps an advanced parameter value to the value expected by the API.
-    """
-
-    return _get_advanced_param(_ADVANCED_PARAM_MAP[param], str(value), True)
 
 def send_request(kwargs, response_type):
     """
@@ -646,35 +699,33 @@ def send_request(kwargs, response_type):
     lang_info = _get_language_info(kwargs.get('translation_language'))
     page = int(kwargs.get('page', 1))
     per_page = int(kwargs.get('per_page', 10))
+    nation, *_ = lang_info
 
-    nation, code, _ = lang_info
+    response_type = SearchType.get_value(response_type, response_type)
 
     url: str
-
+    url_kr = ''
     if response_type == 'word_of_the_day':
+        url_kr = _BASE_URL.format('')
         url = _BASE_URL.format(f'/{nation}' if nation else '')
-
+    elif response_type in ('word', 'exam'):
+        url, url_kr = _build_search_url(kwargs, lang_info)
     elif response_type in ('meaning_category', 'subject_category'):
-        is_meaning = response_type == 'meaning_category'
-        query_builder = (
-            _build_sense_category_query if is_meaning else _build_subject_category_query
-        )
-
-        url = (_CAT_MEANING_URL if is_meaning else _CAT_SUBJECT_URL).format(
-            f'/{nation}' if nation else '',
-            f'&nation={nation}&nationCode={code}' if nation else '',
-            page,
-            per_page,
-            'C' if SortMethod.get_value(kwargs.get('sort')) == 'popular' else 'W',
-            query_builder(kwargs.get('category', 0))
-        )
-
+        url, url_kr = _build_category_query(kwargs, lang_info, response_type)
     else:
         raise ValueError
 
     try:
         response = requests.get(url, headers={'Accept-Language': '*'})
         response.raise_for_status()
-        return (html.fromstring(response.text), url, lang_info, page, per_page)
+        return (
+            html.fromstring(response.text),
+            response_type,
+            url,
+            url_kr,
+            page,
+            per_page,
+            lang_info
+        )
     except requests.exceptions.RequestException as exc:
         raise exc

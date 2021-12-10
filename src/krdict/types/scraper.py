@@ -23,6 +23,20 @@ class _ScrapedSearchItem(_ResponseEntity):
         self.target_code: int = raw['target_code']
         self.word: str = raw['word']
         self.url: str = raw['link']
+        self.translated_url: str = raw.get('trans_link', '')
+
+class _ScrapedResponseData(_ResponseEntity):
+    def __init__(self, raw):
+        self.url: str = raw['link']
+        self.translated_url: str = raw.get('trans_link', '')
+        self.page: int = raw['start']
+        self.per_page: int = raw['num']
+        self.total_results: int = raw['total']
+
+
+class _ScrapedWordSearchItem(_ScrapedSearchItem):
+    def __init__(self, raw):
+        super().__init__(raw)
         self.part_of_speech: str = raw.get('pos', '')
         self.homograph_num: int = raw['sup_no']
         self.origin: str = raw.get('origin', '')
@@ -31,19 +45,30 @@ class _ScrapedSearchItem(_ResponseEntity):
         self.pronunciation_urls: list[str] = raw.get('pronunciation_urls', [])
         self.definitions = list(map(_ScrapedSearchDefinition, raw['sense']))
 
-class _ScrapedWordSearchData(_ResponseEntity):
+class _ScrapedWordResponseData(_ScrapedResponseData):
     def __init__(self, raw):
-        self.url: str = raw['link']
-        self.page: int = raw['start']
-        self.per_page: int = raw['num']
-        self.total_results: int = raw['total']
-        self.results = list(map(_ScrapedSearchItem, raw['item']))
+        super().__init__(raw)
+        self.results = list(map(_ScrapedWordSearchItem, raw['item']))
+
+
+class _ScrapedExampleSearchItem(_ScrapedSearchItem):
+    def __init__(self, raw):
+        super().__init__(raw)
+        self.homograph_num: int = raw['sup_no']
+        self.example: str = raw['example']
+
+class _ScrapedExampleResponseData(_ScrapedResponseData):
+    def __init__(self, raw):
+        super().__init__(raw)
+        self.results = list(map(_ScrapedExampleSearchItem, raw['item']))
+
 
 class _WordOfTheDayData(_ResponseEntity):
     def __init__(self, raw):
         self.target_code: int = raw['target_code']
         self.word: str = raw['word']
         self.url: str = raw['link']
+        self.translated_url: str = raw.get('trans_link', '')
         self.part_of_speech: str = raw.get('pos', '')
         self.homograph_num: int = raw['sup_no']
         self.origin: str = raw.get('origin', '')
@@ -71,15 +96,24 @@ class ScrapedWordResponse(_ResponseEntity):
     """
 
     def __init__(self, raw):
-        self.data = _ScrapedWordSearchData(raw)
+        self.data = _ScrapedWordResponseData(raw)
         self.response_type: Literal['scraped_word'] = 'scraped_word'
+        self.raw: dict = raw
+
+class ScrapedExampleResponse(_ResponseEntity):
+    """
+    Contains information about a scraped example search response.
+    """
+
+    def __init__(self, raw):
+        self.data = _ScrapedExampleResponseData(raw)
+        self.response_type: Literal['scraped_exam'] = 'scraped_exam'
         self.raw: dict = raw
 
 class ScraperTranslationLanguage(IntEnum):
     """Enumeration class that contains translation languages that can be used by the scraper."""
 
     __aliases__ = {
-        'all': 0,
         'english': 1,
         'japanese': 2,
         'french': 3,
@@ -93,7 +127,6 @@ class ScraperTranslationLanguage(IntEnum):
         'chinese': 11
     }
 
-    ALL = 0
     ENGLISH = 1
     JAPANESE = 2
     FRENCH = 3

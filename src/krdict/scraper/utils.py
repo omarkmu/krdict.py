@@ -2,7 +2,16 @@
 Provides utilities for scraping.
 """
 
+from krdict.types.scraper import ScrapedExampleResponse
+from ..types import (
+    ScrapedWordResponse,
+    SearchType,
+    WordOfTheDayResponse
+)
+from .request import _get_lang_query
+
 _VIEW_URL = 'https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo={}'
+_TRANSLATED_VIEW_URL = 'https://krdict.korean.go.kr{}/dicSearch/SearchView?{}ParaWordNo={}'
 
 
 def _extract_between(text, sep):
@@ -18,16 +27,32 @@ def _extract_digits(text):
     value = [char for char in text if char.isdigit()]
     return int(''.join(value)) if len(value) > 0 else 0
 
-def _read_search_definitions(elem_list, translation_lang):
+def _get_base_result(a_elem, word_text, nation, code):
+    target_code = int(extract_href(a_elem) or 0)
+    result = {
+        'target_code': target_code,
+        'word': word_text,
+        'link': _VIEW_URL.format(target_code)
+    }
+
+    if nation:
+        result['trans_link'] = _TRANSLATED_VIEW_URL.format(
+            *_get_lang_query(nation, code),
+            target_code
+        )
+
+    return result
+
+def _read_search_definitions(elem_list, exonym):
     definitions = []
-    step = 3 if translation_lang else 1
+    step = 3 if exonym else 1
     order = 1
 
     for idx in range(0, len(elem_list), step):
         dfn_elem = elem_list[idx]
 
         translation = None
-        if translation_lang:
+        if exonym:
             strong_elem = dfn_elem.cssselect('strong')
             word_trns = strong_elem[0].tail.strip()[2:] if strong_elem else dfn_elem.text.strip()
 
@@ -41,7 +66,7 @@ def _read_search_definitions(elem_list, translation_lang):
                 if len(word_trns) > 0:
                     translation['trans_word'] = word_trns.strip()
 
-                translation['trans_lang'] = translation_lang
+                translation['trans_lang'] = exonym
 
         strong_elem = dfn_elem.cssselect('strong')
         dfn = strong_elem[0].tail.strip()[2:] if strong_elem else dfn_elem.text.strip()
@@ -59,7 +84,19 @@ def _read_search_definitions(elem_list, translation_lang):
 
     return definitions
 
-def _read_search_header(elem, parent_elem):
+def _read_example_text(text, sup_no):
+    paren = text.find('(')
+    rparen = text.find(')')
+    colon = text.find(':')
+    word_text = text[colon + 1:rparen].strip()
+    example_text = text[:paren].strip()
+
+    if sup_no:
+        word_text = word_text[:-len(str(sup_no))].strip()
+
+    return word_text, example_text
+
+def _read_search_header(elem, parent_elem, nation, code):
     a_elem = elem.cssselect('a')[0]
 
     headword_elem = a_elem.cssselect('span')[0]
@@ -70,14 +107,8 @@ def _read_search_header(elem, parent_elem):
     star_elem = details_elem.cssselect('span.star')
     hanja_elem = parent_elem.cssselect('dt > span:not(.word_att_type1):not(.search_sub)')
 
-    target_code = int(extract_href(a_elem) or 0)
-    result = {
-        'target_code': target_code,
-        'word': headword_elem.text.strip(),
-        'link': _VIEW_URL.format(target_code)
-    }
-
-    [pronunciation_urls, pronunciation] = _read_search_pronunciation(details_elem)
+    result = _get_base_result(a_elem, headword_elem.text.strip(), nation, code)
+    pronunciation, pronunciation_urls = _read_search_pronunciation(details_elem)
 
     if len(pos_elem) > 0:
         result['pos'] = pos_elem[0].text.strip()[1:-1]
@@ -117,7 +148,7 @@ def _read_search_pronunciation(elem):
     if pronunciation.endswith(']'):
         pronunciation = pronunciation[:-1]
 
-    return urls, pronunciation
+    return pronunciation, urls
 
 def _read_vocabulary_level(elem):
     grade = len(elem.cssselect('i.ri-star-s-fill'))
@@ -151,6 +182,39 @@ def _read_wotd_pronunciation(dt_elem, result):
         if len(urls) > 0:
             result['pronunciation_urls'] = urls
 
+def _read_wotd(doc, nation, code, exonym):
+    dt_elem = doc.cssselect('dl.today_word > dt')[0]
+    dd_elems = doc.cssselect('dl.today_word > dd')
+    word_elem = dt_elem.cssselect('a')[0]
+    strong_elem = word_elem.cssselect('strong')[0]
+    sup_elems = word_elem.cssselect('strong > sup')
+
+    dfn_idx = 0 if not nation or len(dd_elems) < 3 else 1
+    result = {
+        'target_code': int(extract_href(word_elem) or 0),
+        'word': strong_elem.text.strip(),
+        'definition': dd_elems[dfn_idx].text_content().strip()
+    }
+
+    result['link'] = _VIEW_URL.format(result['target_code'])
+
+    if nation:
+        result['trans_link'] = _TRANSLATED_VIEW_URL.format(
+            *_get_lang_query(nation, code),
+            result['target_code']
+        )
+
+    result['sup_no'] = int(sup_elems[0].text_content() or 0 if len(sup_elems) > 0 else 0)
+
+    read_wotd_details(
+        result,
+        dt_elem,
+        dd_elems,
+        exonym
+    )
+
+    return result
+
 
 def extract_href(elem):
     """
@@ -174,6 +238,41 @@ def extract_video_urls(script_content):
             urls.append(extracted)
 
     return urls
+
+def parse_response(*args):
+    """
+    Transforms a scraped HTTP response to a response object.
+    """
+
+    doc, response_type, url, url_kr, page, per_page, lang_info = args
+    response_type = SearchType.get_value(response_type, response_type)
+
+    if response_type == 'word_of_the_day':
+        return WordOfTheDayResponse(_read_wotd(doc, *lang_info))
+
+    if response_type in ('meaning_category', 'subject_category', 'word'):
+        results, total = read_search_results(doc, *lang_info)
+        return ScrapedWordResponse({
+            'link': url_kr,
+            'trans_link': url,
+            'start': page,
+            'num': per_page,
+            'total': total,
+            'item': results
+        })
+
+    if response_type == 'exam':
+        results, total = read_examples(doc, lang_info[0], lang_info[1])
+        return ScrapedExampleResponse({
+            'link': url_kr,
+            'trans_link': url,
+            'start': page,
+            'num': per_page,
+            'total': total,
+            'item': results
+        })
+
+    raise ValueError
 
 def read_conjugation_pronunciation(arr, urls, idx):
     """
@@ -278,7 +377,7 @@ def read_wotd_details(result, dt_elem, dd_elems, exonym):
 
             result['translation']['trans_lang'] = exonym
 
-def read_search_results(doc, translation_lang):
+def read_search_results(doc, nation, code, exonym):
     """
     Reads search result information.
     """
@@ -294,8 +393,37 @@ def read_search_results(doc, translation_lang):
         if len(dt_elem) == 0 or len(dd_elem) == 0:
             continue
 
-        result = _read_search_header(dt_elem[0], result_elem)
-        result['sense'] = _read_search_definitions(dd_elem, translation_lang)
+        result = _read_search_header(dt_elem[0], result_elem, nation, code)
+        result['sense'] = _read_search_definitions(dd_elem, exonym)
+        results.append(result)
+
+    total = _extract_digits(total_text[0].text) if len(total_text) > 0 else 0
+    return results, total
+
+def read_examples(doc, nation, code):
+    """
+    Reads example information.
+    """
+
+    results = []
+    search_results = doc.cssselect('div.search_result > ul > li > a')
+    total_text = doc.cssselect('span.search_tit > em')
+
+    for result_elem in search_results:
+        text = result_elem.text_content().strip()
+        sup_elem = result_elem.cssselect('sup')
+
+        if len(text) == 0:
+            continue
+
+        sup_text = sup_elem[0].text.strip() if len(sup_elem) > 0 else ''
+        sup_no = int(sup_text) if sup_text else 0
+
+        word_text, example_text = _read_example_text(text, sup_no)
+
+        result = _get_base_result(result_elem, word_text, nation, code)
+        result['sup_no'] = sup_no
+        result['example'] = example_text
         results.append(result)
 
     total = _extract_digits(total_text[0].text) if len(total_text) > 0 else 0
