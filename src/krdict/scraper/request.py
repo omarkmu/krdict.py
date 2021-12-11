@@ -4,9 +4,17 @@ Handles making requests to the dictionary website.
 
 import requests
 from lxml import html
+from ..types.scraper import ScraperVocabularyLevel
 from ..types import (
-    SearchType,
     isiterable,
+    Classification,
+    MultimediaType,
+    OriginType,
+    PartOfSpeech,
+    SearchMethod,
+    SearchTarget,
+    SearchType,
+    TargetLanguage,
     SortMethod,
     MeaningCategory,
     SubjectCategory,
@@ -14,8 +22,8 @@ from ..types import (
 )
 
 _ADVANCED_SEARCH_URL = (
-    'https://krdict.korean.go.kr/dicSearchDetail/searchDetailWordsResult?'
-    'searchFlag=Y&searchOp=AND&syllablePosition='
+    'https://krdict.korean.go.kr{}/dicSearchDetail/searchDetailWordsResult?'
+    '{}&searchFlag=Y&searchOp=AND&syllablePosition='
 )
 _BASE_URL = 'https://krdict.korean.go.kr{}/mainAction'
 _CAT_MEANING_URL = (
@@ -66,24 +74,26 @@ _SENSE_CAT_MAX = (
 )
 
 _ADVANCED_PARAM_MAP = {
-    'q': {
+    'query': {
         'name': 'query'
     },
-    'start': {
+    'page': {
         'name': 'currentPage'
     },
-    'num': {
+    'per_page': {
         'name': 'blockCount'
     },
     'sort': {
         'name': 'sort',
+        'type': SortMethod,
         'value': {
             'dict': 'W',
             'popular': 'C'
         }
     },
-    'target': {
+    'search_target': {
         'name': 'searchTarget',
+        'type': SearchTarget,
         'default': '1',
         'value': {
             '1': 'word',
@@ -98,8 +108,9 @@ _ADVANCED_PARAM_MAP = {
             '10': 'reference'
         }
     },
-    'lang': {
+    'target_language': {
         'name': 'searchOrglanguage',
+        'type': TargetLanguage,
         'default': '0',
         'value': {
             '0': 'all',
@@ -154,8 +165,9 @@ _ADVANCED_PARAM_MAP = {
             '49': '99'
         }
     },
-    'method': {
+    'search_method': {
         'name': 'wordCondition',
+        'type': SearchMethod,
         'default': 'exact',
         'value': {
             'exact': 'wordSame',
@@ -164,8 +176,9 @@ _ADVANCED_PARAM_MAP = {
             'end': 'wordEnd'
         }
     },
-    'type1': {
+    'classification': {
         'name': 'gubun',
+        'type': Classification,
         'default': 'all',
         'value': {
             'word': 'W',
@@ -173,8 +186,9 @@ _ADVANCED_PARAM_MAP = {
             'expression': 'E'
         }
     },
-    'type2': {
+    'origin_type': {
         'name': 'wordNativeCode',
+        'type': OriginType,
         'default': 'all',
         'value': {
             'native': '1',
@@ -183,18 +197,20 @@ _ADVANCED_PARAM_MAP = {
             'hybrid': '0'
         }
     },
-    'level': {
+    'vocabulary_level': {
         'name': 'imcnt',
+        'type': ScraperVocabularyLevel,
         'default': 'all',
         'value': {
             'level1': '1',
             'level2': '2',
             'level3': '3',
-            '': '0'
+            'none': '0'
         }
     },
-    'pos': {
+    'part_of_speech': {
         'name': 'sp_code',
+        'type': PartOfSpeech,
         'all_value': '0',
         'default': '0',
         'value': {
@@ -215,8 +231,9 @@ _ADVANCED_PARAM_MAP = {
             '15': '27'
         }
     },
-    'multimedia': {
+    'multimedia_type': {
         'name': 'multimedia',
+        'type': MultimediaType,
         'all_value': '0',
         'default': '0',
         'value': {
@@ -228,18 +245,20 @@ _ADVANCED_PARAM_MAP = {
             '6': 'N'
         }
     },
-    'letter_s': {
+    'min_syllables': {
         'name': 'searchSyllableStart'
     },
-    'letter_e': {
+    'max_syllables': {
         'name': 'searchSyllableEnd',
         'value': {
             '0': '80'
         }
     },
-    'sense_cat': {
+    'meaning_category': {
+        'type': MeaningCategory,
         'convert': lambda tup: f'&senseCategoryTop={tup[0]}&senseCategoryMiddle={tup[1]}',
         'value': {
+            '0': ('0', '1000'),
             '1': ('1', '1001'),
             '2': ('1', '1002'),
             '3': ('1', '1003'),
@@ -395,8 +414,9 @@ _ADVANCED_PARAM_MAP = {
             '153': ('14', '1253')
         }
     },
-    'subject_cat': {
+    'subject_category': {
         'name': 'actCategoryList',
+        'type': SubjectCategory,
         'all_value': '0',
         'value': {
             '1': '20001',
@@ -556,28 +576,37 @@ def _get_language_info(lang):
 
     return _LANG_INFO[lang - 1]
 
-def _build_advanced_search_url(params):
-    url = [_ADVANCED_SEARCH_URL]
+def _build_advanced_search_url(kwargs, lang_info):
+    nation, code, _ = lang_info
 
+    query = []
     for adv_key, adv_mapper in _ADVANCED_PARAM_MAP.items():
-        param_value = params.get(adv_key, adv_mapper.get('default'))
+        param_value = kwargs.get(adv_key, adv_mapper.get('default'))
 
         if param_value is None:
             continue
 
-        param_value = str(param_value)
+        if 'type' in adv_mapper:
+            param_value = str(adv_mapper['type'].get_value(param_value, param_value))
+        else:
+            param_value = str(param_value)
+
         use_all = 'all_value' in adv_mapper or adv_mapper.get('default') == 'all'
         all_value = adv_mapper.get('all_value', 'all')
 
         if use_all and param_value == all_value:
-            url.append(_get_advanced_all_params(adv_mapper))
+            query.append(_get_advanced_all_params(adv_mapper))
             continue
 
         param = _get_advanced_param(adv_mapper, param_value)
         if param is not None:
-            url.append(param)
+            query.append(param)
 
-    return ''.join(url)
+    query = ''.join(query)
+    url = _ADVANCED_SEARCH_URL.format(*get_language_query(nation, code)) + query
+    url_kr = _ADVANCED_SEARCH_URL.format('', '') + query
+
+    return url, url_kr
 
 def _build_search_url(kwargs, lang_info):
     nation, code, _ = lang_info
@@ -705,7 +734,10 @@ def send_request(kwargs, response_type):
     url: str
     url_kr: str
 
-    if response_type == 'word_of_the_day':
+    if response_type == 'advanced':
+        url, url_kr = _build_advanced_search_url(kwargs, lang_info)
+        response_type = 'word'
+    elif response_type == 'word_of_the_day':
         nation, *_ = lang_info
         url_kr = _BASE_URL.format('')
         url = _BASE_URL.format(f'/{nation}' if nation else '')

@@ -1,7 +1,42 @@
-from typing import Iterable, Literal, overload
-from ..types import SearchType, SortMethod, SubjectCategory
-from ..types.scraper import ScrapedExampleResponse, ScrapedWordResponse, ScraperTranslationLanguage, WordOfTheDayResponse
-from ..main import TMeaningCategory, TSortMethod, TSubjectCategory
+from typing import Iterable, Literal, Union, overload
+
+from ..types import (
+    Classification,
+    MeaningCategory,
+    MultimediaType,
+    OriginType,
+    PartOfSpeech,
+    SearchMethod,
+    SearchTarget,
+    SearchType,
+    SortMethod,
+    SubjectCategory,
+    TargetLanguage,
+    VocabularyLevel
+)
+from ..types.scraper import (
+    ScrapedDefinitionResponse,
+    ScrapedExampleResponse,
+    ScrapedIdiomProverbResponse,
+    ScrapedWordResponse,
+    ScraperTranslationLanguage,
+    WordOfTheDayResponse
+)
+from ..main import (
+    TClassification,
+    TMeaningCategory,
+    TMultimediaType,
+    TOriginType,
+    TPartOfSpeech,
+    TSearchMethod,
+    TSearchTarget,
+    TSearchType,
+    TSortMethod,
+    TSubjectCategory,
+    TTargetLanguage,
+    TTranslationLanguage,
+    TVocabularyLevel
+)
 
 TScraperTranslationLanguage = ScraperTranslationLanguage | int | Literal[
     'english',
@@ -16,6 +51,34 @@ TScraperTranslationLanguage = ScraperTranslationLanguage | int | Literal[
     'russian',
     'chinese'
 ]
+TScrapedResponse = Union[
+    ScrapedDefinitionResponse,
+    ScrapedExampleResponse,
+    ScrapedIdiomProverbResponse,
+    ScrapedWordResponse
+]
+
+
+def advanced_search(*,
+    query: str,
+    key: str = None,
+    page: int = 1,
+    per_page: int = 10,
+    sort: TSortMethod = SortMethod.ALPHABETICAL,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
+    search_target: TSearchTarget = SearchTarget.HEADWORD,
+    target_language: TTargetLanguage = TargetLanguage.ALL,
+    search_method: TSearchMethod = SearchMethod.EXACT,
+    classification: TClassification | Iterable[TClassification] = Classification.ALL,
+    origin_type: TOriginType | Iterable[TOriginType] = OriginType.ALL,
+    vocabulary_level: TVocabularyLevel | Iterable[TVocabularyLevel] = VocabularyLevel.ALL,
+    part_of_speech: TPartOfSpeech | Iterable[TPartOfSpeech] = PartOfSpeech.ALL,
+    multimedia_type: TMultimediaType | Iterable[TMultimediaType] = MultimediaType.ALL,
+    min_syllables: int = 1,
+    max_syllables: int = 0,
+    meaning_category: TMeaningCategory = MeaningCategory.ALL,
+    subject_category: TSubjectCategory | Iterable[TSubjectCategory] = SubjectCategory.ALL
+) -> ScrapedWordResponse: ...
 
 def fetch_today_word(*,
     translation_language: TScraperTranslationLanguage = None
@@ -53,6 +116,33 @@ def search(*,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
+    search_type: Literal[SearchType.DEFINITION, 'dfn', 'definition'],
+    translation_language: TScraperTranslationLanguage | Iterable[TScraperTranslationLanguage] = None
+) -> ScrapedDefinitionResponse: ...
+@overload
+def search(*,
+    query: str,
+    page: int = 1,
+    per_page: int = 10,
+    sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.EXAMPLE, 'example', 'exam'],
     translation_language: TScraperTranslationLanguage | Iterable[TScraperTranslationLanguage] = None
 ) -> ScrapedExampleResponse: ...
+@overload
+def search(*,
+    query: str,
+    page: int = 1,
+    per_page: int = 10,
+    sort: TSortMethod = SortMethod.ALPHABETICAL,
+    search_type: Literal[SearchType.IDIOM_PROVERB, 'ip', 'idiom_proverb', 'idiom/proverb'],
+    translation_language: TScraperTranslationLanguage | Iterable[TScraperTranslationLanguage] = None
+) -> ScrapedIdiomProverbResponse: ...
+@overload
+def search(*,
+    query: str,
+    page: int = 1,
+    per_page: int = 10,
+    sort: TSortMethod = SortMethod.ALPHABETICAL,
+    search_type: TSearchType,
+    translation_language: TScraperTranslationLanguage | Iterable[TScraperTranslationLanguage] = None
+) -> TScrapedResponse: ...

@@ -135,8 +135,9 @@ def send_request(kwargs, advanced=False, search_type=None):
     """
 
     search_type = SearchType.get_value(
-        search_type or kwargs.get('search_type', 'word')
-    ) or search_type
+        search_type or kwargs.get('search_type', 'word'),
+        search_type
+    )
 
     url = _VIEW_URL if search_type == 'view' else _SEARCH_URL
 

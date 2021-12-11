@@ -3,7 +3,7 @@ Contains types defined by the krdict.scraper package.
 """
 
 from typing import Literal
-from .base import IntEnum
+from .base import IntEnum, StrEnum
 from .main import (
     _PartialSearchDefinition,
     _ResponseEntity,
@@ -103,7 +103,7 @@ class WordOfTheDayResponse(_ResponseEntity):
     """
 
     def __init__(self, raw):
-        self.data = _WordOfTheDayData(raw)
+        self.data = _WordOfTheDayData(raw['item'])
         self.response_type: Literal['word_of_the_day'] = 'word_of_the_day'
         self.raw: dict = raw
 
@@ -175,3 +175,18 @@ class ScraperTranslationLanguage(IntEnum):
     INDONESIAN = 9
     RUSSIAN = 10
     CHINESE = 11
+
+class ScraperVocabularyLevel(StrEnum):
+    """Enumeration class that contains scraper vocabulary levels."""
+
+    __aliases__ = {
+        'beginner': 'level1',
+        'intermediate': 'level2',
+        'advanced': 'level3'
+    }
+
+    ALL = 'all'
+    BEGINNER = 'level1'
+    INTERMEDIATE = 'level2'
+    ADVANCED = 'level3'
+    NONE = 'none'

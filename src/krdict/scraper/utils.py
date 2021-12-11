@@ -261,7 +261,7 @@ def _read_wotd(doc, nation, code, exonym):
         exonym
     )
 
-    return result
+    return result, 1
 
 def _read_conjugation_pronunciation(arr, urls, idx):
     if idx == -1:
