@@ -97,7 +97,7 @@ class _DefinitionSearchItem(_SearchItem):
     def __init__(self, raw):
         super().__init__(raw)
         self.homograph_num: int = raw['sup_no']
-        self.definitions = list(map(_PartialSearchDefinition, raw['sense']))
+        self.definition_info = _PartialSearchDefinition(raw['sense'][0])
 
 class _DefinitionResponseData(_ResponseData):
     def __init__(self, raw):

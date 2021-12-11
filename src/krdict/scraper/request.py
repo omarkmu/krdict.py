@@ -20,11 +20,11 @@ _ADVANCED_SEARCH_URL = (
 _BASE_URL = 'https://krdict.korean.go.kr{}/mainAction'
 _CAT_MEANING_URL = (
     'https://krdict.korean.go.kr{}/dicSearchDetail/searchDetailSenseCategoryResult?'
-    'searchFlag=Y{}&currentPage={}&blockCount={}&sort={}{}'
+    '{}searchFlag=Y&currentPage={}&blockCount={}&sort={}{}'
 )
 _CAT_SUBJECT_URL = (
     'https://krdict.korean.go.kr{}/dicSearchDetail/searchDetailActCategoryResult?'
-    'searchFlag=Y{}&currentPage={}&blockCount={}&sort={}{}'
+    '{}searchFlag=Y&currentPage={}&blockCount={}&sort={}{}'
 )
 _SEARCH_URL = (
     'https://krdict.korean.go.kr{}/dicSearch/search?'
@@ -48,7 +48,7 @@ _LANG_INFO = (
     ('rus', 5, '러시아어'),
     ('chn', 11, '중국어')
 )
-_SENSE_CAT_MAX = [
+_SENSE_CAT_MAX = (
     17,
     30,
     41,
@@ -63,7 +63,7 @@ _SENSE_CAT_MAX = [
     125,
     133,
     153
-]
+)
 
 _ADVANCED_PARAM_MAP = {
     'q': {
@@ -556,12 +556,6 @@ def _get_language_info(lang):
 
     return _LANG_INFO[lang - 1]
 
-def _get_lang_query(nation, code):
-    if not nation:
-        return '', ''
-
-    return f'/{nation}', f'nation={nation}&nationCode={code}&'
-
 def _build_advanced_search_url(params):
     url = [_ADVANCED_SEARCH_URL]
 
@@ -596,7 +590,7 @@ def _build_search_url(kwargs, lang_info):
     search_type = _SEARCH_TYPE_MAP.get(SearchType.get_value(kwargs.get('search_type'), 'word'), 'W')
 
     url = _SEARCH_URL.format(
-        *_get_lang_query(nation, code),
+        *get_language_query(nation, code),
         query,
         page,
         per_page,
@@ -661,7 +655,7 @@ def _build_subject_category_query(category):
 
     return ''.join(value)
 
-def _build_category_query(kwargs, lang_info, response_type):
+def _build_category_url(kwargs, lang_info, response_type):
     nation, code, _ = lang_info
 
     page = kwargs.get('page', 1)
@@ -677,7 +671,7 @@ def _build_category_query(kwargs, lang_info, response_type):
     category_query = query_builder(kwargs.get('category', 0))
 
     url = base_url.format(
-        *_get_lang_query(nation, code),
+        *get_language_query(nation, code),
         page,
         per_page,
         sort,
@@ -691,27 +685,34 @@ def _build_video_url(target_code, dfn_idx, media_idx):
     return _VIDEO_URL.format(target_code, dfn_idx + 1, media_idx + 1)
 
 
+def get_language_query(nation, code):
+    """
+    Returns query strings given a nation and nation code.
+    """
+    if not nation:
+        return '', ''
+
+    return f'/{nation}', f'nation={nation}&nationCode={code}&'
+
 def send_request(kwargs, response_type):
     """
     Sends a request to a URL and parses the response with lxml.
     """
 
     lang_info = _get_language_info(kwargs.get('translation_language'))
-    page = int(kwargs.get('page', 1))
-    per_page = int(kwargs.get('per_page', 10))
-    nation, *_ = lang_info
-
     response_type = SearchType.get_value(response_type, response_type)
 
     url: str
-    url_kr = ''
+    url_kr: str
+
     if response_type == 'word_of_the_day':
+        nation, *_ = lang_info
         url_kr = _BASE_URL.format('')
         url = _BASE_URL.format(f'/{nation}' if nation else '')
-    elif response_type in ('word', 'exam'):
+    elif response_type in ('word', 'exam', 'dfn', 'ip'):
         url, url_kr = _build_search_url(kwargs, lang_info)
     elif response_type in ('meaning_category', 'subject_category'):
-        url, url_kr = _build_category_query(kwargs, lang_info, response_type)
+        url, url_kr = _build_category_url(kwargs, lang_info, response_type)
     else:
         raise ValueError
 
@@ -723,8 +724,8 @@ def send_request(kwargs, response_type):
             response_type,
             url,
             url_kr,
-            page,
-            per_page,
+            int(kwargs.get('page', 1)),
+            int(kwargs.get('per_page', 10)),
             lang_info
         )
     except requests.exceptions.RequestException as exc:

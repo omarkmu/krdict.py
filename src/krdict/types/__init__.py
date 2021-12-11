@@ -7,6 +7,9 @@ from .meaning_category import MeaningCategory
 from .subject_category import SubjectCategory
 from .exceptions import KRDictException
 from .scraper import (
+    ScrapedDefinitionResponse,
+    ScrapedExampleResponse,
+    ScrapedIdiomProverbResponse,
     ScrapedWordResponse,
     ScraperTranslationLanguage,
     WordOfTheDayResponse
@@ -352,6 +355,9 @@ __all__ = [
     'MultimediaType',
     'OriginType',
     'PartOfSpeech',
+    'ScrapedDefinitionResponse',
+    'ScrapedExampleResponse',
+    'ScrapedIdiomProverbResponse',
     'ScrapedWordResponse',
     'ScraperTranslationLanguage',
     'SearchMethod',
