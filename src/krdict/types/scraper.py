@@ -147,6 +147,124 @@ class ScrapedIdiomProverbResponse(_ResponseEntity):
         self.response_type: Literal['scraped_ip'] = 'scraped_ip'
         self.raw: dict = raw
 
+
+class ScraperSearchTarget(IntEnum):
+    """Enumeration class that contains scraper search targets."""
+
+    __aliases__ = {
+        'headword': 1,
+        'definition': 2,
+        'example': 3,
+        'original language': 4,
+        'original_language': 4,
+        'pronunciation': 5,
+        'application': 6,
+        'application shorthand': 7,
+        'application_shorthand': 7,
+        'idiom': 8,
+        'proverb': 9,
+        'reference info': 10,
+        'reference_info': 10,
+        'translation_headword': 11,
+        'translation_definition': 12,
+        'translation_idiom_proverb': 13
+    }
+
+    HEADWORD = 1
+    DEFINITION = 2
+    EXAMPLE = 3
+    ORIGINAL_LANGUAGE = 4
+    PRONUNCIATION = 5
+    APPLICATION = 6
+    APPLICATION_SHORTHAND = 7
+    IDIOM = 8
+    PROVERB = 9
+    REFERENCE_INFO = 10
+    TRANSLATION_HEADWORD = 11
+    TRANSLATION_DEFINITION = 12
+    TRANSLATION_IDIOM_PROVERB= 13
+
+class ScraperTargetLanguage(IntEnum):
+    """Enumeration class that contains scraper target languages."""
+
+    __aliases__ = {
+        'all': 0,
+        'native_word': 1,
+        'sino-korean': 2,
+        'sino_korean': 2,
+        'unknown': 3,
+        'english': 4,
+        'greek': 5,
+        'dutch': 6,
+        'norwegian': 7,
+        'german': 8,
+        'latin': 9,
+        'russian': 10,
+        'romanian': 11,
+        'malay': 13,
+        'mongolian': 14,
+        'vietnamese': 17,
+        'bulgarian': 18,
+        'sanskrit': 19,
+        'serbo-croatian': 20,
+        'serbo_croatian': 20,
+        'swedish': 22,
+        'arabic': 23,
+        'spanish': 25,
+        'italian': 28,
+        'indonesian': 29,
+        'japanese': 30,
+        'chinese': 31,
+        'czech': 32,
+        'thai': 36,
+        'turkish': 37,
+        'persian': 39,
+        'portuguese': 40,
+        'polish': 41,
+        'french': 42,
+        'hungarian': 45,
+        'hebrew': 46,
+        'hindi': 47,
+        'other': 48
+    }
+
+    ALL = 0
+    NATIVE_WORD = 1
+    SINO_KOREAN = 2
+    UNKNOWN = 3
+    ENGLISH = 4
+    GREEK = 5
+    DUTCH = 6
+    NORWEGIAN = 7
+    GERMAN = 8
+    LATIN = 9
+    RUSSIAN = 10
+    ROMANIAN = 11
+    MALAY = 13
+    MONGOLIAN = 14
+    VIETNAMESE = 17
+    BULGARIAN = 18
+    SANSKRIT = 19
+    SERBO_CROATIAN = 20
+    SWEDISH = 22
+    ARABIC = 23
+    SPANISH = 25
+    ITALIAN = 28
+    INDONESIAN = 29
+    JAPANESE = 30
+    CHINESE = 31
+    CZECH = 32
+    THAI = 36
+    TURKISH = 37
+    PERSIAN = 39
+    PORTUGUESE = 40
+    POLISH = 41
+    FRENCH = 42
+    HUNGARIAN = 45
+    HEBREW = 46
+    HINDI = 47
+    OTHER = 48
+
 class ScraperTranslationLanguage(IntEnum):
     """Enumeration class that contains translation languages that can be used by the scraper."""
 

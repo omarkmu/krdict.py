@@ -4,26 +4,26 @@ Handles making requests to the dictionary website.
 
 import requests
 from lxml import html
-from ..types.scraper import ScraperVocabularyLevel
 from ..types import (
     isiterable,
     Classification,
+    MeaningCategory,
     MultimediaType,
     OriginType,
     PartOfSpeech,
     SearchMethod,
-    SearchTarget,
     SearchType,
-    TargetLanguage,
     SortMethod,
-    MeaningCategory,
-    SubjectCategory,
-    ScraperTranslationLanguage
+    ScraperSearchTarget,
+    ScraperTargetLanguage,
+    ScraperTranslationLanguage,
+    ScraperVocabularyLevel,
+    SubjectCategory
 )
 
 _ADVANCED_SEARCH_URL = (
     'https://krdict.korean.go.kr{}/dicSearchDetail/searchDetailWordsResult?'
-    '{}&searchFlag=Y&searchOp=AND&syllablePosition='
+    '{}searchFlag=Y&syllablePosition={}'
 )
 _BASE_URL = 'https://krdict.korean.go.kr{}/mainAction'
 _CAT_MEANING_URL = (
@@ -33,6 +33,9 @@ _CAT_MEANING_URL = (
 _CAT_SUBJECT_URL = (
     'https://krdict.korean.go.kr{}/dicSearchDetail/searchDetailActCategoryResult?'
     '{}searchFlag=Y&currentPage={}&blockCount={}&sort={}{}'
+)
+_DEFAULT_ADVANCED_CONDITION = (
+    '&searchOp=AND&searchTarget=word&searchOrglanguage=all&wordCondition=wordAll&query='
 )
 _SEARCH_URL = (
     'https://krdict.korean.go.kr{}/dicSearch/search?'
@@ -73,27 +76,14 @@ _SENSE_CAT_MAX = (
     153
 )
 
-_ADVANCED_PARAM_MAP = {
+_ADVANCED_CONDITION_MAP = {
     'query': {
-        'name': 'query'
-    },
-    'page': {
-        'name': 'currentPage'
-    },
-    'per_page': {
-        'name': 'blockCount'
-    },
-    'sort': {
-        'name': 'sort',
-        'type': SortMethod,
-        'value': {
-            'dict': 'W',
-            'popular': 'C'
-        }
+        'name': 'query',
+        'default': ''
     },
     'search_target': {
         'name': 'searchTarget',
-        'type': SearchTarget,
+        'type': ScraperSearchTarget,
         'default': '1',
         'value': {
             '1': 'word',
@@ -105,12 +95,15 @@ _ADVANCED_PARAM_MAP = {
             '7': 'shorten',
             '8': 'idiom',
             '9': 'proverb',
-            '10': 'reference'
+            '10': 'reference',
+            '11': 'trans_word',
+            '12': 'trans_word_def',
+            '13': 'trans_subword'
         }
     },
     'target_language': {
         'name': 'searchOrglanguage',
-        'type': TargetLanguage,
+        'type': ScraperTargetLanguage,
         'default': '0',
         'value': {
             '0': 'all',
@@ -168,12 +161,28 @@ _ADVANCED_PARAM_MAP = {
     'search_method': {
         'name': 'wordCondition',
         'type': SearchMethod,
-        'default': 'exact',
+        'default': 'include',
         'value': {
             'exact': 'wordSame',
             'include': 'wordAll',
             'start': 'wordStart',
             'end': 'wordEnd'
+        }
+    }
+}
+_ADVANCED_PARAM_MAP = {
+    'page': {
+        'name': 'currentPage'
+    },
+    'per_page': {
+        'name': 'blockCount'
+    },
+    'sort': {
+        'name': 'sort',
+        'type': SortMethod,
+        'value': {
+            'dict': 'W',
+            'popular': 'C'
         }
     },
     'classification': {
@@ -256,6 +265,7 @@ _ADVANCED_PARAM_MAP = {
     },
     'meaning_category': {
         'type': MeaningCategory,
+        'default': '0',
         'convert': lambda tup: f'&senseCategoryTop={tup[0]}&senseCategoryMiddle={tup[1]}',
         'value': {
             '0': ('0', '1000'),
@@ -418,6 +428,7 @@ _ADVANCED_PARAM_MAP = {
         'name': 'actCategoryList',
         'type': SubjectCategory,
         'all_value': '0',
+        'all_flag': False,
         'value': {
             '1': '20001',
             '2': '20002',
@@ -568,6 +579,17 @@ def _get_advanced_all_params(adv_mapper):
 
     return adv_mapper['all_params']
 
+def _convert_advanced_value(adv_key, adv_mapper, kwargs):
+    param_value = kwargs.get(adv_key, adv_mapper.get('default'))
+
+    if param_value is None:
+        return None
+
+    if 'type' in adv_mapper:
+        return str(adv_mapper['type'].get_value(param_value, param_value))
+
+    return str(param_value)
+
 def _get_language_info(lang):
     lang = ScraperTranslationLanguage.get_value(lang)
 
@@ -576,25 +598,56 @@ def _get_language_info(lang):
 
     return _LANG_INFO[lang - 1]
 
+def _build_advanced_search_conditions(conditions):
+    query = []
+
+    for condition in conditions:
+        exclude = 'exclude' in condition and condition['exclude']
+        subquery = []
+        subquery.append(f'&searchOp={"NOT" if exclude else "AND"}')
+        empty = True
+
+        for adv_key, adv_mapper in _ADVANCED_CONDITION_MAP.items():
+            if condition.get(adv_key) is not None:
+                empty = False
+
+            param_value = _convert_advanced_value(adv_key, adv_mapper, condition)
+
+            if param_value is None:
+                continue
+
+            param = _get_advanced_param(adv_mapper, param_value)
+            if param is not None:
+                subquery.append(param)
+
+        if not empty:
+            query.extend(subquery)
+
+    return ''.join(query)
+
 def _build_advanced_search_url(kwargs, lang_info):
     nation, code, _ = lang_info
 
+    if 'min_syllables' in kwargs and 'max_syllables' not in kwargs:
+        kwargs = kwargs.copy()
+        kwargs['max_syllables'] = 80
+    elif 'max_syllables' in kwargs and 'min_syllables' not in kwargs:
+        kwargs = kwargs.copy()
+        kwargs['min_syllables'] = 1
+
     query = []
     for adv_key, adv_mapper in _ADVANCED_PARAM_MAP.items():
-        param_value = kwargs.get(adv_key, adv_mapper.get('default'))
+        param_value = _convert_advanced_value(adv_key, adv_mapper, kwargs)
 
         if param_value is None:
             continue
-
-        if 'type' in adv_mapper:
-            param_value = str(adv_mapper['type'].get_value(param_value, param_value))
-        else:
-            param_value = str(param_value)
 
         use_all = 'all_value' in adv_mapper or adv_mapper.get('default') == 'all'
         all_value = adv_mapper.get('all_value', 'all')
 
         if use_all and param_value == all_value:
+            if adv_mapper.get('all_flag', True):
+                query.append(f'&all_{adv_mapper["name"]}=ALL')
             query.append(_get_advanced_all_params(adv_mapper))
             continue
 
@@ -602,13 +655,22 @@ def _build_advanced_search_url(kwargs, lang_info):
         if param is not None:
             query.append(param)
 
+    base_condition = _build_advanced_search_conditions((kwargs,))
+    conditions = _build_advanced_search_conditions(kwargs.get('search_conditions', ()))
+
+    if base_condition or conditions:
+        query.append(base_condition)
+        query.append(conditions)
+    else:
+        query.append(_DEFAULT_ADVANCED_CONDITION)
+
     query = ''.join(query)
-    url = _ADVANCED_SEARCH_URL.format(*get_language_query(nation, code)) + query
-    url_kr = _ADVANCED_SEARCH_URL.format('', '') + query
+    return (
+        _ADVANCED_SEARCH_URL.format(*get_language_query(nation, code), query),
+        _ADVANCED_SEARCH_URL.format('', '', query)
+    )
 
-    return url, url_kr
-
-def _build_search_url(kwargs, lang_info):
+def _build_search_url(kwargs, lang_info, search_type):
     nation, code, _ = lang_info
 
     query = kwargs.get('query')
@@ -616,7 +678,7 @@ def _build_search_url(kwargs, lang_info):
     per_page = kwargs.get('per_page', 10)
 
     sort = 'C' if SortMethod.get_value(kwargs.get('sort')) == 'popular' else 'W'
-    search_type = _SEARCH_TYPE_MAP.get(SearchType.get_value(kwargs.get('search_type'), 'word'), 'W')
+    search_type = _SEARCH_TYPE_MAP.get(search_type, 'W')
 
     url = _SEARCH_URL.format(
         *get_language_query(nation, code),
@@ -644,21 +706,8 @@ def _build_sense_category_query(category):
     if category <= 0 or category > 153:
         return '&lgCategoryCode=0&miCategoryCode=-1'
 
-    if category == 1:
-        return '&lgCategoryCode=1&miCategoryCode=-1'
-
-    code_large = 0
-    code_mid = 1000 + category if category < 129 else 1100 + category
-
-    for idx, cat_max in enumerate(_SENSE_CAT_MAX):
-        if category == cat_max + 1:
-            code_large = idx + 2
-            code_mid = -1
-            break
-
-        if category <= cat_max:
-            code_large = idx + 1
-            break
+    meaning_map = _ADVANCED_PARAM_MAP['meaning_category']['value']
+    code_large, code_mid = meaning_map[str(category)]
 
     return f'&lgCategoryCode={code_large}&miCategoryCode={code_mid}'
 
@@ -666,7 +715,7 @@ def _build_subject_category_query(category):
     if not isiterable(category, exclude=(str,)):
         category = (category,)
 
-    subject_map = _ADVANCED_PARAM_MAP['subject_cat']['value']
+    subject_map = _ADVANCED_PARAM_MAP['subject_category']['value']
     value = []
 
     for cat in category:
@@ -742,7 +791,7 @@ def send_request(kwargs, response_type):
         url_kr = _BASE_URL.format('')
         url = _BASE_URL.format(f'/{nation}' if nation else '')
     elif response_type in ('word', 'exam', 'dfn', 'ip'):
-        url, url_kr = _build_search_url(kwargs, lang_info)
+        url, url_kr = _build_search_url(kwargs, lang_info, response_type)
     elif response_type in ('meaning_category', 'subject_category'):
         url, url_kr = _build_category_url(kwargs, lang_info, response_type)
     else:

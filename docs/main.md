@@ -63,7 +63,7 @@ is set to any value other than `'original_language'`, this parameter has no effe
 - `part_of_speech` ([`PartOfSpeech`](parameters.md#partofspeech)): A part of speech to filter by.
 - `multimedia_type` ([`MultimediaType`](parameters.md#multimediatype)): A multimedia type to filter by.
 - `min_syllables`: The minimum number of syllables in result words `[1, 80]`.
-- `max_syllables`: The maximum number of syllables in results words. A value of `0` denotes no maximum `[0, 80]`.
+- `max_syllables`: The maximum number of syllables in result words. A value of `0` denotes no maximum `[0, 80]`.
 - `meaning_category` ([`MeaningCategory`](parameters.md#meaningcategory)): The meaning category to filter by.
 - `subject_category` ([`SubjectCategory`](parameters.md#subjectcategory)): A subject category to filter by.
 

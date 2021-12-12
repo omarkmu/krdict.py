@@ -1,4 +1,4 @@
-from typing import Iterable, Literal, Union, overload
+from typing import Iterable, Literal, TypedDict, Union, overload
 
 from ..types import (
     Classification,
@@ -7,19 +7,17 @@ from ..types import (
     OriginType,
     PartOfSpeech,
     SearchMethod,
-    SearchTarget,
-    SearchType,
-    SortMethod,
-    SubjectCategory,
-    TargetLanguage,
-    VocabularyLevel
-)
-from ..types.scraper import (
     ScrapedDefinitionResponse,
     ScrapedExampleResponse,
     ScrapedIdiomProverbResponse,
     ScrapedWordResponse,
     ScraperTranslationLanguage,
+    SearchTarget,
+    SearchType,
+    SortMethod,
+    SubjectCategory,
+    TargetLanguage,
+    VocabularyLevel,
     WordOfTheDayResponse
 )
 from ..main import (
@@ -58,17 +56,23 @@ TScrapedResponse = Union[
     ScrapedWordResponse
 ]
 
+class TSearchCondition(TypedDict, total=False):
+    query: str
+    exclude: bool
+    search_target: TSearchTarget
+    target_language: TTargetLanguage
+    search_method: TSearchMethod
+
 
 def advanced_search(*,
-    query: str,
-    key: str = None,
+    query: str = '',
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
     search_target: TSearchTarget = SearchTarget.HEADWORD,
     target_language: TTargetLanguage = TargetLanguage.ALL,
-    search_method: TSearchMethod = SearchMethod.EXACT,
+    search_method: TSearchMethod = SearchMethod.INCLUDE,
     classification: TClassification | Iterable[TClassification] = Classification.ALL,
     origin_type: TOriginType | Iterable[TOriginType] = OriginType.ALL,
     vocabulary_level: TVocabularyLevel | Iterable[TVocabularyLevel] = VocabularyLevel.ALL,
@@ -77,7 +81,8 @@ def advanced_search(*,
     min_syllables: int = 1,
     max_syllables: int = 0,
     meaning_category: TMeaningCategory = MeaningCategory.ALL,
-    subject_category: TSubjectCategory | Iterable[TSubjectCategory] = SubjectCategory.ALL
+    subject_category: TSubjectCategory | Iterable[TSubjectCategory] = SubjectCategory.ALL,
+    search_conditions: Iterable[TSearchCondition] = None
 ) -> ScrapedWordResponse: ...
 
 def fetch_today_word(*,
@@ -90,7 +95,7 @@ def fetch_meaning_category_words(*,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
-    translation_language: TScraperTranslationLanguage = None
+    translation_language: TScraperTranslationLanguage | Iterable[TScraperTranslationLanguage] = None
 ) -> ScrapedWordResponse: ...
 
 def fetch_subject_category_words(*,
@@ -98,7 +103,7 @@ def fetch_subject_category_words(*,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
-    translation_language: TScraperTranslationLanguage = None
+    translation_language: TScraperTranslationLanguage | Iterable[TScraperTranslationLanguage] = None
 ) -> ScrapedWordResponse: ...
 
 @overload

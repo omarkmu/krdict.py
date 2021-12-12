@@ -2,7 +2,14 @@
 Retrieves information from the krdict website via scraping.
 """
 
-from ..types.scraper import ScrapedWordResponse, ScraperTranslationLanguage, WordOfTheDayResponse
+from ..types import (
+    ScrapedWordResponse,
+    ScraperSearchTarget,
+    ScraperTargetLanguage,
+    ScraperTranslationLanguage,
+    ScraperVocabularyLevel,
+    WordOfTheDayResponse
+)
 from .fetch import (
     advanced_search,
     fetch_meaning_category_words,
@@ -18,6 +25,9 @@ __all__ = [
     'fetch_subject_category_words',
     'search',
     'ScrapedWordResponse',
+    'ScraperSearchTarget',
+    'ScraperTargetLanguage',
     'ScraperTranslationLanguage',
+    'ScraperVocabularyLevel',
     'WordOfTheDayResponse'
 ]

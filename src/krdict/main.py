@@ -37,7 +37,7 @@ def advanced_search(**kwargs):
     - ``part_of_speech``: A part of speech to filter by.
     - ``multimedia_type``: A multimedia type to filter by.
     - ``min_syllables``: The minimum number of syllables in result words ``[1, 80]``.
-    - ``max_syllables``: The maximum number of syllables in results words. A value of ``0`` denotes
+    - ``max_syllables``: The maximum number of syllables in result words. A value of ``0`` denotes
     no maximum ``[0, 80]``.
     - ``meaning_category``: The meaning category to filter by.
     - ``subject_category``: A subject category to filter by.

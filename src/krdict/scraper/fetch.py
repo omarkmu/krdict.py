@@ -13,14 +13,10 @@ def advanced_search(**kwargs):
     See the [documentation](https://krdictpy.readthedocs.io/en/stable/return_types) for details.
 
     - ``query``: The search query.
-    - ``raise_api_errors``: Sets whether a ``KRDictException`` will be raised if an API error
-    occurs. A value of ``True`` guarantees that the result is not an error object.
-    is included, including keys set by the scraper.
     - ``page``: The page at which the search should start ``[1, 1000]``.
     - ``per_page``: The maximum number of search results to return ``[10, 100]``.
     - ``sort``: The sort method that should be used.
-    - ``translation_language``: A language or list of languages for which translations
-    should be included.
+    - ``translation_language``: The language for which translations should be included.
     - ``search_target``: The target field of the search query.
     - ``target_language``: The original language to search by. If ``search_target``
     is set to any value other than ``SearchTarget.ORIGINAL_LANGUAGE``, this parameter
@@ -32,10 +28,10 @@ def advanced_search(**kwargs):
     - ``part_of_speech``: A part of speech to filter by.
     - ``multimedia_type``: A multimedia type to filter by.
     - ``min_syllables``: The minimum number of syllables in result words ``[1, 80]``.
-    - ``max_syllables``: The maximum number of syllables in results words. A value of ``0`` denotes
-    no maximum ``[0, 80]``.
+    - ``max_syllables``: The maximum number of syllables in result words ``[1, 80]``.
     - ``meaning_category``: The meaning category to filter by.
     - ``subject_category``: A subject category to filter by.
+    - ``search_conditions``: An array of search condition objects to filter by.
     """
 
     return parse_response(*send_request(kwargs, 'advanced'))

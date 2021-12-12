@@ -11,7 +11,10 @@ from .scraper import (
     ScrapedExampleResponse,
     ScrapedIdiomProverbResponse,
     ScrapedWordResponse,
+    ScraperSearchTarget,
+    ScraperTargetLanguage,
     ScraperTranslationLanguage,
+    ScraperVocabularyLevel,
     WordOfTheDayResponse
 )
 from .main import (
@@ -359,7 +362,10 @@ __all__ = [
     'ScrapedExampleResponse',
     'ScrapedIdiomProverbResponse',
     'ScrapedWordResponse',
+    'ScraperTargetLanguage',
+    'ScraperSearchTarget',
     'ScraperTranslationLanguage',
+    'ScraperVocabularyLevel',
     'SearchMethod',
     'SearchTarget',
     'SearchType',
