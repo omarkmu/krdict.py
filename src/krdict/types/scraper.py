@@ -1,5 +1,5 @@
 """
-Contains types defined by the krdict.scraper package.
+Contains types defined by the krdict.scraper module.
 """
 
 from typing import Literal
@@ -97,6 +97,120 @@ class _WordOfTheDayData(_ResponseEntity):
         self.translations = list(map(_SearchTranslation, raw.get('translation', [])))
 
 
+class _ViewHanjaInfo(_ResponseEntity):
+    def __init__(self, raw):
+        self.hanja: str = raw['hanja']
+        self.radical: str = raw['radical']
+        self.stroke_count: int = raw['stroke_count']
+        self.readings: list[str] = raw['readings']
+
+class _ViewOriginalLanguageInfo(_ResponseEntity):
+    def __init__(self, raw):
+        self.original_language: str = raw['original_language']
+        self.language_type: str = raw['language_type']
+        self.hanja_info = list(map(_ViewHanjaInfo, raw.get('hanja_info', [])))
+
+class _ScrapedViewPronunciationInfo(_ResponseEntity):
+    def __init__(self, raw):
+        self.pronunciation: str = raw['pronunciation']
+        self.url: str = raw.get('link', '')
+
+class _ScrapedViewAbbreviationInfo(_ResponseEntity):
+    def __init__(self, raw):
+        self.abbreviation: str = raw['abbreviation']
+        self.pronunciation_info = list(
+            map(_ScrapedViewPronunciationInfo, raw.get('pronunciation_info', [])))
+
+class _ScrapedViewConjugationInfo(_ResponseEntity):
+    def __init__(self, raw):
+        info = raw.get('conjugation_info', {})
+
+        self.conjugation: str = info.get('conjugation', '')
+        self.pronunciation_info = list(map(
+            _ScrapedViewPronunciationInfo, info.get('pronunciation_info', [])))
+        self.abbreviation_info = list(map(
+            _ScrapedViewAbbreviationInfo, raw.get('abbreviation_info', [])))
+
+class _ScrapedViewDerivativeInfo(_ResponseEntity):
+    def __init__(self, raw):
+        self.word: str = raw['word']
+        self.target_code: int = raw.get('link_target_code', 0)
+        self.url: str = raw.get('link', '')
+        self.has_target_code: bool = raw.get('link_type') == 'C'
+
+class _ScrapedViewPatternInfo(_ResponseEntity):
+    def __init__(self, raw):
+        self.pattern: str = raw['pattern']
+
+class _ScrapedViewExampleInfo(_ResponseEntity):
+    def __init__(self, raw):
+        self.example: str = raw['example']
+
+class _ScrapedViewRelatedInfo(_ScrapedViewDerivativeInfo):
+    def __init__(self, raw):
+        super().__init__(raw)
+        self.type: str = raw['type']
+
+class _ScrapedViewMultimediaInfo(_ResponseEntity):
+    def __init__(self, raw):
+        self.label: str = raw['label']
+        self.type: str = raw['type']
+        self.file_number: int = raw['file_no']
+        self.url: str = raw['link']
+        self.thumbnail_url: str = raw['thumb_link']
+
+class _ScrapedPartialViewDefinitionInfo(_ResponseEntity):
+    def __init__(self, raw):
+        self.definition: str = raw['definition']
+        self.reference: str = raw.get('reference', '')
+        self.translations = list(map(_SearchTranslation, raw.get('translation', [])))
+        self.example_info = list(map(_ScrapedViewExampleInfo, raw.get('example_info', [])))
+        self.pattern_info = list(map(_ScrapedViewPatternInfo, raw.get('pattern_info', [])))
+        self.pattern_reference: str = raw.get('pattern_reference', '')
+        self.related_info = list(map(_ScrapedViewRelatedInfo, raw.get('rel_info', [])))
+
+class _ScrapedViewDefinitionInfo(_ScrapedPartialViewDefinitionInfo):
+    def __init__(self, raw):
+        super().__init__(raw)
+        self.multimedia_info = list(map(_ScrapedViewMultimediaInfo, raw.get('multimedia_info', [])))
+
+class _ScrapedViewSubwordInfo(_ResponseEntity):
+    def __init__(self, raw):
+        self.subword: str = raw['subword']
+        self.subword_type: str = raw['subword_unit']
+        self.subdefinition_info = list(map(_ScrapedPartialViewDefinitionInfo, raw['subsense_info']))
+
+class _ScrapedViewWordInfo(_ResponseEntity):
+    def __init__(self, raw):
+        self.word: str = raw['word']
+        self.part_of_speech: str = raw.get('pos', '')
+        self.homograph_num: int = raw['sup_no']
+        self.vocabulary_level: str = raw['word_grade']
+        self.allomorph: str = raw.get('allomorph', '')
+        self.reference: str = raw.get('reference', '')
+
+        self.definition_info = list(map(_ScrapedViewDefinitionInfo, raw['sense_info']))
+        self.original_language_info = list(map(
+            _ViewOriginalLanguageInfo, raw.get('original_language_info', [])))
+        self.pronunciation_info = list(map(
+            _ScrapedViewPronunciationInfo, raw.get('pronunciation_info', [])))
+        self.conjugation_info = list(map(_ScrapedViewConjugationInfo, raw.get('conju_info', [])))
+        self.derivative_info = list(map(_ScrapedViewDerivativeInfo, raw.get('der_info', [])))
+        self.subword_info = list(map(_ScrapedViewSubwordInfo, raw.get('subword_info', [])))
+
+class _ScrapedViewItem(_ResponseEntity):
+    def __init__(self, raw):
+        self.target_code: int = raw['target_code']
+        self.word_info = _ScrapedViewWordInfo(raw['word_info'])
+
+class _ScrapedViewResponseData(_ResponseEntity):
+    def __init__(self, raw):
+        self.url: str = raw['link']
+        self.translated_url = raw.get('trans_link', '')
+        self.total_results: int = raw['total']
+        self.results = list(map(_ScrapedViewItem, raw['item']))
+
+
 class WordOfTheDayResponse(_ResponseEntity):
     """
     Contains information about the word of the day.
@@ -147,6 +261,15 @@ class ScrapedIdiomProverbResponse(_ResponseEntity):
         self.response_type: Literal['scraped_ip'] = 'scraped_ip'
         self.raw: dict = raw
 
+class ScrapedViewResponse(_ResponseEntity):
+    """
+    Contains information about a scraped view response.
+    """
+
+    def __init__(self, raw):
+        self.data = _ScrapedViewResponseData(raw)
+        self.response_type: Literal['scraped_view'] = 'scraped_view'
+        self.raw: dict = raw
 
 class ScraperSearchTarget(IntEnum):
     """Enumeration class that contains scraper search targets."""

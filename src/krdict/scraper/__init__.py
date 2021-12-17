@@ -3,6 +3,10 @@ Retrieves information from the krdict website via scraping.
 """
 
 from ..types import (
+    ScrapedDefinitionResponse,
+    ScrapedExampleResponse,
+    ScrapedIdiomProverbResponse,
+    ScrapedViewResponse,
     ScrapedWordResponse,
     ScraperSearchTarget,
     ScraperTargetLanguage,
@@ -15,7 +19,8 @@ from .fetch import (
     fetch_meaning_category_words,
     fetch_subject_category_words,
     fetch_today_word,
-    search
+    search,
+    view
 )
 
 __all__ = [
@@ -24,7 +29,12 @@ __all__ = [
     'fetch_meaning_category_words',
     'fetch_subject_category_words',
     'search',
+    'view',
+    'ScrapedDefinitionResponse',
+    'ScrapedExampleResponse',
+    'ScrapedIdiomProverbResponse',
     'ScrapedWordResponse',
+    'ScrapedViewResponse',
     'ScraperSearchTarget',
     'ScraperTargetLanguage',
     'ScraperTranslationLanguage',

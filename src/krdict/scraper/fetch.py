@@ -87,7 +87,8 @@ def fetch_subject_category_words(**kwargs):
 def search(**kwargs):
     """
     Performs a search on the Korean Learners' Dictionary.
-    Returns a dict with contents dependent on the value of the ``search_type`` parameter.
+    Returns a response object matching the value of the
+    ``search_type`` parameter.
 
     See the [documentation](https://krdictpy.readthedocs.io/en/stable/return_types)
     for details.
@@ -102,3 +103,17 @@ def search(**kwargs):
     """
 
     return parse_response(*send_request(kwargs, kwargs.get('search_type', 'word')))
+
+def view(**kwargs):
+    """
+    Performs a view query on the Korean Learners' Dictionary.
+    Returns either a response object with information about a dictionary entry.
+
+    See the [documentation](https://krdictpy.readthedocs.io/en/stable/return_types)
+    for details.
+
+    - ``target_code``: The target code of the desired result.
+    - ``translation_language``: The language for which translations should be included.
+    """
+
+    return parse_response(*send_request(kwargs, 'view'))

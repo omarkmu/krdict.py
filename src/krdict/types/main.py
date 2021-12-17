@@ -145,7 +145,7 @@ class _ViewAbbreviationInfo(_ResponseEntity):
 
 class _ViewConjugationInfo(_ResponseEntity):
     def __init__(self, raw):
-        self.conjugation: str = raw['conjugation']
+        self.conjugation: str = raw.get('conjugation', '')
         info = raw.get('conjugation_info', {})
 
         self.pronunciation_info = list(map(
@@ -157,7 +157,7 @@ class _ViewReferenceInfo(_ResponseEntity):
     def __init__(self, raw):
         self.word: str = raw['word']
         self.target_code: int = raw.get('link_target_code', 0)
-        self.url: str = raw['link']
+        self.url: str = raw.get('link', '')
         self.has_target_code: bool = raw.get('link_type') == 'C'
 
 class _ViewCategoryInfo(_ResponseEntity):
@@ -168,7 +168,7 @@ class _ViewCategoryInfo(_ResponseEntity):
 class _ViewPatternInfo(_ResponseEntity):
     def __init__(self, raw):
         self.pattern: str = raw['pattern']
-        self.pattern_referebce: str = raw.get('pattern_reference', '')
+        self.pattern_reference: str = raw.get('pattern_reference', '')
 
 class _ViewExampleInfo(_ResponseEntity):
     def __init__(self, raw):
@@ -186,25 +186,7 @@ class _ViewMultimediaInfo(_ResponseEntity):
         self.type: str = raw['type']
         self.url: str = raw['link']
 
-class _ViewPartialRelatedInfo(_ResponseEntity):
-    def __init__(self, raw):
-        self.word: str = raw['word']
-        self.type: str = raw['type']
-
-class _ViewSubdefinitionInfo(_ResponseEntity):
-    def __init__(self, raw):
-        self.definition: str = raw['definition']
-        self.translations = list(map(_SearchTranslation, raw.get('translation', [])))
-        self.example_info = list(map(_ViewExampleInfo, raw.get('example_info', [])))
-        self.related_info = list(map(_ViewPartialRelatedInfo, raw.get('rel_info', [])))
-
-class _ViewSubwordInfo(_ResponseEntity):
-    def __init__(self, raw):
-        self.subword: str = raw['subword']
-        self.subword_unit: str = raw['subword_unit']
-        self.subdefinition_info = list(map(_ViewSubdefinitionInfo, raw['subsense_info']))
-
-class _ViewDefinitionInfo(_ResponseEntity):
+class _PartialViewDefinitionInfo(_ResponseEntity):
     def __init__(self, raw):
         self.definition: str = raw['definition']
         self.reference: str = raw.get('reference', '')
@@ -212,17 +194,28 @@ class _ViewDefinitionInfo(_ResponseEntity):
         self.example_info = list(map(_ViewExampleInfo, raw.get('example_info', [])))
         self.pattern_info = list(map(_ViewPatternInfo, raw.get('pattern_info', [])))
         self.related_info = list(map(_ViewRelatedInfo, raw.get('rel_info', [])))
+
+class _ViewDefinitionInfo(_PartialViewDefinitionInfo):
+    def __init__(self, raw):
+        super().__init__(raw)
         self.multimedia_info = list(map(_ViewMultimediaInfo, raw.get('multimedia_info', [])))
+
+class _ViewSubwordInfo(_ResponseEntity):
+    def __init__(self, raw):
+        self.subword: str = raw['subword']
+        self.subword_unit: str = raw['subword_unit']
+        self.subdefinition_info = list(map(_PartialViewDefinitionInfo, raw['subsense_info']))
 
 class _ViewWordInfo(_ResponseEntity):
     def __init__(self, raw):
         self.word: str = raw['word']
         self.word_unit: str = raw['word_unit']
         self.word_type: str = raw['word_type']
-        self.part_of_speech: str = raw['pos']
+        self.part_of_speech: str = raw.get('pos', '')
         self.homograph_num: int = raw['sup_no']
         self.vocabulary_level: str = raw['word_grade']
         self.allomorph: str = raw.get('allomorph', '')
+        self.reference: str = raw.get('reference', '')
 
         self.definition_info = list(map(_ViewDefinitionInfo, raw['sense_info']))
         self.original_language_info = list(map(

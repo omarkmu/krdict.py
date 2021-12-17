@@ -6,12 +6,13 @@ from ..types import (
     MultimediaType,
     OriginType,
     PartOfSpeech,
-    SearchMethod,
     ScrapedDefinitionResponse,
     ScrapedExampleResponse,
     ScrapedIdiomProverbResponse,
     ScrapedWordResponse,
+    ScrapedViewResponse,
     ScraperTranslationLanguage,
+    SearchMethod,
     SearchTarget,
     SearchType,
     SortMethod,
@@ -32,7 +33,6 @@ from ..main import (
     TSortMethod,
     TSubjectCategory,
     TTargetLanguage,
-    TTranslationLanguage,
     TVocabularyLevel
 )
 
@@ -69,7 +69,7 @@ def advanced_search(*,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
+    translation_language: TScraperTranslationLanguage | Iterable[TScraperTranslationLanguage] = None,
     search_target: TSearchTarget = SearchTarget.HEADWORD,
     target_language: TTargetLanguage = TargetLanguage.ALL,
     search_method: TSearchMethod = SearchMethod.INCLUDE,
@@ -151,3 +151,8 @@ def search(*,
     search_type: TSearchType,
     translation_language: TScraperTranslationLanguage | Iterable[TScraperTranslationLanguage] = None
 ) -> TScrapedResponse: ...
+
+def view(*,
+    target_code: int,
+    translation_language: TScraperTranslationLanguage | Iterable[TScraperTranslationLanguage] = None
+) -> ScrapedViewResponse: ...

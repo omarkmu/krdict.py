@@ -45,6 +45,7 @@ _VIDEO_URL = (
     'https://krdict.korean.go.kr/dicSearch/viewMovieConfirm?'
     'searchKindValue=video&ParaWordNo={}&ParaSenseSeq={}&multiMediaSeq={}'
 )
+_VIEW_URL = 'https://krdict.korean.go.kr{}/dicSearch/SearchView?{}ParaWordNo={}'
 
 _LANG_INFO = (
     ('eng', 6, '영어'),
@@ -58,22 +59,6 @@ _LANG_INFO = (
     ('ind', 4, '인도네시아어'),
     ('rus', 5, '러시아어'),
     ('chn', 11, '중국어')
-)
-_SENSE_CAT_MAX = (
-    17,
-    30,
-    41,
-    50,
-    59,
-    76,
-    83,
-    92,
-    100,
-    110,
-    118,
-    125,
-    133,
-    153
 )
 
 _ADVANCED_CONDITION_MAP = {
@@ -767,6 +752,7 @@ def get_language_query(nation, code):
     """
     Returns query strings given a nation and nation code.
     """
+
     if not nation:
         return '', ''
 
@@ -786,6 +772,11 @@ def send_request(kwargs, response_type):
     if response_type == 'advanced':
         url, url_kr = _build_advanced_search_url(kwargs, lang_info)
         response_type = 'word'
+    elif response_type == 'view':
+        nation, code, _ = lang_info
+        target_code = kwargs.get('target_code')
+        url_kr = _VIEW_URL.format('', '', target_code)
+        url = _VIEW_URL.format(*get_language_query(nation, code), target_code)
     elif response_type == 'word_of_the_day':
         nation, *_ = lang_info
         url_kr = _BASE_URL.format('')
@@ -805,9 +796,23 @@ def send_request(kwargs, response_type):
             response_type,
             url,
             url_kr,
-            int(kwargs.get('page', 1)),
-            int(kwargs.get('per_page', 10)),
+            kwargs,
             lang_info
         )
     except requests.exceptions.RequestException as exc:
         raise exc
+
+def send_multimedia_request(kwargs):
+    """
+    Sends a request to retrieve multimedia information.
+    """
+
+    media_type = MultimediaType.get_value(kwargs.get('multimedia_type'))
+
+    # TODO
+    if media_type in (1, 2): # photo
+        pass
+    elif media_type in (3, 4): # video
+        pass
+
+    raise ValueError
