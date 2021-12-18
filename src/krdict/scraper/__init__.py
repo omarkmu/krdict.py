@@ -14,7 +14,7 @@ from ..types import (
     ScraperVocabularyLevel,
     WordOfTheDayResponse
 )
-from .fetch import (
+from .main import (
     advanced_search,
     fetch_meaning_category_words,
     fetch_subject_category_words,

@@ -3,7 +3,7 @@ Handles fetching and reading information from the krdict website.
 """
 
 from .request import send_request
-from .utils import parse_response
+from .response import parse_response
 
 
 def advanced_search(**kwargs):
