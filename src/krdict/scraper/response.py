@@ -591,6 +591,11 @@ def _read_multimedia(word_info, multimedia_elements, target_code, fetch_multimed
 
         href = a_elem.get('href')
         href_components = href[href.find('(') + 1:href.rfind(')')].split(',')
+
+        if len(href_components) != 4:
+            href = a_elem.get('onclick')
+            href_components = href[href.find('(') + 1:href.rfind(')')].split(',')
+
         file_no, def_order, media_order = map(_extract_digits, href_components[1:])
 
         def_info = word_info['sense_info'][def_order - 1]

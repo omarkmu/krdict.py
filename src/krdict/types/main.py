@@ -80,7 +80,7 @@ class _SearchDefinition(_PartialSearchDefinition):
 class _WordSearchItem(_SearchItem):
     def __init__(self, raw):
         super().__init__(raw)
-        self.part_of_speech: str = raw['pos']
+        self.part_of_speech: str = raw.get('pos', '')
         self.homograph_num: int = raw['sup_no']
         self.origin: str = raw.get('origin', '')
         self.pronunciation: str = raw.get('pronunciation', '')
