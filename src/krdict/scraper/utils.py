@@ -4,7 +4,7 @@ Provides utilities for scraping.
 
 import re
 from typing import Any
-from .request import get_language_query
+from .request import get_language_query, send_multimedia_request
 from ..types import SearchType
 
 from .constants import (
@@ -18,12 +18,12 @@ from .constants import (
     _SENTENCE_PATT_STR,
     _SENTENCE_PATT_REF_STR,
     _SENTENCE_REFERENCE_STR,
-    _RELATED_STRINGS
+    _RELATED_STRINGS,
+    _VIEW_URL
 )
 
 _ALLO_PATT = r'^\(.+?\)→'
 _CONJU_PATT = r'([^[(]+)(?:\[([^\]]+)\])?(?:\(([^[]+)(?:\[([^\]]+)\])?\))?'
-_VIEW_URL = 'https://krdict.korean.go.kr{}/dicSearch/SearchView?{}ParaWordNo={}'
 _MULTIMEDIA_URL = 'http://dicmedia.korean.go.kr:8899/front/search/searchResultView.do?file_no={}'
 
 
@@ -384,8 +384,6 @@ def _read_pronunciation(word_info, dd_el):
 def _read_related_info(parent_el, nation, code, type_=None):
     rel_info = []
 
-    print(parent_el, *parent_el.iterchildren())
-
     for idx, elem in enumerate([parent_el] + [*parent_el.iterchildren()]):
         text_list = ((elem.text if idx == 0 else elem.tail) or '').split(',')
 
@@ -564,7 +562,6 @@ def _read_origin(word_info, nation, rows):
             continue
 
         cur = original_language_info[-1]
-        print(cur['language_type'])
         if cur['language_type'] != '한자':
             cur['original_language'] += td_elements[0].text_content().strip()
             continue
@@ -574,30 +571,53 @@ def _read_origin(word_info, nation, rows):
 
     word_info['original_language_info'] = original_language_info
 
-def _read_multimedia(word_info, multimedia_elements, fetch_multimedia):
+def _read_media_urls(doc, is_video):
+    if is_video:
+        vid_script = doc.cssselect('body > div script')
+        if not vid_script:
+            return []
+
+        return _extract_video_urls(vid_script[0].text_content())
+
+    img = doc.cssselect('p.img > img')
+    if not img:
+        return []
+
+    return [img[0].get('src')]
+
+def _read_multimedia(word_info, multimedia_elements, target_code, fetch_multimedia):
     for li_elem in multimedia_elements:
         a_elem = li_elem.cssselect('a')[0]
-        p_elem = li_elem.cssselect('p')[0]
-        img_elem = a_elem.cssselect('img')[0]
 
         href = a_elem.get('href')
         href_components = href[href.find('(') + 1:href.rfind(')')].split(',')
-        file_no, def_order, _ = map(_extract_digits, href_components[1:])
+        file_no, def_order, media_order = map(_extract_digits, href_components[1:])
 
         def_info = word_info['sense_info'][def_order - 1]
         if 'multimedia_info' not in def_info:
             def_info['multimedia_info'] = []
 
-        def_info['multimedia_info'].append({
-            'label': p_elem.text_content().strip(),
-            'type': '동영상' if href_components[0] == "'video'" else '사진',
+        is_video = href_components[0] == "'video'"
+        media_info = {
+            'label': li_elem.cssselect('p')[0].text_content().strip(),
+            'type': '동영상' if is_video else '사진',
             'file_no': file_no,
             'link': _MULTIMEDIA_URL.format(file_no),
-            'thumb_link': img_elem.get('src', '')
-        })
+            'thumb_link': a_elem.cssselect('img')[0].get('src', '')
+        }
+
+        def_info['multimedia_info'].append(media_info)
 
         if fetch_multimedia:
-            pass # TODO
+            media_info['content_urls'] = _read_media_urls(
+                send_multimedia_request({
+                    'multimedia_type': 3 if is_video else 1,
+                    'target_code': target_code,
+                    'definition_order': def_order,
+                    'media_order': media_order
+                }),
+                is_video
+            )
 
 def _read_subwords(word_info, subword_elements, lang_info):
     subword_info = []
@@ -696,7 +716,7 @@ def _read_view_header_box(word_info, dl_elements, headword, lang_info):
         elif info_type in (_ALL_REFERENCE_STR, _SENTENCE_REFERENCE_STR):
             word_info['reference'] = dd_el.text_content().strip()
 
-def _read_view_content(doc, target_code, lang_info, options):
+def _read_view_content(doc, target_code, lang_info, kwargs):
     result_div = doc.cssselect('div.search_detail')
 
     if not result_div:
@@ -742,7 +762,8 @@ def _read_view_content(doc, target_code, lang_info, options):
     _read_multimedia(
         word_info,
         result_div.cssselect('div.multi_list > div.multi_sliderkit li'),
-        options.get('fetch_multimedia', False)
+        target_code,
+        kwargs.get('fetch_multimedia', False)
     )
 
     return [{
@@ -750,7 +771,7 @@ def _read_view_content(doc, target_code, lang_info, options):
         'word_info': word_info
     }], 1
 
-def _read_response(doc, response_type, target_code, lang_info, options):
+def _read_response(doc, response_type, target_code, lang_info, kwargs):
     nation, code, exonym = lang_info
 
     if response_type == 'exam':
@@ -760,7 +781,7 @@ def _read_response(doc, response_type, target_code, lang_info, options):
         return _read_wotd(doc, nation, code, exonym)
 
     if response_type == 'view':
-        return _read_view_content(doc, target_code, lang_info, options)
+        return _read_view_content(doc, target_code, lang_info, kwargs)
 
     return _read_search_results(doc, response_type, nation, code, exonym)
 
@@ -773,12 +794,11 @@ def parse_response(*args):
     doc, response_type, url, url_kr, kwargs, lang_info = args
     target_code = int(kwargs.get('target_code', 0))
     response_type = SearchType.get_value(response_type, response_type)
-    options = kwargs.get('options', {})
 
     if response_type not in _RESPONSE_TYPES:
         raise ValueError
 
-    results, total = _read_response(doc, response_type, target_code, lang_info, options)
+    results, total = _read_response(doc, response_type, target_code, lang_info, kwargs)
     return _RESPONSE_TYPES[response_type]({
         'link': url_kr,
         'trans_link': url if lang_info[0] else '',

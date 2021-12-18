@@ -11,6 +11,8 @@ from ..types import (
     WordOfTheDayResponse
 )
 
+_VIEW_URL = 'https://krdict.korean.go.kr{}/dicSearch/SearchView?{}ParaWordNo={}'
+
 _RESPONSE_TYPES = {
     'dfn': ScrapedDefinitionResponse,
     'ip': ScrapedIdiomProverbResponse,

@@ -154,5 +154,6 @@ def search(*,
 
 def view(*,
     target_code: int,
+    fetch_multimedia: bool = False,
     translation_language: TScraperTranslationLanguage | Iterable[TScraperTranslationLanguage] = None
 ) -> ScrapedViewResponse: ...

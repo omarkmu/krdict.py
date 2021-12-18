@@ -4,6 +4,7 @@ Handles making requests to the dictionary website.
 
 import requests
 from lxml import html
+from .constants import _VIEW_URL
 from ..types import (
     isiterable,
     Classification,
@@ -41,11 +42,14 @@ _SEARCH_URL = (
     'https://krdict.korean.go.kr{}/dicSearch/search?'
     '{}mainSearchWord={}&currentPage={}&blockCount={}&sort={}&searchType={}'
 )
+_IMAGE_URL = (
+    'https://krdict.korean.go.kr/dicSearch/viewImageConfirm?'
+    'searchKindValue=image&ParaWordNo={}&ParaSenseSeq={}&multiMediaSeq={}'
+)
 _VIDEO_URL = (
     'https://krdict.korean.go.kr/dicSearch/viewMovieConfirm?'
     'searchKindValue=video&ParaWordNo={}&ParaSenseSeq={}&multiMediaSeq={}'
 )
-_VIEW_URL = 'https://krdict.korean.go.kr{}/dicSearch/SearchView?{}ParaWordNo={}'
 
 _LANG_INFO = (
     ('eng', 6, '영어'),
@@ -744,9 +748,6 @@ def _build_category_url(kwargs, lang_info, response_type):
     url_kr = base_url.format('', '', page, per_page, sort, category_query)
     return url, url_kr
 
-def _build_video_url(target_code, dfn_idx, media_idx):
-    return _VIDEO_URL.format(target_code, dfn_idx + 1, media_idx + 1)
-
 
 def get_language_query(nation, code):
     """
@@ -809,10 +810,18 @@ def send_multimedia_request(kwargs):
 
     media_type = MultimediaType.get_value(kwargs.get('multimedia_type'))
 
-    # TODO
-    if media_type in (1, 2): # photo
-        pass
-    elif media_type in (3, 4): # video
-        pass
+    if media_type not in (1, 2, 3, 4):
+        raise ValueError
 
-    raise ValueError
+    url = (_IMAGE_URL if media_type in (1, 2) else _VIDEO_URL).format(
+        kwargs.get('target_code'),
+        kwargs.get('definition_order'),
+        kwargs.get('media_order')
+    )
+
+    try:
+        response = requests.get(url, headers={'Accept-Language': '*'})
+        response.raise_for_status()
+        return html.fromstring(response.text)
+    except requests.exceptions.RequestException as exc:
+        raise exc

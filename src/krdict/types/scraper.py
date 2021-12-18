@@ -158,6 +158,7 @@ class _ScrapedViewMultimediaInfo(_ResponseEntity):
         self.file_number: int = raw['file_no']
         self.url: str = raw['link']
         self.thumbnail_url: str = raw['thumb_link']
+        self.content_urls: list[str] = raw.get('content_urls', [])
 
 class _ScrapedPartialViewDefinitionInfo(_ResponseEntity):
     def __init__(self, raw):
