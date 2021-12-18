@@ -51,41 +51,6 @@ class KRDictScraperTest(unittest.TestCase):
             ('https://dicmedia.korean.go.kr/multimedia/multimedia_files/'
             'convert/20160913/20000/17000/307982/SND000317336.mp3'))
 
-    def test_scraper_fetch_today_word(self):
-        """Fetching word of the day with scraper returns proper results"""
-        response = krdict.scraper.fetch_today_word()
-
-        self.assertIn('data', response)
-        data = response.data
-
-        self.assertIn('target_code', data)
-        self.assertIn('word', data)
-        self.assertIn('definition', data)
-        self.assertIn('url', data)
-        self.assertIn('homograph_num', data)
-
-    def test_scraper_fetch_today_word_translation(self):
-        """Fetching word of the day with translation with scraper returns proper results"""
-        response = krdict.scraper.fetch_today_word(
-            translation_language=krdict.scraper.ScraperTranslationLanguage.ENGLISH
-        )
-
-        self.assertIn('data', response)
-        data = response.data
-
-        self.assertIn('target_code', data)
-        self.assertIn('word', data)
-        self.assertIn('definition', data)
-        self.assertIn('url', data)
-        self.assertIn('homograph_num', data)
-
-        self.assertIn('translations', data)
-        self.assertEqual(len(data.translations), 1)
-        self.assertIn('definition', data.translations[0])
-        self.assertIn('language', data.translations[0])
-
-        self.assertEqual(data.translations[0].language, '영어')
-
     def test_scraper_fetch_meaning_category_words(self):
         """Fetching meaning category words with scraper returns proper results"""
         response = krdict.scraper.fetch_meaning_category_words(category=3, per_page=15)
@@ -219,6 +184,41 @@ class KRDictScraperTest(unittest.TestCase):
                 self.assertIn('word', translation)
                 self.assertIn('language', translation)
                 self.assertEqual(translation.language, '영어')
+
+    def test_scraper_fetch_word_of_the_day(self):
+        """Fetching word of the day with scraper returns proper results"""
+        response = krdict.scraper.fetch_word_of_the_day()
+
+        self.assertIn('data', response)
+        data = response.data
+
+        self.assertIn('target_code', data)
+        self.assertIn('word', data)
+        self.assertIn('definition', data)
+        self.assertIn('url', data)
+        self.assertIn('homograph_num', data)
+
+    def test_scraper_fetch_word_of_the_day_translation(self):
+        """Fetching word of the day with translation with scraper returns proper results"""
+        response = krdict.scraper.fetch_word_of_the_day(
+            translation_language=krdict.scraper.ScraperTranslationLanguage.ENGLISH
+        )
+
+        self.assertIn('data', response)
+        data = response.data
+
+        self.assertIn('target_code', data)
+        self.assertIn('word', data)
+        self.assertIn('definition', data)
+        self.assertIn('url', data)
+        self.assertIn('homograph_num', data)
+
+        self.assertIn('translations', data)
+        self.assertEqual(len(data.translations), 1)
+        self.assertIn('definition', data.translations[0])
+        self.assertIn('language', data.translations[0])
+
+        self.assertEqual(data.translations[0].language, '영어')
 
     def test_scraper_view(self):
         """Basic view query with scraper returns proper results"""

@@ -36,20 +36,6 @@ def advanced_search(**kwargs):
 
     return parse_response(*send_request(kwargs, 'advanced'))
 
-def fetch_today_word(**kwargs):
-    """
-    Fetches information about the word of the day by scraping the dictionary website.
-
-    See the
-    [documentation](https://krdictpy.readthedocs.io/en/stable/return_types/#wordofthedayresponse)
-    for details.
-
-    - ``translation_language``: The language for which translations should be included.
-    """
-
-
-    return parse_response(*send_request(kwargs, 'word_of_the_day'))
-
 def fetch_meaning_category_words(**kwargs):
     """
     Fetches words that belong to the provided meaning category.
@@ -83,6 +69,19 @@ def fetch_subject_category_words(**kwargs):
     """
 
     return parse_response(*send_request(kwargs, 'subject_category'))
+
+def fetch_word_of_the_day(**kwargs):
+    """
+    Fetches information about the word of the day by scraping the dictionary website.
+
+    See the
+    [documentation](https://krdictpy.readthedocs.io/en/stable/return_types/#wordofthedayresponse)
+    for details.
+
+    - ``translation_language``: The language for which translations should be included.
+    """
+
+    return parse_response(*send_request(kwargs, 'word_of_the_day'))
 
 def search(**kwargs):
     """

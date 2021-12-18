@@ -85,11 +85,6 @@ def advanced_search(*,
     search_conditions: Iterable[TSearchCondition] = None
 ) -> ScrapedWordResponse: ...
 
-def fetch_today_word(*,
-    translation_language: TScraperTranslationLanguage = None
-) -> WordOfTheDayResponse: ...
-
-
 def fetch_meaning_category_words(*,
     category: TMeaningCategory,
     page: int = 1,
@@ -105,6 +100,10 @@ def fetch_subject_category_words(*,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     translation_language: TScraperTranslationLanguage | Iterable[TScraperTranslationLanguage] = None
 ) -> ScrapedWordResponse: ...
+
+def fetch_word_of_the_day(*,
+    translation_language: TScraperTranslationLanguage = None
+) -> WordOfTheDayResponse: ...
 
 @overload
 def search(*,

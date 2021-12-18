@@ -18,16 +18,16 @@ from .main import (
     advanced_search,
     fetch_meaning_category_words,
     fetch_subject_category_words,
-    fetch_today_word,
+    fetch_word_of_the_day,
     search,
     view
 )
 
 __all__ = [
     'advanced_search',
-    'fetch_today_word',
     'fetch_meaning_category_words',
     'fetch_subject_category_words',
+    'fetch_word_of_the_day',
     'search',
     'view',
     'ScrapedDefinitionResponse',

@@ -258,7 +258,7 @@ def word_of_the_day():
     Fetches the word of the day, then fetches extended information using the result.
     """
 
-    wotd_response = krdict.scraper.fetch_today_word(
+    wotd_response = krdict.scraper.fetch_word_of_the_day(
         translation_language=krdict.TranslationLanguage.ENGLISH
     )
 
