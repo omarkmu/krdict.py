@@ -761,7 +761,7 @@ def _read_view_content(doc, target_code, lang_info, kwargs):
     )
     _read_multimedia(
         word_info,
-        result_div.cssselect('div.multi_list > div.multi_sliderkit li'),
+        result_div.cssselect('div.multi_list div.sliderkit-nav li'),
         target_code,
         kwargs.get('fetch_multimedia', False)
     )

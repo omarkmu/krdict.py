@@ -42,6 +42,10 @@ _SEARCH_URL = (
     'https://krdict.korean.go.kr{}/dicSearch/search?'
     '{}mainSearchWord={}&currentPage={}&blockCount={}&sort={}&searchType={}'
 )
+_SEARCH_REQUEST_URL = (
+    'https://krdict.korean.go.kr{}/smallDic/searchResult?'
+    '{}mainSearchWord={}&currentPage={}&blockCount={}&sort={}&searchType={}'
+)
 _IMAGE_URL = (
     'https://krdict.korean.go.kr/dicSearch/viewImageConfirm?'
     'searchKindValue=image&ParaWordNo={}&ParaSenseSeq={}&multiMediaSeq={}'
@@ -50,6 +54,7 @@ _VIDEO_URL = (
     'https://krdict.korean.go.kr/dicSearch/viewMovieConfirm?'
     'searchKindValue=video&ParaWordNo={}&ParaSenseSeq={}&multiMediaSeq={}'
 )
+_VIEW_REQUEST_URL = 'https://krdict.korean.go.kr{}/smallDic/searchView?{}ParaWordNo={}'
 
 _LANG_INFO = (
     ('eng', 6, '영어'),
@@ -669,8 +674,10 @@ def _build_search_url(kwargs, lang_info, search_type):
     sort = 'C' if SortMethod.get_value(kwargs.get('sort')) == 'popular' else 'W'
     search_type = _SEARCH_TYPE_MAP.get(search_type, 'W')
 
+    lang_query = get_language_query(nation, code)
+
     url = _SEARCH_URL.format(
-        *get_language_query(nation, code),
+        *lang_query,
         query,
         page,
         per_page,
@@ -686,8 +693,16 @@ def _build_search_url(kwargs, lang_info, search_type):
         sort,
         search_type
     )
+    req_url = _SEARCH_REQUEST_URL.format(
+        *lang_query,
+        query,
+        page,
+        per_page,
+        sort,
+        search_type
+    )
 
-    return url, url_kr
+    return url, url_kr, req_url
 
 def _build_sense_category_query(category):
     category = MeaningCategory.get_value(category, category)
@@ -769,6 +784,7 @@ def send_request(kwargs, response_type):
 
     url: str
     url_kr: str
+    req_url = ''
 
     if response_type == 'advanced':
         url, url_kr = _build_advanced_search_url(kwargs, lang_info)
@@ -776,21 +792,23 @@ def send_request(kwargs, response_type):
     elif response_type == 'view':
         nation, code, _ = lang_info
         target_code = kwargs.get('target_code')
+        lang_query = get_language_query(nation, code)
         url_kr = _VIEW_URL.format('', '', target_code)
-        url = _VIEW_URL.format(*get_language_query(nation, code), target_code)
+        url = _VIEW_URL.format(*lang_query, target_code)
+        req_url = _VIEW_REQUEST_URL.format(*lang_query, target_code)
     elif response_type == 'word_of_the_day':
         nation, *_ = lang_info
         url_kr = _BASE_URL.format('')
         url = _BASE_URL.format(f'/{nation}' if nation else '')
     elif response_type in ('word', 'exam', 'dfn', 'ip'):
-        url, url_kr = _build_search_url(kwargs, lang_info, response_type)
+        url, url_kr, req_url = _build_search_url(kwargs, lang_info, response_type)
     elif response_type in ('meaning_category', 'subject_category'):
         url, url_kr = _build_category_url(kwargs, lang_info, response_type)
     else:
         raise ValueError
 
     try:
-        response = requests.get(url, headers={'Accept-Language': '*'})
+        response = requests.get(req_url or url, headers={'Accept-Language': '*'})
         response.raise_for_status()
         return (
             html.fromstring(response.text),

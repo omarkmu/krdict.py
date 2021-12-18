@@ -174,6 +174,7 @@ _VIEW_TRANSLATION_MAPS = {
         'склонение': _CONJUGATION_STR,
         'Үүсмэл үг': _DERIVATIVE_STR,
         'Нэмэлт тайлбар': _SENTENCE_REFERENCE_STR,
+        # all references excluded; equivalent to sentence reference string
         'Хэлц үг': _IDIOM_STR,
         'Зүйр үг': _PROVERB_STR,
         # definition info
