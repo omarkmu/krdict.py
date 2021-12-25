@@ -141,6 +141,7 @@ class _ScrapedViewDerivativeInfo(_ResponseEntity):
         self.word: str = raw['word']
         self.target_code: int = raw.get('link_target_code', 0)
         self.url: str = raw.get('link', '')
+        self.translation_urls = list(map(_ScrapedTranslationURLInfo, raw.get('trans_link', [])))
         self.has_target_code: bool = raw.get('link_type') == 'C'
 
 class _ScrapedViewPatternInfo(_ResponseEntity):

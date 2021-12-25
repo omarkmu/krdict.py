@@ -399,17 +399,29 @@ def _read_pronunciation(word_info, dd_el):
 
     word_info['pronunciation_info'] = pron_info
 
-def _read_related_info(parent_el, lang_info, type_=None):
+def _read_related_info(parent_el, lang_info, container=None, key=None, type_=None):
+    order = 0
     rel_info = []
-    nation, code, exonym = lang_info
 
     for idx, elem in enumerate([parent_el] + [*parent_el.iterchildren()]):
         text_list = ((elem.text if idx == 0 else elem.tail) or '').split(',')
 
         if idx > 0 and elem.tag == 'a':
-            target_code = int(_extract_href(elem) or 0)
-            obj = None
+            if container is not None:
+                obj = container[key][order]
+                if 'trans_link' in obj and 'link_target_code' in obj:
+                    obj['trans_link'].append({
+                        'url': _VIEW_URL.format(
+                            *get_language_query(*lang_info),
+                            obj['link_target_code']
+                        ),
+                        'language': lang_info[2]
+                    })
 
+                order += 1
+                continue
+
+            target_code = int(_extract_href(elem) or 0)
             if target_code != 0:
                 obj = {
                     'word': (elem.text or '').strip(),
@@ -417,11 +429,11 @@ def _read_related_info(parent_el, lang_info, type_=None):
                     'link': _VIEW_URL.format('', '', target_code),
                     'trans_link': [{
                         'url': _VIEW_URL.format(
-                            *get_language_query(nation, code),
+                            *get_language_query(*lang_info[:2]),
                             target_code
                         ),
-                        'language': exonym
-                    }],
+                        'language': lang_info[2]
+                    }] if lang_info[0] is not None else [],
                     'link_type': 'C'
                 }
             else:
@@ -435,31 +447,33 @@ def _read_related_info(parent_el, lang_info, type_=None):
 
             rel_info.append(obj)
 
-        for text in text_list:
-            if not text.strip():
-                continue
+        if container is None:
+            for text in text_list:
+                if not text.strip():
+                    continue
 
-            text_obj = {
-                'word': text.strip(),
-                'link_type': 'T'
-            }
+                text_obj = {
+                    'word': text.strip(),
+                    'link_type': 'T'
+                }
 
-            if type_ is not None:
-                text_obj['type'] = type_
+                if type_ is not None:
+                    text_obj['type'] = type_
 
-            rel_info.append(text_obj)
+                rel_info.append(text_obj)
 
     return rel_info
 
-def _read_definition_footer(def_obj, lang_info, elem):
+def _read_definition_footer(def_obj, lang_info, elem, is_translation):
     nation, *_ = lang_info
     translation_map = _VIEW_TRANSLATION_MAPS.get(nation, {})
     dl_elements = elem.cssselect('div.heading_wrap > dl')
 
-    reference = elem.cssselect('div.star_wrap > p')
-    if reference:
-        span = reference[0].cssselect('span')
-        def_obj['reference'] = (span[0].tail if span else reference[0].text_content()).strip()
+    if not is_translation:
+        reference = elem.cssselect('div.star_wrap > p')
+        if reference:
+            span = reference[0].cssselect('span')
+            def_obj['reference'] = (span[0].tail if span else reference[0].text_content()).strip()
 
     for dl_el in dl_elements:
         dd_el = dl_el.cssselect('dd')[0]
@@ -469,8 +483,22 @@ def _read_definition_footer(def_obj, lang_info, elem):
         if footer_type in _RELATED_STRINGS:
             if 'rel_info' not in def_obj:
                 def_obj['rel_info'] = []
-            def_obj['rel_info'].extend(_read_related_info(dd_el, lang_info, footer_type))
-        elif footer_type == _SENTENCE_PATT_STR:
+
+            rel_info = _read_related_info(
+                dd_el,
+                lang_info,
+                def_obj if is_translation else None,
+                'rel_info',
+                footer_type
+            )
+
+            if not is_translation:
+                def_obj['rel_info'].extend(rel_info)
+
+        if is_translation:
+            continue
+
+        if footer_type == _SENTENCE_PATT_STR:
             def_obj['pattern_info'] = list(map(
                 lambda x: {'pattern': x.strip()},
                 dd_el.text_content().split(',')
@@ -531,8 +559,8 @@ def _read_definitions(word_info, def_elements, lang_info, subword=False, subword
             })
 
         order += 1
+        _read_definition_footer(def_obj, lang_info, elem, is_translation)
         if not is_translation:
-            _read_definition_footer(def_obj, lang_info, elem)
             def_info.append(def_obj)
 
     allo_match = (
@@ -756,7 +784,7 @@ def _read_examples(doc, lang_info):
     total = _extract_digits(total_text[0].text) if len(total_text) > 0 else 0
     return results, total
 
-def _read_view_header_box(word_info, dl_elements, headword, lang_info):
+def _read_view_header_box(word_info, dl_elements, headword, lang_info, is_translation):
     nation, *_ = lang_info
     translation_map = _VIEW_TRANSLATION_MAPS.get(nation, {})
 
@@ -767,15 +795,25 @@ def _read_view_header_box(word_info, dl_elements, headword, lang_info):
         dt_text = _DERIVATIVE_STR if ref_img else (dl_el.cssselect('dt')[0].text or '').strip()
         info_type = translation_map.get(dt_text, dt_text).strip()
 
+        if info_type == _DERIVATIVE_STR:
+            deriv_el = dd_el.cssselect('span.search_sub')[0]
+            der_info = _read_related_info(
+                deriv_el,
+                lang_info
+            )
+
+            if not is_translation:
+                word_info['der_info'] = der_info
+
+        if is_translation:
+            continue
+
         if info_type == _POS_STR:
             word_info['pos'] = dd_el.cssselect('span')[0].text.strip()[1:-1]
         elif info_type == _PRONUNCIATION_STR:
             _read_pronunciation(word_info, dd_el)
         elif info_type == _CONJUGATION_STR:
             _read_conjugation_info(word_info, dd_el, headword)
-        elif info_type == _DERIVATIVE_STR:
-            deriv_el = dd_el.cssselect('span.search_sub')[0]
-            word_info['der_info'] = _read_related_info(deriv_el, lang_info)
         elif info_type in (_ALL_REFERENCE_STR, _SENTENCE_REFERENCE_STR):
             word_info['reference'] = dd_el.text_content().strip()
 
@@ -827,7 +865,8 @@ def _read_view_content(doc, target_code, lang_info, kwargs, results=None):
         word_info,
         result_div.cssselect('div.word_head_box > dl'),
         headword_text,
-        lang_info
+        lang_info,
+        is_translation
     )
     _read_origin(
         word_info,
