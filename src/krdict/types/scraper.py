@@ -15,15 +15,20 @@ from .main import (
 # pylint: disable=too-few-public-methods,too-many-instance-attributes
 
 
+class _ScrapedTranslationURLInfo(_ResponseEntity):
+    def __init__(self, raw):
+        self.url: str = raw['url']
+        self.language: str = raw['language']
+
 class _ScrapedSearchItem(_SearchItem):
     def __init__(self, raw):
         super().__init__(raw)
-        self.translated_url: str = raw.get('trans_link', '')
+        self.translation_urls = list(map(_ScrapedTranslationURLInfo, raw['trans_link']))
 
 class _ScrapedResponseData(_ResponseEntity):
     def __init__(self, raw):
         self.url: str = raw['link']
-        self.translated_url: str = raw.get('trans_link', '')
+        self.translation_urls = list(map(_ScrapedTranslationURLInfo, raw['trans_link']))
         self.page: int = raw['start']
         self.per_page: int = raw['num']
         self.total_results: int = raw['total']
@@ -86,7 +91,7 @@ class _WordOfTheDayData(_ResponseEntity):
         self.target_code: int = raw['target_code']
         self.word: str = raw['word']
         self.url: str = raw['link']
-        self.translated_url: str = raw.get('trans_link', '')
+        self.translation_urls = list(map(_ScrapedTranslationURLInfo, raw['trans_link']))
         self.part_of_speech: str = raw.get('pos', '')
         self.homograph_num: int = raw['sup_no']
         self.origin: str = raw.get('origin', '')
@@ -207,7 +212,7 @@ class _ScrapedViewItem(_ResponseEntity):
 class _ScrapedViewResponseData(_ResponseEntity):
     def __init__(self, raw):
         self.url: str = raw['link']
-        self.translated_url = raw.get('trans_link', '')
+        self.translation_urls = list(map(_ScrapedTranslationURLInfo, raw['trans_link']))
         self.total_results: int = raw['total']
         self.results = list(map(_ScrapedViewItem, raw['item']))
 

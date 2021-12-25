@@ -584,14 +584,6 @@ def _convert_advanced_value(adv_key, adv_mapper, kwargs):
 
     return str(param_value)
 
-def _get_language_info(lang):
-    lang = ScraperTranslationLanguage.get_value(lang)
-
-    if not lang or lang == 0:
-        return (None, 0, None)
-
-    return _LANG_INFO[lang - 1]
-
 def _build_advanced_search_conditions(conditions):
     query = []
 
@@ -764,6 +756,57 @@ def _build_category_url(kwargs, lang_info, response_type):
     return url, url_kr
 
 
+def build_request_url(kwargs, response_type, lang_info) -> tuple[str, str, str]:
+    """
+    Builds a Korean Learners' Dictionary URL and a request URL given
+    request parameters.
+    """
+
+    url: str
+    url_kr: str
+    req_url = ''
+
+    if response_type == 'advanced':
+        url, url_kr = _build_advanced_search_url(kwargs, lang_info)
+
+    elif response_type == 'view':
+        nation, code, _ = lang_info
+        target_code = kwargs.get('target_code')
+        lang_query = get_language_query(nation, code)
+
+        url_kr = _VIEW_URL.format('', '', target_code)
+        url = _VIEW_URL.format(*lang_query, target_code)
+        req_url = _VIEW_REQUEST_URL.format(*lang_query, target_code)
+
+    elif response_type == 'word_of_the_day':
+        nation, *_ = lang_info
+
+        url_kr = _BASE_URL.format('')
+        url = _BASE_URL.format(f'/{nation}' if nation else '')
+
+    elif response_type in ('word', 'exam', 'dfn', 'ip'):
+        url, url_kr, req_url = _build_search_url(kwargs, lang_info, response_type)
+
+    elif response_type in ('meaning_category', 'subject_category'):
+        url, url_kr = _build_category_url(kwargs, lang_info, response_type)
+
+    else:
+        raise ValueError
+
+    return url, url_kr, req_url or url
+
+def get_language_info(lang):
+    """
+    Returns a tuple with information about a scraper translation language.
+    """
+
+    lang = ScraperTranslationLanguage.get_value(lang)
+
+    if not lang or lang == 0:
+        return (None, 0, None)
+
+    return _LANG_INFO[lang - 1]
+
 def get_language_query(nation, code):
     """
     Returns query strings given a nation and nation code.
@@ -779,44 +822,54 @@ def send_request(kwargs, response_type):
     Sends a request to a URL and parses the response with lxml.
     """
 
-    lang_info = _get_language_info(kwargs.get('translation_language'))
     response_type = SearchType.get_value(response_type, response_type)
 
-    url: str
-    url_kr: str
-    req_url = ''
+    trans_language_info = []
+    trans_urls = []
+    trans_lang = kwargs.get('translation_language')
 
-    if response_type == 'advanced':
-        url, url_kr = _build_advanced_search_url(kwargs, lang_info)
-        response_type = 'word'
-    elif response_type == 'view':
-        nation, code, _ = lang_info
-        target_code = kwargs.get('target_code')
-        lang_query = get_language_query(nation, code)
-        url_kr = _VIEW_URL.format('', '', target_code)
-        url = _VIEW_URL.format(*lang_query, target_code)
-        req_url = _VIEW_REQUEST_URL.format(*lang_query, target_code)
-    elif response_type == 'word_of_the_day':
-        nation, *_ = lang_info
-        url_kr = _BASE_URL.format('')
-        url = _BASE_URL.format(f'/{nation}' if nation else '')
-    elif response_type in ('word', 'exam', 'dfn', 'ip'):
-        url, url_kr, req_url = _build_search_url(kwargs, lang_info, response_type)
-    elif response_type in ('meaning_category', 'subject_category'):
-        url, url_kr = _build_category_url(kwargs, lang_info, response_type)
-    else:
-        raise ValueError
+    seen = set()
+    if isiterable(trans_lang, exclude=(str,)):
+        trans_language_info = []
+        trans_urls = []
+
+        for lang in trans_lang:
+            info = get_language_info(lang)
+            if not info[0] or info[2] in seen:
+                continue
+
+            seen.add(info[2])
+
+            url_tuple = build_request_url(kwargs, response_type, info)
+            trans_language_info.append({
+                'lang_info': info,
+                'url_tuple': url_tuple
+            })
+            trans_urls.append({
+                'url': url_tuple[0],
+                'language': info[2]
+            })
+
+        trans_language_info = trans_language_info[1:]
+        trans_lang = trans_lang[0] if trans_lang else None
+
+    lang_info = get_language_info(trans_lang)
+    url, url_kr, req_url = build_request_url(kwargs, response_type, lang_info)
 
     try:
-        response = requests.get(req_url or url, headers={'Accept-Language': '*'})
+        response = requests.get(req_url, headers={'Accept-Language': '*'})
         response.raise_for_status()
         return (
             html.fromstring(response.text),
-            response_type,
-            url,
+            'word' if response_type == 'advanced' else response_type,
             url_kr,
             kwargs,
-            lang_info
+            lang_info,
+            (
+                trans_urls if trans_urls
+                else ([{'url': url, 'language': lang_info[2]}] if lang_info[0] else [])
+            ),
+            trans_language_info
         )
     except requests.exceptions.RequestException as exc:
         raise exc
