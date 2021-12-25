@@ -412,7 +412,7 @@ def _read_related_info(parent_el, lang_info, container=None, key=None, type_=Non
                 if 'trans_link' in obj and 'link_target_code' in obj:
                     obj['trans_link'].append({
                         'url': _VIEW_URL.format(
-                            *get_language_query(*lang_info),
+                            *get_language_query(*lang_info[:2]),
                             obj['link_target_code']
                         ),
                         'language': lang_info[2]
