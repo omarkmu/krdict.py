@@ -59,7 +59,7 @@ class KRDictScraperTest(unittest.TestCase):
         data = response.data
 
         self.assertIn('url', data)
-        self.assertIn('translated_url', data)
+        self.assertIn('translation_urls', data)
         self.assertIn('page', data)
         self.assertIn('per_page', data)
         self.assertIn('total_results', data)
@@ -69,7 +69,7 @@ class KRDictScraperTest(unittest.TestCase):
             ('https://krdict.korean.go.kr/dicSearchDetail/'
             'searchDetailSenseCategoryResult?searchFlag=Y&currentPage=1&blockCount=15&sort=W'
             '&lgCategoryCode=1&miCategoryCode=1003'))
-        self.assertEqual(data.translated_url, '')
+        self.assertEqual(len(data.translation_urls), 0)
         self.assertEqual(data.page, 1)
         self.assertEqual(data.per_page, 15)
         self.assertEqual(len(data.results), 15)
@@ -87,7 +87,7 @@ class KRDictScraperTest(unittest.TestCase):
         data = response.data
 
         self.assertIn('url', data)
-        self.assertIn('translated_url', data)
+        self.assertIn('translation_urls', data)
         self.assertIn('page', data)
         self.assertIn('per_page', data)
         self.assertIn('total_results', data)
@@ -97,7 +97,7 @@ class KRDictScraperTest(unittest.TestCase):
             ('https://krdict.korean.go.kr/dicSearchDetail/'
             'searchDetailSenseCategoryResult?searchFlag=Y&currentPage=1&blockCount=15&sort=W'
             '&lgCategoryCode=1&miCategoryCode=1003'))
-        self.assertEqual(data.translated_url,
+        self.assertEqual(data.translation_urls[0].url,
             ('https://krdict.korean.go.kr/eng/dicSearchDetail/'
             'searchDetailSenseCategoryResult?nation=eng&nationCode=6&searchFlag=Y'
             '&currentPage=1&blockCount=15&sort=W&lgCategoryCode=1&miCategoryCode=1003'))
@@ -127,7 +127,7 @@ class KRDictScraperTest(unittest.TestCase):
         data = response.data
 
         self.assertIn('url', data)
-        self.assertIn('translated_url', data)
+        self.assertIn('translation_urls', data)
         self.assertIn('page', data)
         self.assertIn('per_page', data)
         self.assertIn('total_results', data)
@@ -136,7 +136,7 @@ class KRDictScraperTest(unittest.TestCase):
         self.assertEqual(data.url,
             ('https://krdict.korean.go.kr/dicSearchDetail/searchDetailActCategoryResult?'
             'searchFlag=Y&currentPage=1&blockCount=15&sort=W&actCategory=20001'))
-        self.assertEqual(data.translated_url, '')
+        self.assertEqual(len(data.translation_urls), 0)
         self.assertEqual(data.page, 1)
         self.assertEqual(data.per_page, 15)
         self.assertEqual(len(data.results), 15)
@@ -154,7 +154,7 @@ class KRDictScraperTest(unittest.TestCase):
         data = response.data
 
         self.assertIn('url', data)
-        self.assertIn('translated_url', data)
+        self.assertIn('translation_urls', data)
         self.assertIn('page', data)
         self.assertIn('per_page', data)
         self.assertIn('total_results', data)
@@ -163,7 +163,7 @@ class KRDictScraperTest(unittest.TestCase):
         self.assertEqual(data.url,
             ('https://krdict.korean.go.kr/dicSearchDetail/searchDetailActCategoryResult?'
             'searchFlag=Y&currentPage=1&blockCount=15&sort=W&actCategory=20001'))
-        self.assertEqual(data.translated_url,
+        self.assertEqual(data.translation_urls[0].url,
             ('https://krdict.korean.go.kr/eng/dicSearchDetail/searchDetailActCategoryResult?'
             'nation=eng&nationCode=6&searchFlag=Y'
             '&currentPage=1&blockCount=15&sort=W&actCategory=20001'))

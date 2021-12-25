@@ -4,7 +4,7 @@ Provides utilities for scraping.
 
 import re
 from typing import Any
-from .request import get_language_query, send_multimedia_request
+from .request import get_language_query, send_multimedia_request, send_scrape_request
 from ..types import SearchType
 
 from .constants import (
@@ -56,6 +56,20 @@ def _extract_video_urls(script_content):
     return urls
 
 
+def _add_trans_link(result, lang_info):
+    nation, code, exonym = lang_info
+
+    if 'trans_link' not in result:
+        result['trans_link'] = []
+
+    result['trans_link'].append({
+        'url': _VIEW_URL.format(
+            *get_language_query(nation, code),
+            result['target_code']
+        ),
+        'language': exonym
+    })
+
 def _get_base_result(a_elem, word_text, lang_info):
     target_code = int(_extract_href(a_elem) or 0)
     result = {
@@ -64,16 +78,8 @@ def _get_base_result(a_elem, word_text, lang_info):
         'link': _VIEW_URL.format('', '', target_code)
     }
 
-    nation, code, exonym = lang_info
-
-    if nation:
-        result['trans_link'] = [{
-            'url': _VIEW_URL.format(
-                *get_language_query(nation, code),
-                target_code
-            ),
-            'language': exonym
-        }]
+    if lang_info[0]:
+        _add_trans_link(result, lang_info)
 
     return result
 
@@ -87,10 +93,11 @@ def _get_example_text(elem):
     return ''.join(text).strip()
 
 
-def _read_search_definitions(elem_list, lang_info, response_type):
+def _read_search_definitions(elem_list, lang_info, response_type, result=None):
     definitions = []
     *_, exonym = lang_info
     step = 3 if exonym else 1
+    order = 0
 
     for idx in range(0, len(elem_list), step):
         dfn_elem = elem_list[idx]
@@ -116,21 +123,21 @@ def _read_search_definitions(elem_list, lang_info, response_type):
 
                 translation['trans_lang'] = exonym
 
+                if result is not None:
+                    result['sense'][order]['translation'].append(translation)
+
         strong_elem = dfn_elem.cssselect('strong')
-        dfn = (
-            strong_elem[0].tail.strip()[2:] if strong_elem and response_type != 'dfn'
-            else dfn_elem.text_content().strip()
-        )
 
-        dfn_obj = {
-            'sense_order': len(definitions) + 1,
-            'definition': dfn.strip()
-        }
-
-        if translation is not None:
-            dfn_obj['translation'] = [translation]
-
-        definitions.append(dfn_obj)
+        order += 1
+        if result is None:
+            definitions.append({
+                'sense_order': order,
+                'definition': (
+                    strong_elem[0].tail.strip()[2:] if strong_elem and response_type != 'dfn'
+                    else dfn_elem.text_content().strip()
+                ).strip(),
+                'translation': [translation] if translation is not None else []
+            })
 
     return definitions
 
@@ -246,63 +253,66 @@ def _read_wotd_pronunciation(dt_elem, result):
         if len(urls) > 0:
             result['pronunciation_urls'] = urls
 
-def _read_wotd_details(result, dt_elem, dd_elems, exonym):
-    em_elem = dt_elem.cssselect('em')
-    grade_elem = dt_elem.cssselect('span.star')
+def _read_wotd_details(result, dt_elem, dd_elems, exonym, is_translation):
+    if not is_translation:
+        em_elem = dt_elem.cssselect('em')
+        grade_elem = dt_elem.cssselect('span.star')
 
-    if len(em_elem) > 0:
-        result['pos'] = em_elem[0].text_content()
+        if len(em_elem) > 0:
+            result['pos'] = em_elem[0].text_content()
 
-    if len(grade_elem) == 1:
-        result['word_grade'] =  _read_vocabulary_level(grade_elem[0])
+        if len(grade_elem) == 1:
+            result['word_grade'] =  _read_vocabulary_level(grade_elem[0])
 
-    _read_wotd_pronunciation(dt_elem, result)
+        _read_wotd_pronunciation(dt_elem, result)
 
     if len(dd_elems) == 3:
         word_trns = dd_elems[0].text.strip()
         dfn_trns = dd_elems[2].text.strip()
 
         if len(dfn_trns) > 0:
-            result['translation'] = [{'trans_dfn': dfn_trns}]
+            if not 'translation' in result:
+                result['translation'] = []
+
+            translation = {'trans_dfn': dfn_trns}
+            result['translation'].append(translation)
 
             if len(word_trns) > 0:
-                result['translation'][0]['trans_word'] = word_trns
+                translation['trans_word'] = word_trns
 
-            result['translation'][0]['trans_lang'] = exonym
+            translation['trans_lang'] = exonym
 
-def _read_wotd(doc, lang_info):
-    nation, code, exonym = lang_info
+def _read_wotd(doc, lang_info, result=None):
+    nation, _, exonym = lang_info
     dt_elem = doc.cssselect('dl.today_word > dt')[0]
     dd_elems = doc.cssselect('dl.today_word > dd')
-    word_elem = dt_elem.cssselect('a')[0]
-    strong_elem = word_elem.cssselect('strong')[0]
-    sup_elems = word_elem.cssselect('strong > sup')
 
-    dfn_idx = 0 if not nation or len(dd_elems) < 3 else 1
-    result = {
-        'target_code': int(_extract_href(word_elem) or 0),
-        'word': strong_elem.text.strip(),
-        'definition': dd_elems[dfn_idx].text_content().strip()
-    }
+    is_translation = result is not None
 
-    result['link'] = _VIEW_URL.format('', '', result['target_code'])
+    if not is_translation:
+        word_elem = dt_elem.cssselect('a')[0]
+        strong_elem = word_elem.cssselect('strong')[0]
+        sup_elems = word_elem.cssselect('strong > sup')
+
+        dfn_idx = 0 if not nation or len(dd_elems) < 3 else 1
+        result = {
+            'target_code': int(_extract_href(word_elem) or 0),
+            'word': strong_elem.text.strip(),
+            'definition': dd_elems[dfn_idx].text_content().strip()
+        }
+
+        result['link'] = _VIEW_URL.format('', '', result['target_code'])
+        result['sup_no'] = int(sup_elems[0].text_content() or 0 if len(sup_elems) > 0 else 0)
 
     if nation:
-        result['trans_link'] = [{
-            'url': _VIEW_URL.format(
-                *get_language_query(nation, code),
-                result['target_code']
-            ),
-            'language': exonym
-        }]
-
-    result['sup_no'] = int(sup_elems[0].text_content() or 0 if len(sup_elems) > 0 else 0)
+        _add_trans_link(result, lang_info)
 
     _read_wotd_details(
         result,
         dt_elem,
         dd_elems,
-        exonym
+        exonym,
+        is_translation
     )
 
     return result, 1
@@ -470,10 +480,11 @@ def _read_definition_footer(def_obj, lang_info, elem):
         elif footer_type == _SENTENCE_REFERENCE_STR:
             def_obj['reference'] = dd_el.text_content().strip()
 
-def _read_definitions(word_info, def_elements, lang_info, subword=False):
+def _read_definitions(word_info, def_elements, lang_info, subword=False, subword_idx=None):
     def_info = []
-    *_, exonym = lang_info
+    is_translation = subword_idx is not None
 
+    order = 0
     for elem in def_elements:
         trans_word = elem.cssselect('p.subMultiTrans' if subword else 'p.multiTrans')
         dfn_text = (
@@ -483,23 +494,32 @@ def _read_definitions(word_info, def_elements, lang_info, subword=False):
             )[0].text_content() or ''
         ).strip()
 
-        def_obj = {
-            'definition': (
-                dfn_text[len(def_info) + 2:].strip()
-                if dfn_text.startswith(str(len(def_info) + 1))
-                else dfn_text
-            ),
-            'example_info': list(map(
-                lambda e: {'example': _get_example_text(e)}, elem.cssselect('ul.dot > li')
-            ))
-        }
+        def_obj = None
+        if is_translation and subword:
+            def_obj = word_info['subword_info'][subword_idx]['subsense_info'][order]
+        elif is_translation:
+            def_obj = word_info['sense_info'][order]
+        else:
+            def_obj = {
+                'definition': (
+                    dfn_text[order + 2:].strip()
+                    if dfn_text.startswith(str(order + 1))
+                    else dfn_text
+                ),
+                'example_info': list(map(
+                    lambda e: {'example': _get_example_text(e)}, elem.cssselect('ul.dot > li')
+                ))
+            }
 
         if trans_word:
             trans_word = (trans_word[0].text_content() or '').strip()
-            def_obj['translation'] = [{
+            if 'translation' not in def_obj:
+                def_obj['translation'] = []
+
+            def_obj['translation'].append({
                 'trans_word': (
-                    trans_word[len(def_info) + 2:].strip()
-                    if dfn_text.startswith(str(len(def_info) + 1))
+                    trans_word[order + 2:].strip()
+                    if dfn_text.startswith(str(order + 1))
                     else trans_word
                 ),
                 'trans_dfn': (
@@ -507,14 +527,22 @@ def _read_definitions(word_info, def_elements, lang_info, subword=False):
                         'p.subMultiSenseDef' if subword else 'p.multiSenseDef'
                     )[0].text_content() or ''
                 ).strip(),
-                'trans_lang': exonym
-            }]
+                'trans_lang': lang_info[2]
+            })
 
-        _read_definition_footer(def_obj, lang_info, elem)
+        order += 1
+        if not is_translation:
+            _read_definition_footer(def_obj, lang_info, elem)
+            def_info.append(def_obj)
 
-        def_info.append(def_obj)
+    allo_match = (
+        not subword
+        and not is_translation
+        and len(def_info) == 1
+        and re.match(_ALLO_PATT, def_info[0]['definition'])
+    )
 
-    if not subword and len(def_info) == 1 and re.match(_ALLO_PATT, def_info[0]['definition']):
+    if allo_match:
         allomorph = def_info[0]['definition']
         word_info['allomorph'] = allomorph[allomorph.find('(') + 1:allomorph.find(')')]
 
@@ -664,11 +692,13 @@ def _read_subwords(word_info, subword_elements, lang_info):
 
     word_info['subword_info'] = subword_info
 
-def _read_search_results(doc, response_type, lang_info):
-    results = []
+def _read_search_results(doc, response_type, lang_info, results=None):
+    is_translation = results is not None
+    results = results or []
     search_results = doc.cssselect('div.search_result > dl')
-    total_text = doc.cssselect('span.search_tit > em')
+    total_text = doc.cssselect('.search_tit > em')
 
+    trans_order = 0
     for result_elem in search_results:
         dt_elem = result_elem.cssselect('dt')
         dd_elem = result_elem.cssselect('dd')
@@ -677,12 +707,25 @@ def _read_search_results(doc, response_type, lang_info):
             continue
 
         result: dict
-        if response_type in ('dfn', 'ip'):
+        if is_translation:
+            result = results[trans_order]
+            _add_trans_link(result, lang_info)
+            trans_order += 1
+        elif response_type in ('dfn', 'ip'):
             result = _read_minimal_search_header(dt_elem[0], lang_info)
         else:
             result = _read_search_header(dt_elem[0], result_elem, lang_info)
 
-        result['sense'] = _read_search_definitions(dd_elem, lang_info, response_type)
+        sense = _read_search_definitions(
+            dd_elem,
+            lang_info,
+            response_type,
+            result if is_translation else None
+        )
+
+        if not is_translation:
+            result['sense'] = sense
+
         results.append(result)
 
     total = _extract_digits(total_text[0].text) if len(total_text) > 0 else 0
@@ -736,13 +779,35 @@ def _read_view_header_box(word_info, dl_elements, headword, lang_info):
         elif info_type in (_ALL_REFERENCE_STR, _SENTENCE_REFERENCE_STR):
             word_info['reference'] = dd_el.text_content().strip()
 
-def _read_view_content(doc, target_code, lang_info, kwargs):
+def _read_view_content(doc, target_code, lang_info, kwargs, results=None):
     result_div = doc.cssselect('div.search_detail')
 
     if not result_div:
         return [], 0
 
     result_div = result_div[0]
+    is_translation = results is not None
+    if is_translation:
+        _read_definitions(
+            results[0]['word_info'],
+            result_div.cssselect('div.search_detail_view > div.detail_list > div.explain_list'),
+            lang_info,
+            False,
+            0
+        )
+
+        subword_elems = result_div.cssselect('div.idiom_wrap > div')
+        for idx, _ in enumerate(results[0]['word_info']['subword_info']):
+            _read_definitions(
+                results[0]['word_info'],
+                subword_elems[idx].cssselect('div.explain_list_wrap > div.explain_list'),
+                lang_info,
+                True,
+                idx
+            )
+
+        return results, 1
+
     headword_span = result_div.cssselect('span.word_head')[0]
     headword_text = (headword_span.text or '').strip()
 
@@ -794,16 +859,42 @@ def _read_view_content(doc, target_code, lang_info, kwargs):
 def _read_response(*args):
     doc, response_type, target_code, lang_info, scndary_trans_langs, kwargs = args
 
-    if response_type == 'exam':
-        return _read_examples(doc, lang_info)
+    readers = {
+        'exam': _read_examples,
+        'word_of_the_day': _read_wotd,
+        'view': _read_view_content,
+        '_': _read_search_results
+    }
 
-    if response_type == 'word_of_the_day':
-        return _read_wotd(doc, lang_info)
+    reader = readers.get(response_type, readers['_'])
 
-    if response_type == 'view':
-        return _read_view_content(doc, target_code, lang_info, kwargs)
+    result, total = (
+        reader(doc, target_code, lang_info, kwargs)
+        if response_type == 'view'
+        else (
+            reader(doc, lang_info)
+            if response_type in ('exam', 'word_of_the_day')
+            else reader(doc, response_type, lang_info)
+        )
+    )
 
-    return _read_search_results(doc, response_type, lang_info)
+    if total == 0 or response_type == 'exam':
+        return result, total
+
+    for tr_lang_info in scndary_trans_langs:
+        doc = send_scrape_request(tr_lang_info['req_url'])
+        scndary_lang_info = tr_lang_info['lang_info']
+        _ = (
+            reader(doc, target_code, scndary_lang_info, kwargs, result)
+            if response_type == 'view'
+            else (
+                reader(doc, scndary_lang_info, result)
+                if response_type == 'word_of_the_day'
+                else reader(doc, response_type, scndary_lang_info, result)
+            )
+        )
+
+    return result, total
 
 
 def parse_response(*args):

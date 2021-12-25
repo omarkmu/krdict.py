@@ -23,12 +23,12 @@ class _ScrapedTranslationURLInfo(_ResponseEntity):
 class _ScrapedSearchItem(_SearchItem):
     def __init__(self, raw):
         super().__init__(raw)
-        self.translation_urls = list(map(_ScrapedTranslationURLInfo, raw['trans_link']))
+        self.translation_urls = list(map(_ScrapedTranslationURLInfo, raw.get('trans_link', [])))
 
 class _ScrapedResponseData(_ResponseEntity):
     def __init__(self, raw):
         self.url: str = raw['link']
-        self.translation_urls = list(map(_ScrapedTranslationURLInfo, raw['trans_link']))
+        self.translation_urls = list(map(_ScrapedTranslationURLInfo, raw.get('trans_link', [])))
         self.page: int = raw['start']
         self.per_page: int = raw['num']
         self.total_results: int = raw['total']
@@ -91,7 +91,7 @@ class _WordOfTheDayData(_ResponseEntity):
         self.target_code: int = raw['target_code']
         self.word: str = raw['word']
         self.url: str = raw['link']
-        self.translation_urls = list(map(_ScrapedTranslationURLInfo, raw['trans_link']))
+        self.translation_urls = list(map(_ScrapedTranslationURLInfo, raw.get('trans_link', [])))
         self.part_of_speech: str = raw.get('pos', '')
         self.homograph_num: int = raw['sup_no']
         self.origin: str = raw.get('origin', '')
@@ -212,7 +212,7 @@ class _ScrapedViewItem(_ResponseEntity):
 class _ScrapedViewResponseData(_ResponseEntity):
     def __init__(self, raw):
         self.url: str = raw['link']
-        self.translation_urls = list(map(_ScrapedTranslationURLInfo, raw['trans_link']))
+        self.translation_urls = list(map(_ScrapedTranslationURLInfo, raw.get('trans_link', [])))
         self.total_results: int = raw['total']
         self.results = list(map(_ScrapedViewItem, raw['item']))
 
@@ -398,6 +398,7 @@ class ScraperTranslationLanguage(IntEnum):
     """Enumeration class that contains translation languages that can be used by the scraper."""
 
     __aliases__ = {
+        'all': 0,
         'english': 1,
         'japanese': 2,
         'french': 3,
@@ -411,6 +412,7 @@ class ScraperTranslationLanguage(IntEnum):
         'chinese': 11
     }
 
+    ALL = 0
     ENGLISH = 1
     JAPANESE = 2
     FRENCH = 3

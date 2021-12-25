@@ -57,6 +57,7 @@ _VIDEO_URL = (
 _VIEW_REQUEST_URL = 'https://krdict.korean.go.kr{}/smallDic/searchView?{}ParaWordNo={}'
 
 _LANG_INFO = (
+    ('all', None, None),
     ('eng', 6, '영어'),
     ('jpn', 7, '일본어'),
     ('fra', 8, '프랑스어'),
@@ -755,6 +756,60 @@ def _build_category_url(kwargs, lang_info, response_type):
     url_kr = base_url.format('', '', page, per_page, sort, category_query)
     return url, url_kr
 
+def _build_translation_language_info(trans_lang, kwargs, response_type):
+    trans_language_info = []
+    trans_urls = []
+
+    info = get_language_info(trans_lang)
+
+    if isiterable(trans_lang, exclude=(str,)):
+        seen = set()
+
+        for lang in trans_lang:
+            info = get_language_info(lang)
+
+            if info[0] == 'all':
+                return _build_translation_language_info('all', kwargs, response_type)
+
+            if not info[0] or info[2] in seen:
+                continue
+
+            seen.add(info[2])
+
+            url_tuple = build_request_url(kwargs, response_type, info)
+            trans_language_info.append({
+                'lang_info': info,
+                'req_url': url_tuple[2]
+            })
+            trans_urls.append({
+                'url': url_tuple[0],
+                'language': info[2]
+            })
+
+        trans_language_info = trans_language_info[1:]
+        lang_info = get_language_info(trans_lang[0] if trans_lang else None)
+    elif info[0] == 'all':
+        lang_info = _LANG_INFO[1]
+        for info in _LANG_INFO[2:]:
+            url_tuple = build_request_url(kwargs, response_type, info)
+            trans_language_info.append({
+                'lang_info': info,
+                'req_url': url_tuple[2]
+            })
+            trans_urls.append({
+                'url': url_tuple[0],
+                'language': info[2]
+            })
+    else:
+        url_tuple = build_request_url(kwargs, response_type, info)
+        lang_info = get_language_info(trans_lang)
+        if lang_info[0] is not None:
+            trans_urls.append({
+                'url': url_tuple[0],
+                'language': info[2]
+            })
+
+    return lang_info, trans_language_info, trans_urls
 
 def build_request_url(kwargs, response_type, lang_info) -> tuple[str, str, str]:
     """
@@ -802,10 +857,10 @@ def get_language_info(lang):
 
     lang = ScraperTranslationLanguage.get_value(lang)
 
-    if not lang or lang == 0:
+    if lang is None:
         return (None, 0, None)
 
-    return _LANG_INFO[lang - 1]
+    return _LANG_INFO[lang]
 
 def get_language_query(nation, code):
     """
@@ -817,62 +872,48 @@ def get_language_query(nation, code):
 
     return f'/{nation}', f'nation={nation}&nationCode={code}&'
 
+def send_scrape_request(url):
+    """
+    Sends a request to a URL with the necessary headers for scraping,
+    and returns an lxml node.
+    """
+
+    try:
+        response = requests.get(url, headers={'Accept-Language': '*'})
+        response.raise_for_status()
+        return html.fromstring(response.text)
+    except requests.exceptions.RequestException as exc:
+        raise exc
+
 def send_request(kwargs, response_type):
     """
-    Sends a request to a URL and parses the response with lxml.
+    Sends a request to a URL based on input parameters.
     """
 
     response_type = SearchType.get_value(response_type, response_type)
 
-    trans_language_info = []
-    trans_urls = []
     trans_lang = kwargs.get('translation_language')
 
-    seen = set()
-    if isiterable(trans_lang, exclude=(str,)):
-        trans_language_info = []
-        trans_urls = []
+    lang_info, trans_language_info, trans_urls = _build_translation_language_info(
+        trans_lang,
+        kwargs,
+        response_type
+    )
 
-        for lang in trans_lang:
-            info = get_language_info(lang)
-            if not info[0] or info[2] in seen:
-                continue
-
-            seen.add(info[2])
-
-            url_tuple = build_request_url(kwargs, response_type, info)
-            trans_language_info.append({
-                'lang_info': info,
-                'url_tuple': url_tuple
-            })
-            trans_urls.append({
-                'url': url_tuple[0],
-                'language': info[2]
-            })
-
-        trans_language_info = trans_language_info[1:]
-        trans_lang = trans_lang[0] if trans_lang else None
-
-    lang_info = get_language_info(trans_lang)
     url, url_kr, req_url = build_request_url(kwargs, response_type, lang_info)
 
-    try:
-        response = requests.get(req_url, headers={'Accept-Language': '*'})
-        response.raise_for_status()
-        return (
-            html.fromstring(response.text),
-            'word' if response_type == 'advanced' else response_type,
-            url_kr,
-            kwargs,
-            lang_info,
-            (
-                trans_urls if trans_urls
-                else ([{'url': url, 'language': lang_info[2]}] if lang_info[0] else [])
-            ),
-            trans_language_info
-        )
-    except requests.exceptions.RequestException as exc:
-        raise exc
+    return (
+        send_scrape_request(req_url),
+        'word' if response_type == 'advanced' else response_type,
+        url_kr,
+        kwargs,
+        lang_info,
+        (
+            trans_urls if trans_urls
+            else ([{'url': url, 'language': lang_info[2]}] if lang_info[0] else [])
+        ),
+        trans_language_info
+    )
 
 def send_multimedia_request(kwargs):
     """
