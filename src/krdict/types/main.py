@@ -2,13 +2,13 @@
 Contains response types defined by the krdict package.
 """
 
-from typing import Literal
+from .base import StrEnum
 
 # pylint: disable=too-few-public-methods,too-many-instance-attributes
 
 
 def _to_dict(obj):
-    if isinstance(obj, _ResponseEntity):
+    if isinstance(obj, ResponseItem):
         return obj.asdict()
 
     if isinstance(obj, list):
@@ -17,7 +17,20 @@ def _to_dict(obj):
     return obj
 
 
-class _ResponseEntity:
+class ResponseType(StrEnum):
+    """Enumeration class that contains response types."""
+
+    DEFINITION = 'dfn'
+    ERROR = 'error'
+    EXAMPLE = 'exam'
+    IDIOM_PROVERB = 'ip'
+    VIEW = 'view'
+    WORD = 'word'
+
+
+class ResponseItem:
+    """Base class for response objects."""
+
     def __contains__(self, key):
         return key in self.__dict__
 
@@ -44,13 +57,13 @@ class _ResponseEntity:
 
         return attrs
 
-class _SearchItem(_ResponseEntity):
+class _SearchItem(ResponseItem):
     def __init__(self, raw):
         self.target_code: int = raw['target_code']
         self.word: str = raw['word']
         self.url: str = raw['link']
 
-class _ResponseData(_ResponseEntity):
+class _ResponseData(ResponseItem):
     def __init__(self, raw):
         self.title: str = raw['title']
         self.url: str = raw['link']
@@ -60,13 +73,13 @@ class _ResponseData(_ResponseEntity):
         self.per_page: int = raw['num']
         self.total_results: int = raw['total']
 
-class _SearchTranslation(_ResponseEntity):
+class _SearchTranslation(ResponseItem):
     def __init__(self, raw):
         self.word: str = raw.get('trans_word', '')
         self.definition: str = raw['trans_dfn']
         self.language: str = raw['trans_lang']
 
-class _PartialSearchDefinition(_ResponseEntity):
+class _PartialSearchDefinition(ResponseItem):
     def __init__(self, raw):
         self.definition: str = raw['definition']
         self.translations = list(map(_SearchTranslation, raw.get('translation', [])))
@@ -128,22 +141,22 @@ class _IdiomProverbResponseData(_ResponseData):
         self.results = list(map(_IdiomProverbSearchItem, raw['item']))
 
 
-class _ViewOriginalLanguageInfo(_ResponseEntity):
+class _ViewOriginalLanguageInfo(ResponseItem):
     def __init__(self, raw):
         self.original_language: str = raw['original_language']
         self.language_type: str = raw['language_type']
 
-class _ViewPronunciationInfo(_ResponseEntity):
+class _ViewPronunciationInfo(ResponseItem):
     def __init__(self, raw):
         self.pronunciation: str = raw['pronunciation']
 
-class _ViewAbbreviationInfo(_ResponseEntity):
+class _ViewAbbreviationInfo(ResponseItem):
     def __init__(self, raw):
         self.abbreviation: str = raw['abbreviation']
         self.pronunciation_info = list(
             map(_ViewPronunciationInfo, raw.get('pronunciation_info', [])))
 
-class _ViewConjugationInfo(_ResponseEntity):
+class _ViewConjugationInfo(ResponseItem):
     def __init__(self, raw):
         self.conjugation: str = raw.get('conjugation', '')
         info = raw.get('conjugation_info', {})
@@ -153,24 +166,24 @@ class _ViewConjugationInfo(_ResponseEntity):
         self.abbreviation_info = list(map(
             _ViewAbbreviationInfo, info.get('abbreviation_info', [])))
 
-class _ViewReferenceInfo(_ResponseEntity):
+class _ViewReferenceInfo(ResponseItem):
     def __init__(self, raw):
         self.word: str = raw['word']
         self.target_code: int = raw.get('link_target_code', 0)
         self.url: str = raw.get('link', '')
         self.has_target_code: bool = raw.get('link_type') == 'C'
 
-class _ViewCategoryInfo(_ResponseEntity):
+class _ViewCategoryInfo(ResponseItem):
     def __init__(self, raw):
         self.type: str = raw['type']
         self.name: str = raw['written_form']
 
-class _ViewPatternInfo(_ResponseEntity):
+class _ViewPatternInfo(ResponseItem):
     def __init__(self, raw):
         self.pattern: str = raw['pattern']
         self.pattern_reference: str = raw.get('pattern_reference', '')
 
-class _ViewExampleInfo(_ResponseEntity):
+class _ViewExampleInfo(ResponseItem):
     def __init__(self, raw):
         self.type: str = raw['type']
         self.example: str = raw['example']
@@ -180,13 +193,13 @@ class _ViewRelatedInfo(_ViewReferenceInfo):
         super().__init__(raw)
         self.type: str = raw['type']
 
-class _ViewMultimediaInfo(_ResponseEntity):
+class _ViewMultimediaInfo(ResponseItem):
     def __init__(self, raw):
         self.label: str = raw['label']
         self.type: str = raw['type']
         self.url: str = raw['link']
 
-class _PartialViewDefinitionInfo(_ResponseEntity):
+class _PartialViewDefinitionInfo(ResponseItem):
     def __init__(self, raw):
         self.definition: str = raw['definition']
         self.reference: str = raw.get('reference', '')
@@ -200,13 +213,13 @@ class _ViewDefinitionInfo(_PartialViewDefinitionInfo):
         super().__init__(raw)
         self.multimedia_info = list(map(_ViewMultimediaInfo, raw.get('multimedia_info', [])))
 
-class _ViewSubwordInfo(_ResponseEntity):
+class _ViewSubwordInfo(ResponseItem):
     def __init__(self, raw):
         self.subword: str = raw['subword']
         self.subword_unit: str = raw['subword_unit']
         self.subdefinition_info = list(map(_PartialViewDefinitionInfo, raw['subsense_info']))
 
-class _ViewWordInfo(_ResponseEntity):
+class _ViewWordInfo(ResponseItem):
     def __init__(self, raw):
         self.word: str = raw['word']
         self.word_unit: str = raw['word_unit']
@@ -228,12 +241,12 @@ class _ViewWordInfo(_ResponseEntity):
         self.category_info = list(map(_ViewCategoryInfo, raw.get('category_info', [])))
         self.subword_info = list(map(_ViewSubwordInfo, raw.get('subword_info', [])))
 
-class _ViewItem(_ResponseEntity):
+class _ViewItem(ResponseItem):
     def __init__(self, raw):
         self.target_code: int = raw['target_code']
         self.word_info = _ViewWordInfo(raw['word_info'])
 
-class _ViewResponseData(_ResponseEntity):
+class _ViewResponseData(ResponseItem):
     def __init__(self, raw):
         self.title: str = raw['title']
         self.url: str = raw['link']
@@ -244,7 +257,7 @@ class _ViewResponseData(_ResponseEntity):
 
 
 
-class ErrorResponse(_ResponseEntity):
+class ErrorResponse(ResponseItem):
     """
     Contains information about an error response.
     """
@@ -253,10 +266,10 @@ class ErrorResponse(_ResponseEntity):
         self.error_code: int = raw['error']['error_code']
         self.message: str = raw['error']['message']
         self.request_params: dict = request_params
-        self.response_type: Literal['error'] = 'error'
+        self.response_type = ResponseType.ERROR
         self.raw: dict = raw
 
-class WordResponse(_ResponseEntity):
+class WordResponse(ResponseItem):
     """
     Contains information about a word search response.
     """
@@ -264,10 +277,10 @@ class WordResponse(_ResponseEntity):
     def __init__(self, raw, request_params):
         self.data = _WordResponseData(raw['channel'])
         self.request_params: dict = request_params
-        self.response_type: Literal['word'] = 'word'
+        self.response_type = ResponseType.WORD
         self.raw: dict = raw
 
-class DefinitionResponse(_ResponseEntity):
+class DefinitionResponse(ResponseItem):
     """
     Contains information about a definition search response.
     """
@@ -275,10 +288,10 @@ class DefinitionResponse(_ResponseEntity):
     def __init__(self, raw, request_params):
         self.data = _DefinitionResponseData(raw['channel'])
         self.request_params: dict = request_params
-        self.response_type: Literal['dfn'] = 'dfn'
+        self.response_type = ResponseType.DEFINITION
         self.raw: dict = raw
 
-class ExampleResponse(_ResponseEntity):
+class ExampleResponse(ResponseItem):
     """
     Contains information about an example search response.
     """
@@ -286,10 +299,10 @@ class ExampleResponse(_ResponseEntity):
     def __init__(self, raw, request_params):
         self.data = _ExampleResponseData(raw['channel'])
         self.request_params: dict = request_params
-        self.response_type: Literal['exam'] = 'exam'
+        self.response_type = ResponseType.EXAMPLE
         self.raw: dict = raw
 
-class IdiomProverbResponse(_ResponseEntity):
+class IdiomProverbResponse(ResponseItem):
     """
     Contains information about an idiom/proverb search response.
     """
@@ -297,10 +310,10 @@ class IdiomProverbResponse(_ResponseEntity):
     def __init__(self, raw, request_params):
         self.data = _IdiomProverbResponseData(raw['channel'])
         self.request_params: dict = request_params
-        self.response_type: Literal['ip'] = 'ip'
+        self.response_type = ResponseType.IDIOM_PROVERB
         self.raw: dict = raw
 
-class ViewResponse(_ResponseEntity):
+class ViewResponse(ResponseItem):
     """
     Contains information about a view query response.
     """
@@ -308,5 +321,5 @@ class ViewResponse(_ResponseEntity):
     def __init__(self, raw, request_params):
         self.data = _ViewResponseData(raw['channel'])
         self.request_params: dict = request_params
-        self.response_type: Literal['view'] = 'view'
+        self.response_type = ResponseType.VIEW
         self.raw: dict = raw
