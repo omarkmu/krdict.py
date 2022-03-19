@@ -2,7 +2,7 @@
 Transforms input parameters into API-compliant dicts.
 """
 
-import os
+from os import path
 import requests
 
 from .types import (
@@ -97,7 +97,7 @@ _PARAM_MAPS = {
     }
 }
 _DEFAULTS = { 'API_KEY': '' }
-_PEM_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'korean-go-kr-chain.pem')
+_PEM_PATH = path.join(path.dirname(path.realpath(__file__)), 'korean-go-kr-chain.pem')
 
 
 def _get_search_type(search_type):
