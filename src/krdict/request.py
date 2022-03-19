@@ -2,6 +2,7 @@
 Transforms input parameters into API-compliant dicts.
 """
 
+import os
 import requests
 
 from .types import (
@@ -96,6 +97,7 @@ _PARAM_MAPS = {
     }
 }
 _DEFAULTS = { 'API_KEY': '' }
+_PEM_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'korean-go-kr-chain.pem')
 
 
 def _get_search_type(search_type):
@@ -163,7 +165,7 @@ def send_request(kwargs, advanced=False, search_type=None):
         params['advanced'] = 'y'
 
     try:
-        response = requests.get(url, params)
+        response = requests.get(url, params, verify=_PEM_PATH)
         response.raise_for_status()
         return (response, params, search_type)
     except requests.exceptions.RequestException as exc:

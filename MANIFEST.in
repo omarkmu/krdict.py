@@ -1,2 +1,3 @@
 include src/py.typed
+include src/krdict/korean-go-kr-chain.pem
 include PYPI_README.md
