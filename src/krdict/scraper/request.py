@@ -2,6 +2,7 @@
 Handles making requests to the dictionary website.
 """
 
+from os import path
 import requests
 from lxml import html
 from .constants import _VIEW_URL
@@ -541,6 +542,7 @@ _SEARCH_TYPE_MAP = {
     'ip': 'P'
 }
 
+_PEM_PATH = path.join(path.dirname(path.realpath(__file__)), path.pardir, 'korean-go-kr-chain.pem')
 
 def _get_advanced_param(adv_mapper, value):
     if adv_mapper.get('name') != 'query' and ',' in value:
@@ -879,7 +881,7 @@ def send_scrape_request(url):
     """
 
     try:
-        response = requests.get(url, headers={'Accept-Language': '*'})
+        response = requests.get(url, headers={'Accept-Language': '*'}, verify=_PEM_PATH)
         response.raise_for_status()
         return html.fromstring(response.text)
     except requests.exceptions.RequestException as exc:
@@ -932,7 +934,7 @@ def send_multimedia_request(kwargs):
     )
 
     try:
-        response = requests.get(url, headers={'Accept-Language': '*'})
+        response = requests.get(url, headers={'Accept-Language': '*'}, verify=_PEM_PATH)
         response.raise_for_status()
         return html.fromstring(response.text)
     except requests.exceptions.RequestException as exc:
