@@ -2,7 +2,7 @@
 Handles making requests to the dictionary website.
 """
 
-import os
+from os import path
 import requests
 from lxml import html
 
@@ -462,7 +462,7 @@ _ADVANCED_PARAM_MAP = {
     }
 }
 
-_PEM_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../korean-go-kr-chain.pem')
+_PEM_PATH = path.join(path.dirname(path.realpath(__file__)), path.pardir, 'korean-go-kr-chain.pem')
 
 def _get_advanced_param(adv_mapper, value, value_only=False):
     if adv_mapper.get('name') != 'query' and ',' in value:
