@@ -111,10 +111,19 @@ def _read_search_definitions(elem_list, lang_info, response_type, result=None):
                 else dfn_elem.text_content().strip()
             )
 
+            # handles arabic edge case
+            str_order = str(order + 1) + '.'
+            if word_trns.startswith(str_order):
+                word_trns = word_trns[len(str_order):]
+
             dfn_elem = elem_list[idx + 1]
-            dfn_trns = elem_list[idx + 2].text.strip()
+            dfn_trns = elem_list[idx + 2].text_content().strip()
 
             if len(dfn_trns) > 0:
+                # for some reason, definitions sometimes end with "&lt;br/&rt;"
+                if dfn_trns.endswith('<br/>'):
+                    dfn_trns = dfn_trns[0:-5].strip()
+
                 translation = {}
                 translation['trans_dfn'] = dfn_trns
 
