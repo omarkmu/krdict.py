@@ -16,8 +16,6 @@ def advanced_search(**kwargs):
     - ``query``: The search query.
     - ``raise_api_errors``: Sets whether a ``KRDictException`` will be raised if an API error
     occurs. A value of ``True`` guarantees that the result is not an error object.
-    - ``guarantee_keys``: Sets whether keys that are missing from the response should be inserted
-    with default values. A value of ``True`` guarantees that every key that is not required
     is included, including keys set by the scraper.
     - ``key``: The API key. If a key was set with ``set_key``, this can be omitted.
     - ``page``: The page at which the search should start ``[1, 1000]``.
@@ -35,15 +33,14 @@ def advanced_search(**kwargs):
     - ``search_method``: The method used to match against the query.
     - ``classification``: An entry classification to filter by.
     - ``origin_type``: A word origin type to filter by.
-    - ``vocabulary_grade``: A vocabulary level to filter by.
+    - ``vocabulary_level``: A vocabulary level to filter by.
     - ``part_of_speech``: A part of speech to filter by.
-    - ``multimedia_info``: A multimedia type to filter by.
+    - ``multimedia_type``: A multimedia type to filter by.
     - ``min_syllables``: The minimum number of syllables in result words ``[1, 80]``.
-    - ``max_syllables``: The maximum number of syllables in results words. A value of ``0`` denotes
+    - ``max_syllables``: The maximum number of syllables in result words. A value of ``0`` denotes
     no maximum ``[0, 80]``.
     - ``meaning_category``: The meaning category to filter by.
     - ``subject_category``: A subject category to filter by.
-    - ``options``: Additional options to apply.
     """
 
     return parse_response(kwargs, *send_request(kwargs, True))
@@ -60,17 +57,14 @@ def search(**kwargs):
     - ``query``: The search query.
     - ``raise_api_errors``: Sets whether a ``KRDictException`` will be raised if an API error
     occurs. A value of ``True`` guarantees that the result is not an error object.
-    - ``guarantee_keys``: Sets whether keys that are missing from the response should be inserted
-    with default values. A value of ``True`` guarantees that every key that is not required
     is included, including keys set by the scraper.
     - ``key``: The API key. If a key was set with ``set_key``, this can be omitted.
     - ``page``: The page at which the search should start ``[1, 1000]``.
     - ``per_page``: The maximum number of search results to return ``[10, 100]``.
     - ``sort``: The sort method that should be used.
-    - ``search_type``: The type of search to perform
+    - ``search_type``: The type of search to perform.
     - ``translation_language``: A language or list of languages for which translations
     should be included.
-    - ``options``: Additional options to apply.
     """
 
     return parse_response(kwargs, *send_request(kwargs, False))
@@ -89,13 +83,10 @@ def view(**kwargs):
     - ``target_code``: The target code of the desired result.
     - ``raise_api_errors``: Sets whether a KRDictException will be raised if an API error occurs.
     A value of ``True`` guarantees that the result is not an error object.
-    - ``guarantee_keys``: Sets whether keys that are missing from the response should be inserted
-    with default values. A value of ``True`` guarantees that every key that is not required
     is included, including keys set by the scraper.
     - ``key``: The API key. If a key was set with ``set_key``, this can be omitted.
     - ``translation_language``: A language or list of languages for which translations
     should be included.
-    - ``options``: Additional options to apply.
     """
 
     return parse_response(kwargs, *send_request(kwargs, False, 'view'))

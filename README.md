@@ -5,12 +5,12 @@
 [![Tests](https://img.shields.io/github/workflow/status/omarkmu/krdict.py/Test?label=tests)](https://github.com/omarkmu/krdict.py/actions/workflows/test.yml)  
 [![krdict.js](https://img.shields.io/npm/v/krdict.js?label=krdict.js)](https://github.com/Fox-Islam/krdict.js)
 
-A python module that helps to query the [API](https://krdict.korean.go.kr/openApi/openApiInfo) of the
+A python package that helps to query the [API](https://krdict.korean.go.kr/openApi/openApiInfo) of the
 [Korean Learners' Dictionary](https://krdict.korean.go.kr/mainAction), provided by the National Institute of Korean Language.
 
 ## Installation
 
-To install the module via pip, run:
+To install the package via pip, run:
 
 ```
 pip install krdict.py
@@ -19,7 +19,7 @@ pip install krdict.py
 You can also install from one of the [releases](https://github.com/omarkmu/krdict.py/releases).
 
 ## Usage
-To use most of the functionality provided by this module, you'll need to generate an API key via
+To use most of the functionality provided by this package, you'll need to generate an API key via
 [the portal](https://krdict.korean.go.kr/openApi/openApiRegister) (requires login).
 
 A minimal example query that assumes the `KRDICT_KEY` environment variable is set:

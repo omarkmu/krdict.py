@@ -24,8 +24,7 @@ jobs:
       working-directory: ./src
       env:
         KRDICT_KEY: ${{ secrets.KRDICT_KEY }}
-      run: |
-        python -m unittest -v
+      run: python -m unittest discover -v -s tests
   examples:
     runs-on: ubuntu-latest
     steps:
@@ -42,5 +41,4 @@ jobs:
       working-directory: ./src
       env:
         KRDICT_KEY: ${{ secrets.KRDICT_KEY }}
-      run: |
-        python examples.py
+      run: python examples.py

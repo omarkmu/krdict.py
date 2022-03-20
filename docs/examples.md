@@ -184,8 +184,8 @@ response = krdict.advanced_search(
     query='.',
     search_type=krdict.SearchType.WORD,
     search_target=krdict.SearchTarget.DEFINITION,
-    vocabulary_grade=krdict.VocabularyLevel.BEGINNER,
-    multimedia_info=(
+    vocabulary_level=krdict.VocabularyLevel.BEGINNER,
+    multimedia_type=(
         krdict.MultimediaType.PHOTO,
         krdict.MultimediaType.ILLUSTRATION,
         krdict.MultimediaType.VIDEO,
@@ -539,7 +539,7 @@ Default word_info:
       "pronunciation": "바위산"
     }
   ],
-  "vocabulary_grade": "없음",
+  "vocabulary_level": "없음",
   "definition_info": [
     {
       "definition": "바위가 많아 풀과 나무가 자라지 못하는 산.",
@@ -597,7 +597,7 @@ With guarantee_keys:
       "url": ""
     }
   ],
-  "vocabulary_grade": "없음",
+  "vocabulary_level": "없음",
   "definition_info": [
     {
       "definition": "바위가 많아 풀과 나무가 자라지 못하는 산.",

@@ -1,12 +1,31 @@
 """
-Contains types defined by the krdict module.
+Contains types defined by the krdict package.
 """
 
 from .base import IntEnum, StrEnum
 from .meaning_category import MeaningCategory
 from .subject_category import SubjectCategory
 from .exceptions import KRDictException
-from .scraper import ScraperTranslationLanguage
+from .scraper import (
+    ScrapedDefinitionResponse,
+    ScrapedExampleResponse,
+    ScrapedIdiomProverbResponse,
+    ScrapedViewResponse,
+    ScrapedWordResponse,
+    ScraperSearchTarget,
+    ScraperTargetLanguage,
+    ScraperTranslationLanguage,
+    ScraperVocabularyLevel,
+    WordOfTheDayResponse
+)
+from .main import (
+    DefinitionResponse,
+    ErrorResponse,
+    ExampleResponse,
+    IdiomProverbResponse,
+    ViewResponse,
+    WordResponse
+)
 
 
 def isiterable(obj, exclude=None):
@@ -329,13 +348,26 @@ class VocabularyLevel(StrEnum):
 
 
 __all__ = [
+    'isiterable',
     'Classification',
+    'DefinitionResponse',
+    'ErrorResponse',
+    'ExampleResponse',
+    'IdiomProverbResponse',
     'KRDictException',
     'MeaningCategory',
     'MultimediaType',
     'OriginType',
     'PartOfSpeech',
+    'ScrapedDefinitionResponse',
+    'ScrapedExampleResponse',
+    'ScrapedIdiomProverbResponse',
+    'ScrapedViewResponse',
+    'ScrapedWordResponse',
+    'ScraperTargetLanguage',
+    'ScraperSearchTarget',
     'ScraperTranslationLanguage',
+    'ScraperVocabularyLevel',
     'SearchMethod',
     'SearchTarget',
     'SearchType',
@@ -343,6 +375,8 @@ __all__ = [
     'SubjectCategory',
     'TargetLanguage',
     'TranslationLanguage',
+    'ViewResponse',
     'VocabularyLevel',
-    'isiterable'
+    'WordOfTheDayResponse',
+    'WordResponse'
 ]
