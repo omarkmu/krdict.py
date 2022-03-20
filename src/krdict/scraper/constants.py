@@ -16,7 +16,7 @@ _VIEW_URL = 'https://krdict.korean.go.kr{}/dicSearch/SearchView?{}ParaWordNo={}'
 _RESPONSE_TYPES = {
     'dfn': ScrapedDefinitionResponse,
     'ip': ScrapedIdiomProverbResponse,
-    'meaning_category': ScrapedWordResponse,
+    'semantic_category': ScrapedWordResponse,
     'subject_category': ScrapedWordResponse,
     'exam': ScrapedExampleResponse,
     'view': ScrapedViewResponse,

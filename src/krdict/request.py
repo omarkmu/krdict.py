@@ -8,7 +8,7 @@ import requests
 from .types import (
     isiterable,
     Classification,
-    MeaningCategory,
+    SemanticCategory,
     MultimediaType,
     PartOfSpeech,
     SearchMethod,
@@ -84,9 +84,9 @@ _PARAM_MAPS = {
     'max_syllables': {
         'name': 'letter_e'
     },
-    'meaning_category': {
+    'semantic_category': {
         'name': 'sense_cat',
-        'type': MeaningCategory
+        'type': SemanticCategory
     },
     'subject_category': {
         'name': 'subject_cat',

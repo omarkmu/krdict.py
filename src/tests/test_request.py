@@ -107,7 +107,7 @@ class KRDictRequestTest(unittest.TestCase):
             'vocabulary_level': krdict.VocabularyLevel.ADVANCED,
             'part_of_speech': krdict.PartOfSpeech.NOUN,
             'multimedia_type': krdict.MultimediaType.VIDEO,
-            'meaning_category': krdict.MeaningCategory.ANIMALS_AND_PLANTS_ALL,
+            'semantic_category': krdict.SemanticCategory.ANIMALS_AND_PLANTS_ALL,
             'subject_category': krdict.SubjectCategory.ADVANCED_ART
         })
 

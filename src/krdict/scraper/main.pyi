@@ -2,7 +2,7 @@ from typing import Iterable, Literal, TypedDict, Union, overload
 
 from ..types import (
     Classification,
-    MeaningCategory,
+    SemanticCategory,
     MultimediaType,
     OriginType,
     PartOfSpeech,
@@ -23,7 +23,7 @@ from ..types import (
 )
 from ..main import (
     TClassification,
-    TMeaningCategory,
+    TSemanticCategory,
     TMultimediaType,
     TOriginType,
     TPartOfSpeech,
@@ -80,13 +80,13 @@ def advanced_search(*,
     multimedia_type: TMultimediaType | Iterable[TMultimediaType] = MultimediaType.ALL,
     min_syllables: int = 1,
     max_syllables: int = 0,
-    meaning_category: TMeaningCategory = MeaningCategory.ALL,
+    meaning_category: TSemanticCategory = SemanticCategory.ALL,
     subject_category: TSubjectCategory | Iterable[TSubjectCategory] = SubjectCategory.ALL,
     search_conditions: Iterable[TSearchCondition] = None
 ) -> ScrapedWordResponse: ...
 
-def fetch_meaning_category_words(*,
-    category: TMeaningCategory,
+def fetch_semantic_category_words(*,
+    category: TSemanticCategory,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,

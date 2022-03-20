@@ -39,7 +39,7 @@ def advanced_search(**kwargs):
     - ``min_syllables``: The minimum number of syllables in result words ``[1, 80]``.
     - ``max_syllables``: The maximum number of syllables in result words. A value of ``0`` denotes
     no maximum ``[0, 80]``.
-    - ``meaning_category``: The meaning category to filter by.
+    - ``semantic_category``: The semantic category to filter by.
     - ``subject_category``: A subject category to filter by.
     """
 

@@ -1,11 +1,11 @@
 """
-Contains enumeration class for handling meaning categories.
+Contains enumeration class for handling semantic categories.
 """
 
 from .base import IntEnum
 
-class MeaningCategory(IntEnum):
-    """Enumeration class that contains meaning category values."""
+class SemanticCategory(IntEnum):
+    """Enumeration class that contains semantic category values."""
 
     __aliases__ = {
         '전체': 0,

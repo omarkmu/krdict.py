@@ -5,7 +5,7 @@ from .types import (
     ErrorResponse,
     ExampleResponse,
     IdiomProverbResponse,
-    MeaningCategory,
+    SemanticCategory,
     MultimediaType,
     OriginType,
     PartOfSpeech,
@@ -27,7 +27,7 @@ TClassification = Classification | Literal[
     'phrase',
     'expression'
 ]
-TMeaningCategory = MeaningCategory | int | Literal[
+TSemanticCategory = SemanticCategory | int | Literal[
     '전체',
     '인간 > 전체',
     '인간 > 사람의 종류',
@@ -809,7 +809,7 @@ def advanced_search(*,
     multimedia_type: TMultimediaType | Iterable[TMultimediaType] = MultimediaType.ALL,
     min_syllables: int = 1,
     max_syllables: int = 0,
-    meaning_category: TMeaningCategory = MeaningCategory.ALL,
+    meaning_category: TSemanticCategory = SemanticCategory.ALL,
     subject_category: TSubjectCategory | Iterable[TSubjectCategory] = SubjectCategory.ALL
 ) -> WordResponse: ...
 @overload
@@ -832,7 +832,7 @@ def advanced_search(*,
     multimedia_type: TMultimediaType | Iterable[TMultimediaType] = MultimediaType.ALL,
     min_syllables: int = 1,
     max_syllables: int = 0,
-    meaning_category: TMeaningCategory = MeaningCategory.ALL,
+    meaning_category: TSemanticCategory = SemanticCategory.ALL,
     subject_category: TSubjectCategory | Iterable[TSubjectCategory] = SubjectCategory.ALL
 ) -> TSearchResponse: ...
 
@@ -856,7 +856,7 @@ def advanced_search(*,
     multimedia_type: TMultimediaType | Iterable[TMultimediaType] = MultimediaType.ALL,
     min_syllables: int = 1,
     max_syllables: int = 0,
-    meaning_category: TMeaningCategory = MeaningCategory.ALL,
+    meaning_category: TSemanticCategory = SemanticCategory.ALL,
     subject_category: TSubjectCategory | Iterable[TSubjectCategory] = SubjectCategory.ALL
 ) -> WordResponse | ErrorResponse: ...
 @overload
@@ -879,7 +879,7 @@ def advanced_search(*,
     multimedia_type: TMultimediaType | Iterable[TMultimediaType] = MultimediaType.ALL,
     min_syllables: int = 1,
     max_syllables: int = 0,
-    meaning_category: TMeaningCategory = MeaningCategory.ALL,
+    meaning_category: TSemanticCategory = SemanticCategory.ALL,
     subject_category: TSubjectCategory | Iterable[TSubjectCategory] = SubjectCategory.ALL
 ) -> TSearchResponse | ErrorResponse: ...
 

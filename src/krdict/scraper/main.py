@@ -29,29 +29,29 @@ def advanced_search(**kwargs):
     - ``multimedia_type``: A multimedia type to filter by.
     - ``min_syllables``: The minimum number of syllables in result words ``[1, 80]``.
     - ``max_syllables``: The maximum number of syllables in result words ``[1, 80]``.
-    - ``meaning_category``: The meaning category to filter by.
+    - ``semantic_category``: The semantic category to filter by.
     - ``subject_category``: A subject category to filter by.
     - ``search_conditions``: An array of search condition objects to filter by.
     """
 
     return parse_response(*send_request(kwargs, 'advanced'))
 
-def fetch_meaning_category_words(**kwargs):
+def fetch_semantic_category_words(**kwargs):
     """
-    Fetches words that belong to the provided meaning category.
+    Fetches words that belong to the provided semantic category.
 
     See the
-    [documentation](https://krdictpy.readthedocs.io/en/stable/scraper/#fetch_meaning_category_words)
+    [docs](https://krdictpy.readthedocs.io/en/stable/scraper/#fetch_semantic_category_words)
     for details.
 
-    - ``category``: The meaning category to fetch.
+    - ``category``: The semantic category to fetch.
     - ``page``: The page at which the search should start ``[1, 1000]``.
     - ``per_page``: The maximum number of search results to return ``[10, 100]``.
     - ``sort``: The sort method that should be used.
     - ``translation_language``: A language for which translations should be included.
     """
 
-    return parse_response(*send_request(kwargs, 'meaning_category'))
+    return parse_response(*send_request(kwargs, 'semantic_category'))
 
 def fetch_subject_category_words(**kwargs):
     """

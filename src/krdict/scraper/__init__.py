@@ -16,7 +16,7 @@ from ..types import (
 )
 from .main import (
     advanced_search,
-    fetch_meaning_category_words,
+    fetch_semantic_category_words,
     fetch_subject_category_words,
     fetch_word_of_the_day,
     search,
@@ -25,7 +25,7 @@ from .main import (
 
 __all__ = [
     'advanced_search',
-    'fetch_meaning_category_words',
+    'fetch_semantic_category_words',
     'fetch_subject_category_words',
     'fetch_word_of_the_day',
     'search',

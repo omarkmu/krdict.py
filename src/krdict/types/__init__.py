@@ -3,7 +3,7 @@ Contains types defined by the krdict package.
 """
 
 from .base import IntEnum, StrEnum
-from .meaning_category import MeaningCategory
+from .semantic_category import SemanticCategory
 from .subject_category import SubjectCategory
 from .exceptions import KRDictException
 from .scraper import (
@@ -355,7 +355,7 @@ __all__ = [
     'ExampleResponse',
     'IdiomProverbResponse',
     'KRDictException',
-    'MeaningCategory',
+    'SemanticCategory',
     'MultimediaType',
     'OriginType',
     'PartOfSpeech',

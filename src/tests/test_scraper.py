@@ -51,9 +51,9 @@ class KRDictScraperTest(unittest.TestCase):
             ('https://dicmedia.korean.go.kr/multimedia/multimedia_files/'
             'convert/20160913/20000/17000/307982/SND000317336.mp3'))
 
-    def test_scraper_fetch_meaning_category_words(self):
-        """Fetching meaning category words with scraper returns proper results"""
-        response = krdict.scraper.fetch_meaning_category_words(category=3, per_page=15)
+    def test_scraper_fetch_semantic_category_words(self):
+        """Fetching semantic category words with scraper returns proper results"""
+        response = krdict.scraper.fetch_semantic_category_words(category=3, per_page=15)
 
         self.assertIn('data', response)
         data = response.data
@@ -75,9 +75,9 @@ class KRDictScraperTest(unittest.TestCase):
         self.assertEqual(len(data.results), 15)
         self.assertEqual(data.total_results, 113)
 
-    def test_scraper_fetch_meaning_category_words_translation(self):
-        """Fetching meaning category words with translation with scraper returns proper results"""
-        response = krdict.scraper.fetch_meaning_category_words(
+    def test_scraper_fetch_semantic_category_words_translation(self):
+        """Fetching semantic category words with translation with scraper returns proper results"""
+        response = krdict.scraper.fetch_semantic_category_words(
             category=3,
             per_page=15,
             translation_language=krdict.scraper.ScraperTranslationLanguage.ENGLISH
@@ -120,7 +120,7 @@ class KRDictScraperTest(unittest.TestCase):
                 self.assertEqual(translation.language, '영어')
 
     def test_scraper_fetch_subject_category_words(self):
-        """Fetching meaning category words with scraper returns proper results"""
+        """Fetching semantic category words with scraper returns proper results"""
         response = krdict.scraper.fetch_subject_category_words(category=1, per_page=15)
 
         self.assertIn('data', response)
@@ -143,7 +143,7 @@ class KRDictScraperTest(unittest.TestCase):
         self.assertEqual(data.total_results, 17)
 
     def test_scraper_fetch_subject_category_words_translation(self):
-        """Fetching meaning category words with translation with scraper returns proper results"""
+        """Fetching semantic category words with translation with scraper returns proper results"""
         response = krdict.scraper.fetch_subject_category_words(
             category=1,
             per_page=15,

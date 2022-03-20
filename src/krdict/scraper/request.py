@@ -9,7 +9,7 @@ from .constants import _VIEW_URL
 from ..types import (
     isiterable,
     Classification,
-    MeaningCategory,
+    SemanticCategory,
     MultimediaType,
     OriginType,
     PartOfSpeech,
@@ -259,8 +259,8 @@ _ADVANCED_PARAM_MAP = {
             '0': '80'
         }
     },
-    'meaning_category': {
-        'type': MeaningCategory,
+    'semantic_category': {
+        'type': SemanticCategory,
         'default': '0',
         'convert': lambda tup: f'&senseCategoryTop={tup[0]}&senseCategoryMiddle={tup[1]}',
         'value': {
@@ -700,12 +700,12 @@ def _build_search_url(kwargs, lang_info, search_type):
     return url, url_kr, req_url
 
 def _build_sense_category_query(category):
-    category = MeaningCategory.get_value(category, category)
+    category = SemanticCategory.get_value(category, category)
 
     if category <= 0 or category > 153:
         return '&lgCategoryCode=0&miCategoryCode=-1'
 
-    meaning_map = _ADVANCED_PARAM_MAP['meaning_category']['value']
+    meaning_map = _ADVANCED_PARAM_MAP['semantic_category']['value']
     code_large, code_mid = meaning_map[str(category)]
 
     return f'&lgCategoryCode={code_large}&miCategoryCode={code_mid}'
@@ -738,12 +738,12 @@ def _build_category_url(kwargs, lang_info, response_type):
     page = kwargs.get('page', 1)
     per_page = kwargs.get('per_page', 10)
 
-    is_meaning = response_type == 'meaning_category'
+    is_semantic = response_type == 'semantic_category'
     query_builder = (
-        _build_sense_category_query if is_meaning else _build_subject_category_query
+        _build_sense_category_query if is_semantic else _build_subject_category_query
     )
 
-    base_url = _CAT_MEANING_URL if is_meaning else _CAT_SUBJECT_URL
+    base_url = _CAT_MEANING_URL if is_semantic else _CAT_SUBJECT_URL
     sort = 'C' if SortMethod.get_value(kwargs.get('sort')) == 'popular' else 'W'
     category_query = query_builder(kwargs.get('category', 0))
 
@@ -844,7 +844,7 @@ def build_request_url(kwargs, response_type, lang_info) -> tuple[str, str, str]:
     elif response_type in ('word', 'exam', 'dfn', 'ip'):
         url, url_kr, req_url = _build_search_url(kwargs, lang_info, response_type)
 
-    elif response_type in ('meaning_category', 'subject_category'):
+    elif response_type in ('semantic_category', 'subject_category'):
         url, url_kr = _build_category_url(kwargs, lang_info, response_type)
 
     else:

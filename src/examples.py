@@ -282,16 +282,16 @@ def word_of_the_day():
     _display_view_results(response)
 
 # Example 10
-def fetch_meaning_category():
+def fetch_semantic_category():
     """
-    Fetches words in the 인간 > 신체 부위 meaning category.
+    Fetches words in the 인간 > 신체 부위 semantic category.
     """
 
-    response = krdict.scraper.fetch_meaning_category_words(
+    response = krdict.scraper.fetch_semantic_category_words(
         # equivalent: category=3,
         # equivalent: category='인간 > 신체 부위',
         # equivalent: category='human > body parts',
-        category=krdict.MeaningCategory.HUMAN_BODY_PARTS,
+        category=krdict.SemanticCategory.HUMAN_BODY_PARTS,
         translation_language=krdict.TranslationLanguage.ENGLISH
     )
 
@@ -358,7 +358,7 @@ _EXAMPLE_FUNCS = [
     view_query,
     scraped_view_query,
     word_of_the_day,
-    fetch_meaning_category,
+    fetch_semantic_category,
     fetch_subject_category,
     hanja_info
 ]
