@@ -77,7 +77,11 @@ class _ScrapedExampleResponseData(_ScrapedResponseData):
 class _ScrapedIdiomProverbSearchItem(_ScrapedSearchItem):
     def __init__(self, raw):
         super().__init__(raw)
+        self.url += '&searchType=P'
         self.definitions = list(map(_SearchDefinition, raw['sense']))
+
+        for info in self.translation_urls:
+            info.url += '&searchType=P'
 
 class _ScrapedIdiomProverbResponseData(_ScrapedResponseData):
     def __init__(self, raw):

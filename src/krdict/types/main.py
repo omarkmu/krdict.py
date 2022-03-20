@@ -133,6 +133,7 @@ class _ExampleResponseData(_ResponseData):
 class _IdiomProverbSearchItem(_SearchItem):
     def __init__(self, raw):
         super().__init__(raw)
+        self.url += '&searchType=P'
         self.definitions = list(map(_SearchDefinition, raw['sense']))
 
 class _IdiomProverbResponseData(_ResponseData):
