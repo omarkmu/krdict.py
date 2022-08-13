@@ -793,12 +793,12 @@ TSearchResponse = Union[
 def advanced_search(*,
     query: str,
     raise_api_errors: Literal[True],
-    key: str = None,
+    key: str | None = None,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.WORD, 'word'],
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] | None = None,
     search_target: TSearchTarget = SearchTarget.HEADWORD,
     target_language: TTargetLanguage = TargetLanguage.ALL,
     search_method: TSearchMethod = SearchMethod.EXACT,
@@ -809,19 +809,19 @@ def advanced_search(*,
     multimedia_type: TMultimediaType | Iterable[TMultimediaType] = MultimediaType.ALL,
     min_syllables: int = 1,
     max_syllables: int = 0,
-    meaning_category: TSemanticCategory = SemanticCategory.ALL,
+    semantic_category: TSemanticCategory = SemanticCategory.ALL,
     subject_category: TSubjectCategory | Iterable[TSubjectCategory] = SubjectCategory.ALL
 ) -> WordResponse: ...
 @overload
 def advanced_search(*,
     query: str,
     raise_api_errors: Literal[True],
-    key: str = None,
+    key: str | None = None,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
-    search_type: TSearchType = None,
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
+    search_type: TSearchType | None = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] | None = None,
     search_target: TSearchTarget = SearchTarget.HEADWORD,
     target_language: TTargetLanguage = TargetLanguage.ALL,
     search_method: TSearchMethod = SearchMethod.EXACT,
@@ -832,7 +832,7 @@ def advanced_search(*,
     multimedia_type: TMultimediaType | Iterable[TMultimediaType] = MultimediaType.ALL,
     min_syllables: int = 1,
     max_syllables: int = 0,
-    meaning_category: TSemanticCategory = SemanticCategory.ALL,
+    semantic_category: TSemanticCategory = SemanticCategory.ALL,
     subject_category: TSubjectCategory | Iterable[TSubjectCategory] = SubjectCategory.ALL
 ) -> TSearchResponse: ...
 
@@ -840,12 +840,12 @@ def advanced_search(*,
 def advanced_search(*,
     query: str,
     raise_api_errors: bool = False,
-    key: str = None,
+    key: str | None = None,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.WORD, 'word'],
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] | None = None,
     search_target: TSearchTarget = SearchTarget.HEADWORD,
     target_language: TTargetLanguage = TargetLanguage.ALL,
     search_method: TSearchMethod = SearchMethod.EXACT,
@@ -856,19 +856,19 @@ def advanced_search(*,
     multimedia_type: TMultimediaType | Iterable[TMultimediaType] = MultimediaType.ALL,
     min_syllables: int = 1,
     max_syllables: int = 0,
-    meaning_category: TSemanticCategory = SemanticCategory.ALL,
+    semantic_category: TSemanticCategory = SemanticCategory.ALL,
     subject_category: TSubjectCategory | Iterable[TSubjectCategory] = SubjectCategory.ALL
 ) -> WordResponse | ErrorResponse: ...
 @overload
 def advanced_search(*,
     query: str,
     raise_api_errors: bool = False,
-    key: str = None,
+    key: str | None = None,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
-    search_type: TSearchType = None,
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None,
+    search_type: TSearchType | None = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] | None = None,
     search_target: TSearchTarget = SearchTarget.HEADWORD,
     target_language: TTargetLanguage = TargetLanguage.ALL,
     search_method: TSearchMethod = SearchMethod.EXACT,
@@ -879,7 +879,7 @@ def advanced_search(*,
     multimedia_type: TMultimediaType | Iterable[TMultimediaType] = MultimediaType.ALL,
     min_syllables: int = 1,
     max_syllables: int = 0,
-    meaning_category: TSemanticCategory = SemanticCategory.ALL,
+    semantic_category: TSemanticCategory = SemanticCategory.ALL,
     subject_category: TSubjectCategory | Iterable[TSubjectCategory] = SubjectCategory.ALL
 ) -> TSearchResponse | ErrorResponse: ...
 
@@ -888,112 +888,112 @@ def advanced_search(*,
 def search(*,
     query: str,
     raise_api_errors: Literal[True],
-    key: str = None,
+    key: str | None = None,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.WORD, 'word'],
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] | None = None
 ) -> WordResponse: ...
 @overload
 def search(*,
     query: str,
     raise_api_errors: Literal[True],
-    key: str = None,
+    key: str | None = None,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.DEFINITION, 'dfn', 'definition'],
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] | None = None
 ) -> DefinitionResponse: ...
 @overload
 def search(*,
     query: str,
     raise_api_errors: Literal[True],
-    key: str = None,
+    key: str | None = None,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.EXAMPLE, 'exam', 'example'],
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] | None = None
 ) -> ExampleResponse: ...
 @overload
 def search(*,
     query: str,
     raise_api_errors: Literal[True],
-    key: str = None,
+    key: str | None = None,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.IDIOM_PROVERB, 'ip', 'idiom_proverb', 'idiom/proverb'],
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] | None = None
 ) -> IdiomProverbResponse: ...
 @overload
 def search(*,
     query: str,
     raise_api_errors: Literal[True],
-    key: str = None,
+    key: str | None = None,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
-    search_type: TSearchType = None,
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None
+    search_type: TSearchType | None = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] | None = None
 ) -> TSearchResponse: ...
 
 @overload
 def search(*,
     query: str,
     raise_api_errors: bool = False,
-    key: str = None,
+    key: str | None = None,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.WORD, 'word'],
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] | None = None
 ) -> WordResponse | ErrorResponse: ...
 @overload
 def search(*,
     query: str,
     raise_api_errors: bool = False,
-    key: str = None,
+    key: str | None = None,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.DEFINITION, 'dfn', 'definition'],
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] | None = None
 ) -> DefinitionResponse | ErrorResponse: ...
 @overload
 def search(*,
     query: str,
     raise_api_errors: bool = False,
-    key: str = None,
+    key: str | None = None,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.EXAMPLE, 'exam', 'example'],
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] | None = None
 ) -> ExampleResponse | ErrorResponse: ...
 @overload
 def search(*,
     query: str,
     raise_api_errors: bool = False,
-    key: str = None,
+    key: str | None = None,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.IDIOM_PROVERB, 'ip', 'idiom_proverb', 'idiom/proverb'],
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] | None = None
 ) -> IdiomProverbResponse | ErrorResponse: ...
 @overload
 def search(*,
     query: str,
     raise_api_errors: bool = False,
-    key: str = None,
+    key: str | None = None,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
-    search_type: TSearchType = None,
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None
+    search_type: TSearchType | None = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] | None = None
 ) -> TSearchResponse | ErrorResponse: ...
 
 
@@ -1002,29 +1002,29 @@ def view(*,
     query: str,
     raise_api_errors: Literal[True],
     homograph_num: int = 0,
-    key: str = None,
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None
+    key: str | None = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] | None = None
 ) -> ViewResponse: ...
 @overload
 def view(*,
     query: str,
     raise_api_errors: bool = False,
     homograph_num: int = 0,
-    key: str = None,
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None
+    key: str | None = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] | None = None
 ) -> ViewResponse | ErrorResponse: ...
 
 @overload
 def view(*,
     target_code: int,
     raise_api_errors: Literal[True],
-    key: str = None,
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None
+    key: str | None = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] | None = None
 ) -> ViewResponse: ...
 @overload
 def view(*,
     target_code: int,
     raise_api_errors: bool = False,
-    key: str = None,
-    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] = None
+    key: str | None = None,
+    translation_language: TTranslationLanguage | Iterable[TTranslationLanguage] | None = None
 ) -> ViewResponse | ErrorResponse: ...

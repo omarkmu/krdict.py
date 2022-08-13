@@ -33,25 +33,25 @@ Returns a [`WordOfTheDayResponse`](return_types.md#wordofthedayresponse) object.
 ---
 ## fetch_meaning_category_words
 
-Fetches words that belong to the provided meaning category.
+Fetches words that belong to the provided semantic category.
 
 ```python
 def fetch_meaning_category_words(*,
-    category: MeaningCategory,
+    category: SemanticCategory,
     page: int = 1,
     per_page: int = 10,
     sort: SortMethod = SortMethod.ALPHABETICAL,
     translation_language: ScraperTranslationLanguage = None
-) -> ScrapedWordSearchResponse: ...
+) -> ScrapedResponse: ...
 ```
 
 !!! warning
-    The `MeaningCategory.ALL` option is **not supported** and will return zero results.
+    The `SemanticCategory.ALL` option is **not supported** and will return zero results.
     This also applies for calls that do not supply `category`.
 
 **Parameters:**
 
-- `category` ([`MeaningCategory`](parameters.md#meaningcategory)): The meaning category to fetch.
+- `category` ([`SemanticCategory`](parameters.md#semanticcategory)): The semantic category to fetch.
 - `page`: The page at which the search should start `[1, 1000]`.
 - `per_page`: The maximum number of search results to return `[10, 100]`.
 - `sort` ([`SortMethod`](parameters.md#sortmethod)): The sort method that should be used.
@@ -59,7 +59,7 @@ def fetch_meaning_category_words(*,
 
 **Returns:**
 
-Returns a [`ScrapedWordSearchResponse`](return_types.md#scrapedwordsearchresponse) object.
+Returns a [`ScrapedResponse`](return_types.md#scrapedresponse) object.
 
 ---
 ## fetch_subject_category_words
@@ -73,7 +73,7 @@ def fetch_subject_category_words(*,
     per_page: int = 0,
     sort: SortMethod = SortMethod.ALPHABETICAL,
     translation_language: ScraperTranslationLanguage = None
-) -> ScrapedWordSearchResponse: ...
+) -> ScrapedResponse: ...
 ```
 
 **Parameters:**
@@ -86,4 +86,4 @@ def fetch_subject_category_words(*,
 
 **Returns:**
 
-Returns a [`ScrapedWordSearchResponse`](return_types.md#scrapedwordsearchresponse) object.
+Returns a [`ScrapedResponse`](return_types.md#scrapedresponse) object.

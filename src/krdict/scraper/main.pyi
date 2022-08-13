@@ -69,7 +69,7 @@ def advanced_search(*,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
-    translation_language: TScraperTranslationLanguage | Iterable[TScraperTranslationLanguage] = None,
+    translation_language: TScraperTranslationLanguage | Iterable[TScraperTranslationLanguage] | None = None,
     search_target: TSearchTarget = SearchTarget.HEADWORD,
     target_language: TTargetLanguage = TargetLanguage.ALL,
     search_method: TSearchMethod = SearchMethod.INCLUDE,
@@ -80,9 +80,9 @@ def advanced_search(*,
     multimedia_type: TMultimediaType | Iterable[TMultimediaType] = MultimediaType.ALL,
     min_syllables: int = 1,
     max_syllables: int = 0,
-    meaning_category: TSemanticCategory = SemanticCategory.ALL,
+    semantic_category: TSemanticCategory = SemanticCategory.ALL,
     subject_category: TSubjectCategory | Iterable[TSubjectCategory] = SubjectCategory.ALL,
-    search_conditions: Iterable[TSearchCondition] = None
+    search_conditions: Iterable[TSearchCondition] | None = None
 ) -> ScrapedWordResponse: ...
 
 def fetch_semantic_category_words(*,
@@ -90,7 +90,7 @@ def fetch_semantic_category_words(*,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
-    translation_language: TScraperTranslationLanguage | Iterable[TScraperTranslationLanguage] = None
+    translation_language: TScraperTranslationLanguage | Iterable[TScraperTranslationLanguage] | None = None
 ) -> ScrapedWordResponse: ...
 
 def fetch_subject_category_words(*,
@@ -98,11 +98,11 @@ def fetch_subject_category_words(*,
     page: int = 1,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
-    translation_language: TScraperTranslationLanguage | Iterable[TScraperTranslationLanguage] = None
+    translation_language: TScraperTranslationLanguage | Iterable[TScraperTranslationLanguage] | None = None
 ) -> ScrapedWordResponse: ...
 
 def fetch_word_of_the_day(*,
-    translation_language: TScraperTranslationLanguage = None
+    translation_language: TScraperTranslationLanguage | None = None
 ) -> WordOfTheDayResponse: ...
 
 @overload
@@ -112,7 +112,7 @@ def search(*,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.WORD, 'word'],
-    translation_language: TScraperTranslationLanguage | Iterable[TScraperTranslationLanguage] = None
+    translation_language: TScraperTranslationLanguage | Iterable[TScraperTranslationLanguage] | None = None
 ) -> ScrapedWordResponse: ...
 @overload
 def search(*,
@@ -121,7 +121,7 @@ def search(*,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.DEFINITION, 'dfn', 'definition'],
-    translation_language: TScraperTranslationLanguage | Iterable[TScraperTranslationLanguage] = None
+    translation_language: TScraperTranslationLanguage | Iterable[TScraperTranslationLanguage] | None = None
 ) -> ScrapedDefinitionResponse: ...
 @overload
 def search(*,
@@ -130,7 +130,7 @@ def search(*,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.EXAMPLE, 'example', 'exam'],
-    translation_language: TScraperTranslationLanguage | Iterable[TScraperTranslationLanguage] = None
+    translation_language: TScraperTranslationLanguage | Iterable[TScraperTranslationLanguage] | None = None
 ) -> ScrapedExampleResponse: ...
 @overload
 def search(*,
@@ -139,7 +139,7 @@ def search(*,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: Literal[SearchType.IDIOM_PROVERB, 'ip', 'idiom_proverb', 'idiom/proverb'],
-    translation_language: TScraperTranslationLanguage | Iterable[TScraperTranslationLanguage] = None
+    translation_language: TScraperTranslationLanguage | Iterable[TScraperTranslationLanguage] | None = None
 ) -> ScrapedIdiomProverbResponse: ...
 @overload
 def search(*,
@@ -148,11 +148,11 @@ def search(*,
     per_page: int = 10,
     sort: TSortMethod = SortMethod.ALPHABETICAL,
     search_type: TSearchType,
-    translation_language: TScraperTranslationLanguage | Iterable[TScraperTranslationLanguage] = None
+    translation_language: TScraperTranslationLanguage | Iterable[TScraperTranslationLanguage] | None = None
 ) -> TScrapedResponse: ...
 
 def view(*,
     target_code: int,
     fetch_multimedia: bool = False,
-    translation_language: TScraperTranslationLanguage | Iterable[TScraperTranslationLanguage] = None
+    translation_language: TScraperTranslationLanguage | Iterable[TScraperTranslationLanguage] | None = None
 ) -> ScrapedViewResponse: ...

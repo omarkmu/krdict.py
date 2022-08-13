@@ -55,7 +55,6 @@ _VIDEO_URL = (
     'https://krdict.korean.go.kr/dicSearch/viewMovieConfirm?'
     'searchKindValue=video&ParaWordNo={}&ParaSenseSeq={}&multiMediaSeq={}'
 )
-_VIEW_REQUEST_URL = 'https://krdict.korean.go.kr{}/smallDic/searchView?{}ParaWordNo={}'
 
 _LANG_INFO = (
     ('all', None, None),
@@ -833,7 +832,7 @@ def build_request_url(kwargs, response_type, lang_info) -> tuple[str, str, str]:
 
         url_kr = _VIEW_URL.format('', '', target_code)
         url = _VIEW_URL.format(*lang_query, target_code)
-        req_url = _VIEW_REQUEST_URL.format(*lang_query, target_code)
+        req_url = url
 
     elif response_type == 'word_of_the_day':
         nation, *_ = lang_info

@@ -30,9 +30,9 @@ def advanced_search(*,
     multimedia_type: MultimediaType | Iterable[MultimediaType] = MultimediaType.ALL,
     min_syllables: int = 1,
     max_syllables: int = 0,
-    meaning_category: MeaningCategory = MeaningCategory.ALL,
+    semantic_category: SemanticCategory = SemanticCategory.ALL,
     subject_category: SubjectCategory | Iterable[SubjectCategory] = SubjectCategory.ALL
-) -> SearchResponse | KRDictError: ...
+) -> SearchResponse | ErrorResponse: ...
 ```
 !!! warning
     Use of any search type other than `SearchType.WORD` for the `search_type` parameter with advanced search is
@@ -44,9 +44,6 @@ def advanced_search(*,
 - `query`: The search query.
 - `raise_api_errors`: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
 A value of `True` guarantees that the result is not an error object.
-    - The empty string `""` for string values.
-    - Zero `0` for integer values.
-    - An empty list `[]` for list values.
 - `key`: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
 - `page`: The page at which the search should start `[1, 1000]`.
 - `per_page`: The maximum number of search results to return `[10, 100]`.
@@ -64,7 +61,7 @@ is set to any value other than `'original_language'`, this parameter has no effe
 - `multimedia_type` ([`MultimediaType`](parameters.md#multimediatype)): A multimedia type to filter by.
 - `min_syllables`: The minimum number of syllables in result words `[1, 80]`.
 - `max_syllables`: The maximum number of syllables in result words. A value of `0` denotes no maximum `[0, 80]`.
-- `meaning_category` ([`MeaningCategory`](parameters.md#meaningcategory)): The meaning category to filter by.
+- `semantic_category` ([`SemanticCategory`](parameters.md#semanticcategory)): The semantic category to filter by.
 - `subject_category` ([`SubjectCategory`](parameters.md#subjectcategory)): A subject category to filter by.
 
 
@@ -72,11 +69,11 @@ is set to any value other than `'original_language'`, this parameter has no effe
 
 Depending on the value of `search_type` and whether an error occurred, returns one of:
 
-- [`WordSearchResponse`](return_types.md#wordsearchresponse)
-- [`DefinitionSearchResponse`](return_types.md#definitionsearchresponse) **(potentially empty or incomplete)**
-- [`ExampleSearchResponse`](return_types.md#examplesearchresponse) **(potentially empty or incomplete)**
-- [`IdiomProverbSearchResponse`](return_types.md#idiomproverbsearchresponse) **(potentially empty or incomplete)**
-- [`KRDictError`](return_types.md#krdicterror)
+- [`WordResponse`](return_types.md#wordresponse)
+- [`DefinitionResponse`](return_types.md#definitionresponse) **(potentially empty or incomplete)**
+- [`ExampleResponse`](return_types.md#exampleresponse) **(potentially empty or incomplete)**
+- [`IdiomProverbResponse`](return_types.md#idiomproverbresponse) **(potentially empty or incomplete)**
+- [`ErrorResponse`](return_types.md#errorresponse)
 
 ---
 
@@ -94,7 +91,7 @@ def search(*,
     sort: SortMethod = SortMethod.ALPHABETICAL,
     search_type: SearchType = SearchType.WORD,
     translation_language: TranslationLanguage | Iterable[TranslationLanguage] = None
-) -> SearchResponse | KRDictError: ...
+) -> SearchResponse | ErrorResponse: ...
 ```
 
 **Parameters:**
@@ -102,9 +99,6 @@ def search(*,
 - `query`: The search query.
 - `raise_api_errors`: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
 A value of `True` guarantees that the result is not an error object.
-    - The empty string `""` for string values.
-    - Zero `0` for integer values.
-    - An empty list `[]` for list values.
 - `key`: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
 - `page`: The page at which the search should start `[1, 1000]`.
 - `per_page`: The maximum number of search results to return `[10, 100]`.
@@ -117,11 +111,11 @@ A value of `True` guarantees that the result is not an error object.
 
 Depending on the value of `search_type` and whether an error occurred, returns one of:
 
-- [`WordSearchResponse`](return_types.md#wordsearchresponse)
-- [`DefinitionSearchResponse`](return_types.md#definitionsearchresponse)
-- [`ExampleSearchResponse`](return_types.md#examplesearchresponse)
-- [`IdiomProverbSearchResponse`](return_types.md#idiomproverbsearchresponse)
-- [`KRDictError`](return_types.md#krdicterror)
+- [`WordResponse`](return_types.md#wordresponse)
+- [`DefinitionResponse`](return_types.md#definitionresponse)
+- [`ExampleResponse`](return_types.md#exampleresponse)
+- [`IdiomProverbResponse`](return_types.md#idiomproverbresponse)
+- [`ErrorResponse`](return_types.md#errorresponse)
 
 ---
 
@@ -150,14 +144,14 @@ def view(*,
     raise_api_errors: bool = False,
     key: str = None,
     translation_language: TranslationLanguage | Iterable[TranslationLanguage] = None
-) -> ViewResponse | KRDictError: ...
+) -> ViewResponse | ErrorResponse: ...
 
 def view(*,
     target_code: int,
     raise_api_errors: bool = False,
     key: str = None,
     translation_language: TranslationLanguage | Iterable[TranslationLanguage] = None
-) -> ViewResponse | KRDictError: ...
+) -> ViewResponse | ErrorResponse: ...
 ```
 
 **Parameters:**
@@ -167,9 +161,6 @@ def view(*,
 - `target_code`: The target code of the desired result.
 - `raise_api_errors`: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
 A value of `True` guarantees that the result is not an error object.
-    - The empty string `""` for string values.
-    - Zero `0` for integer values.
-    - An empty list `[]` for list values.
 - `key`: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
 - `translation_language` ([`TranslationLanguage`](parameters.md#translationlanguage)): A language for which translations
 should be included.
@@ -178,4 +169,4 @@ should be included.
 **Returns:**
 
 Depending on whether an error occurred, returns [`ViewResponse`](return_types.md#viewresponse) or
-[`KRDictError`](return_types.md#krdicterror).
+[`ErrorResponse`](return_types.md#errorresponse).

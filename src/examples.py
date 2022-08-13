@@ -335,8 +335,8 @@ def hanja_info():
         response.data.results[0].word_info.original_language_info
     )
 
-    for idx, info in enumerate(lang_info):
-        for h_info in info.hanja_info:
+    for info in lang_info:
+        for idx, h_info in enumerate(info.hanja_info):
             print(f'Hanja {idx + 1}: {h_info.hanja}')
             print(f'Radical: {h_info.radical}')
             print(f'Stroke Count: {h_info.stroke_count}')

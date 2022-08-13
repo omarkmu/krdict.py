@@ -56,3 +56,5 @@ Assuming an error does not occur, the output will be similar to:
   }
 }
 ```
+
+The package also provides various helper types and utilities for scraping in the [scraper](scraper.md) module.

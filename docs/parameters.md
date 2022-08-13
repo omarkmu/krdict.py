@@ -19,12 +19,6 @@ class Classification:
     EXPRESSION = 'expression'
 ```
 
-### MeaningCategory
-
-A meaning category which a dictionary entry may belong to.
-
-See [Meaning Category](meaning_category.md) for details.
-
 ### MultimediaType
 
 A type of multimedia file.
@@ -113,12 +107,6 @@ Aliases:
 'none': 15
 ```
 
-### SubjectCategory
-
-A subject category (themes and situations) which a dictionary entry may belong to.
-
-See [Subject Category](subject_category.md) for details.
-
 ### ScraperTranslationLanguage
 
 A language for which translations should be included during a scraper fetch.
@@ -153,6 +141,18 @@ Aliases:
 'russian': 10
 'chinese': 11
 ```
+
+### SemanticCategory
+
+A semantic category which a dictionary entry may belong to.
+
+See [Semantic Category](semantic_category.md) for details.
+
+### SubjectCategory
+
+A subject category (themes and situations) which a dictionary entry may belong to.
+
+See [Subject Category](subject_category.md) for details.
 
 ### SearchMethod
 

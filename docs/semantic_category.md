@@ -1,12 +1,12 @@
-A summary of `krdict.MeaningCategory`, an enumeration class that contains
-Korean Learners' Dictionary meaning (definition) categories.
+A summary of `krdict.SemanticCategory`, an enumeration class that contains
+Korean Learners' Dictionary semantic categories.
 
 ---
 
 ## Enumeration Values
 
 ```python
-class MeaningCategory:
+class SemanticCategory:
     ALL = 0
     HUMAN_ALL = 1
     HUMAN_TYPES_OF_PEOPLE = 2
@@ -165,12 +165,12 @@ class MeaningCategory:
 
 ## Aliases
 
-The following values are aliases for meaning categories.
+The following values are aliases for semantic categories.
 A read-only dictionary of these aliases can be accessed with
 the [`aliases`](parameters.md#aliases) property.
 
 These strings and the integer values they map to can be used directly
-in functions which expect meaning categories, and return the expected
+in functions which expect semantic categories, and return the expected
 enumeration value when used as the argument to [`get`](parameters.md#get).
 
 ```bash
