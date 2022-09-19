@@ -107,7 +107,7 @@ def parse_response(kwargs, api_response, request_params, search_type):
     Transforms an HTTP response to a response object.
 
     - ``kwargs``: The provided input keyword arguments.
-    - ``api_response``: Whether or not this an advanced search.
+    - ``api_response``: The response returned by the API.
     - ``request_params``: The request parameters which were sent to the API.
     - ``search_type``: The type of search which was performed.
     """
