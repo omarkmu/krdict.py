@@ -51,10 +51,10 @@ class EnumBase(Enum):
         enum_instance = cls.get(key)
         return enum_instance.value if enum_instance is not None else default
 
-class IntEnum(int, EnumBase):
+class IntEnum(int, EnumBase): # pylint: disable=invalid-enum-extension
     """Base class for integer-based enumerations."""
 
-class StrEnum(str, EnumBase):
+class StrEnum(str, EnumBase): # pylint: disable=invalid-enum-extension
     """Base class for string-based enumerations."""
 
     def __str__(self):
