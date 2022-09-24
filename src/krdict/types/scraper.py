@@ -310,7 +310,7 @@ class ScrapedWordInfo(ResponseObject):
         self.definition_info = list(map(ScrapedDefinitionInfo, raw['sense_info']))
         self.original_language_info = list(map(
             ScrapedOriginalLanguageInfo, raw.get('original_language_info', [])))
-        self.original_language = reduce(
+        self.origin = reduce(
             lambda x, y: x + y.original_language, self.original_language_info, '')
         self.pronunciation_info = list(map(
             ScrapedPronunciationInfo, raw.get('pronunciation_info', [])))
