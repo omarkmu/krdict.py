@@ -14,12 +14,12 @@ class KRDictException(Exception):
     that were sent to the API.
     """
 
-    def __init__(self, message, error_code, params):
+    def __init__(self, message, error_code, request_params):
         super().__init__(message)
 
         self.message = message
         self.error_code = error_code
-        self.request_params = params
+        self.request_params = request_params
 
     def __reduce__(self):
         return (KRDictException, (self.message, self.error_code, self.request_params))

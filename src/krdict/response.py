@@ -118,7 +118,4 @@ def parse_response(kwargs, api_response, request_params, search_type):
         error = raw_response['error']
         raise KRDictException(error['message'], error['error_code'], request_params)
 
-    if 'data' in raw_response and 'results' not in raw_response['data']:
-        raw_response['data']['results'] = []
-
     return _build_response(raw_response, request_params, search_type)

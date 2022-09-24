@@ -1,5 +1,5 @@
 """
-Handles testing the krdict package.
+Handles testing the scraper.
 """
 
 import unittest

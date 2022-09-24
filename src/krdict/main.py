@@ -16,7 +16,6 @@ def advanced_search(**kwargs):
     - ``query``: The search query.
     - ``raise_api_errors``: Sets whether a ``KRDictException`` will be raised if an API error
     occurs. A value of ``True`` guarantees that the result is not an error object.
-    is included, including keys set by the scraper.
     - ``key``: The API key. If a key was set with ``set_key``, this can be omitted.
     - ``page``: The page at which the search should start ``[1, 1000]``.
     - ``per_page``: The maximum number of search results to return ``[10, 100]``.
@@ -51,8 +50,7 @@ def search(**kwargs):
     Returns a dict with contents dependent on the value of the ``search_type``
     parameter and whether an error occurred.
 
-    See the [documentation](https://krdictpy.readthedocs.io/en/stable/return_types)
-    for details.
+    See the [documentation](https://krdictpy.readthedocs.io/en/stable/return_types) for details.
 
     - ``query``: The search query.
     - ``raise_api_errors``: Sets whether a ``KRDictException`` will be raised if an API error
@@ -75,15 +73,13 @@ def view(**kwargs):
     Returns either a dict with information about a dictionary entry, or an error object
     if an error occurred.
 
-    See the [documentation](https://krdictpy.readthedocs.io/en/stable/return_types)
-    for details.
+    See the [documentation](https://krdictpy.readthedocs.io/en/stable/return_types) for details.
 
     - ``query``: The search query.
     - ``homograph_num``: The superscript number used to distinguish homographs.
     - ``target_code``: The target code of the desired result.
     - ``raise_api_errors``: Sets whether a KRDictException will be raised if an API error occurs.
     A value of ``True`` guarantees that the result is not an error object.
-    is included, including keys set by the scraper.
     - ``key``: The API key. If a key was set with ``set_key``, this can be omitted.
     - ``translation_language``: A language or list of languages for which translations
     should be included.
