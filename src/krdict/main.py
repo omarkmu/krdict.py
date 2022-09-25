@@ -8,14 +8,14 @@ from .response import parse_response
 def advanced_search(**kwargs):
     """
     Performs an advanced search on the Korean Learners' Dictionary API.
-    Returns a dict with contents dependent on the value of the ``search_type``
+    Returns an object with contents dependent on the value of the ``search_type``
     parameter and whether an error occurred.
 
     See the [documentation](https://krdictpy.readthedocs.io/en/stable/return_types) for details.
 
     - ``query``: The search query.
     - ``raise_api_errors``: Sets whether a ``KRDictException`` will be raised if an API error
-    occurs. A value of ``True`` guarantees that the result is not an error object.
+    occurs. A value of ``True`` guarantees that the result is not an ``ErrorResponse``.
     - ``key``: The API key. If a key was set with ``set_key``, this can be omitted.
     - ``page``: The page at which the search should start ``[1, 1000]``.
     - ``per_page``: The maximum number of search results to return ``[10, 100]``.
@@ -47,14 +47,14 @@ def advanced_search(**kwargs):
 def search(**kwargs):
     """
     Performs a search on the Korean Learners' Dictionary API.
-    Returns a dict with contents dependent on the value of the ``search_type``
+    Returns an object with contents dependent on the value of the ``search_type``
     parameter and whether an error occurred.
 
     See the [documentation](https://krdictpy.readthedocs.io/en/stable/return_types) for details.
 
     - ``query``: The search query.
     - ``raise_api_errors``: Sets whether a ``KRDictException`` will be raised if an API error
-    occurs. A value of ``True`` guarantees that the result is not an error object.
+    occurs. A value of ``True`` guarantees that the result is not an ``ErrorResponse``.
     is included, including keys set by the scraper.
     - ``key``: The API key. If a key was set with ``set_key``, this can be omitted.
     - ``page``: The page at which the search should start ``[1, 1000]``.
@@ -70,7 +70,7 @@ def search(**kwargs):
 def view(**kwargs):
     """
     Performs a view query on the Korean Learners' Dictionary API.
-    Returns either a dict with information about a dictionary entry, or an error object
+    Returns either an object with information about a dictionary entry, or an error object
     if an error occurred.
 
     See the [documentation](https://krdictpy.readthedocs.io/en/stable/return_types) for details.
@@ -79,7 +79,7 @@ def view(**kwargs):
     - ``homograph_num``: The superscript number used to distinguish homographs.
     - ``target_code``: The target code of the desired result.
     - ``raise_api_errors``: Sets whether a KRDictException will be raised if an API error occurs.
-    A value of ``True`` guarantees that the result is not an error object.
+    A value of ``True`` guarantees that the result is not an ``ErrorResponse``.
     - ``key``: The API key. If a key was set with ``set_key``, this can be omitted.
     - ``translation_language``: A language or list of languages for which translations
     should be included.

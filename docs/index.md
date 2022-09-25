@@ -24,7 +24,7 @@ import krdict
 krdict.set_key(os.getenv('KRDICT_KEY'))
 response = krdict.search(query='나무', raise_api_errors=True)
 
-print(json.dumps(response, indent=2, ensure_ascii=False))
+print(json.dumps(response.asdict(), indent=2, ensure_ascii=False))
 ```
 
 Assuming an error does not occur, the output will be similar to:
@@ -57,4 +57,5 @@ Assuming an error does not occur, the output will be similar to:
 }
 ```
 
+For more information, see the other [examples](examples.md).
 The package also provides various helper types and utilities for scraping in the [scraper](scraper.md) module.

@@ -9,3 +9,15 @@
 .wy-breadcrumbs-aside .icon.icon-github {
     display: none;
 }
+
+.wy-nav-content {
+    max-width: 925px;
+}
+
+.code-anchor, .code-anchor:visited {
+    text-decoration: underline;
+    color: inherit;
+}
+a.code-anchor:hover {
+    color:#3091d1;
+}

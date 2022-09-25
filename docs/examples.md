@@ -12,11 +12,9 @@ krdict.set_key(os.getenv('KRDICT_KEY'))
 # displays a limited amount of information
 # returned from search and view responses.
 def _display_results(response): ...
-def _display_view_results(response): ...
 ```
 
-The definitions of `_display_results` and `_display_view_results` are omitted for
-brevity; for the full example file, see the
+The definition of `_display_results` is omitted for brevity; for the full example file, see the
 [source](https://github.com/omarkmu/krdict.py/blob/main/src/examples.py).
 
 ---
@@ -39,14 +37,14 @@ total_results = 0
 
 while has_next:
     response = krdict.search(query='나무', page=page, per_page=20, raise_api_errors=True)
-    data = response['data']
-    total_results = data['total_results']
+    data = response.data
+    total_results = data.total_results
 
     page += 1
-    results += data['results']
-    has_next = data['per_page'] * data['page'] < total_results
+    results += data.results
+    has_next = data.per_page * data.page < total_results
 
-    print((f'Collected {len(data["results"])} results from page {page - 1}. '
+    print((f'Collected {len(data.results)} results from page {page - 1}. '
         f'{"Querying next page." if has_next else "All results collected."}'))
 
 print(f'{len(results)} results collected. Total results: {total_results}.')
@@ -68,7 +66,7 @@ response = krdict.search(
     query='나무',
     # if you're using type checking,
     # setting the search_type parameter in a call with
-    # keyword arguments will define the type of the search result.
+    # keyword arguments will narrow the type of the search result.
     # when calling with an unpacked dictionary (**{...}),
     # the more specific type cannot be inferred.
     search_type=krdict.SearchType.DEFINITION,
@@ -114,8 +112,8 @@ response = krdict.search(
     raise_api_errors=True
 )
 
-for result in response['data']['results']:
-    print(f'• {result["example"]} (Word: {result["word"]})')
+for result in response.data.results:
+    print(f'• {result.example} (Word: {result.word})')
 ```
 ```md
 • 나무가 지나치게 단단하면 변형이 어려워 가공성이 떨어진다. (Word: 가공성)
@@ -181,6 +179,7 @@ response = krdict.advanced_search(
     # but because most definitions contain a period, it's possible to
     # achieve near-perfect results using the query '.' and the 'definition'
     # search target. in this example, all matches are returned.
+    # to perform an advanced search with no query in a more precise way, use the scraper.
     query='.',
     search_type=krdict.SearchType.WORD,
     search_target=krdict.SearchTarget.DEFINITION,
@@ -295,9 +294,9 @@ response = krdict.view(
 #     raise_api_errors=True
 # )
 
-_display_view_results(response)
+_display_results(response)
 ```
-```t
+```text
 단풍나무 「명사」 (丹丹楓나무) [단풍나무]
 https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=42075
 1. maple tree
@@ -328,9 +327,9 @@ response = krdict.scraper.view(
     fetch_multimedia=True
 )
 
-_display_view_results(response)
+_display_results(response)
 ```
-```t
+```text
 단풍나무 「명사」 (丹楓나무) [단풍나무 (https://dicmedia.korean.go.kr/multimedia/multimedia_files/convert/20120209/23784/SND000012487.mp3)]
 https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=42075
 1. maple tree
@@ -358,7 +357,7 @@ wotd_response = krdict.scraper.fetch_word_of_the_day(
 )
 
 wotd_translation = ''
-if 'translation' in wotd_response.data:
+if wotd_response.data.translations:
     wotd_translation = f' ({wotd_response.data.translations[0].word})'
 
 print((f'Word of the Day: {wotd_response.data.word}{wotd_translation}'
@@ -374,9 +373,9 @@ response = krdict.scraper.view(
 )
 
 print('\nExtended Info:')
-_display_view_results(response)
+_display_results(response)
 ```
-```t
+```text
 Word of the Day: 걱정거리 (cause of worry)
 걱정이 되는 일.
 https://krdict.korean.go.kr/eng/dicSearch/SearchView?ParaWordNo=21608&nation=eng&nationCode=6
@@ -488,6 +487,7 @@ response = krdict.scraper.view(
     target_code=14951 # target code for 가감승제
 )
 
+# the length of the results array for a view query is always 0 or 1
 assert len(response.data.results) == 1
 
 # filter out non-한자
@@ -496,8 +496,8 @@ lang_info = filter(
     response.data.results[0].word_info.original_language_info
 )
 
-for idx, info in enumerate(lang_info):
-    for h_info in info.hanja_info:
+for info in lang_info:
+    for idx, h_info in enumerate(info.hanja_info):
         print(f'Hanja {idx + 1}: {h_info.hanja}')
         print(f'Radical: {h_info.radical}')
         print(f'Stroke Count: {h_info.stroke_count}')

@@ -102,7 +102,7 @@ def fetch_subject_category_words(*,
 ) -> ScrapedWordResponse: ...
 
 def fetch_word_of_the_day(*,
-    translation_language: TScraperTranslationLanguage | None = None
+    translation_language: TScraperTranslationLanguage | Iterable[TScraperTranslationLanguage] | None = None
 ) -> WordOfTheDayResponse: ...
 
 @overload

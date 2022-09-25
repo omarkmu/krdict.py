@@ -2,6 +2,7 @@
 Contains response types defined by the krdict package.
 """
 
+from functools import reduce
 from .enums import ResponseType
 
 # pylint: disable=too-few-public-methods,too-many-instance-attributes
@@ -102,7 +103,7 @@ class ErrorResponse(ResponseObject):
         self.error_code: int = raw['error']['error_code']
         self.message: str = raw['error']['message']
         self.request_params: dict = request_params
-        self.response_type = ResponseType.ERROR
+        self.response_type = ResponseType.ERROR.value
         self.raw: dict = raw
 
 
@@ -133,7 +134,7 @@ class WordResponse(ResponseObject):
     def __init__(self, raw, request_params):
         self.data = WordResponseData(raw['channel'])
         self.request_params: dict = request_params
-        self.response_type = ResponseType.WORD
+        self.response_type = ResponseType.WORD.value
         self.raw: dict = raw
 
 
@@ -160,7 +161,7 @@ class DefinitionResponse(ResponseObject):
     def __init__(self, raw, request_params):
         self.data = DefinitionResponseData(raw['channel'])
         self.request_params: dict = request_params
-        self.response_type = ResponseType.DEFINITION
+        self.response_type = ResponseType.DEFINITION.value
         self.raw: dict = raw
 
 
@@ -187,7 +188,7 @@ class ExampleResponse(ResponseObject):
     def __init__(self, raw, request_params):
         self.data = ExampleResponseData(raw['channel'])
         self.request_params: dict = request_params
-        self.response_type = ResponseType.EXAMPLE
+        self.response_type = ResponseType.EXAMPLE.value
         self.raw: dict = raw
 
 
@@ -214,7 +215,7 @@ class IdiomProverbResponse(ResponseObject):
     def __init__(self, raw, request_params):
         self.data = IdiomProverbResponseData(raw['channel'])
         self.request_params: dict = request_params
-        self.response_type = ResponseType.IDIOM_PROVERB
+        self.response_type = ResponseType.IDIOM_PROVERB.value
         self.raw: dict = raw
 
 
@@ -320,7 +321,7 @@ class SubwordInfo(ResponseObject):
 
     def __init__(self, raw):
         self.subword: str = raw['subword']
-        self.subword_unit: str = raw['subword_unit']
+        self.subword_type: str = raw['subword_unit']
         self.subdefinition_info = list(map(PartialDefinitionInfo, raw['subsense_info']))
 
 class WordInfo(ResponseObject):
@@ -339,6 +340,8 @@ class WordInfo(ResponseObject):
         self.definition_info = list(map(DefinitionInfo, raw['sense_info']))
         self.original_language_info = list(map(
             OriginalLanguageInfo, raw.get('original_language_info', [])))
+        self.origin = reduce(
+            lambda x, y: x + y.original_language, self.original_language_info, '')
         self.pronunciation_info = list(map(
             PronunciationInfo, raw.get('pronunciation_info', [])))
         self.conjugation_info = list(map(ConjugationInfo, raw.get('conju_info', [])))
@@ -371,5 +374,5 @@ class ViewResponse(ResponseObject):
     def __init__(self, raw, request_params):
         self.data = ViewResponseData(raw['channel'])
         self.request_params: dict = request_params
-        self.response_type = ResponseType.VIEW
+        self.response_type = ResponseType.VIEW.value
         self.raw: dict = raw

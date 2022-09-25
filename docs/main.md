@@ -2,8 +2,8 @@ A summary of the provided functions in the `krdict` package and the arguments th
 With the exception of [`set_key`](#set_key),
 all of the functions listed below expect keyword arguments.
 
-The `krdict` package also exports all of the enumerations described in
-the [parameter types](#parameters) of the functions below.
+The `krdict` package also directly exports all of the enumerations described in
+the [parameter types](enums.md) of the functions below.
 
 ---
 ## advanced_search
@@ -31,8 +31,9 @@ def advanced_search(*,
     min_syllables: int = 1,
     max_syllables: int = 0,
     semantic_category: SemanticCategory = SemanticCategory.ALL,
-    subject_category: SubjectCategory | Iterable[SubjectCategory] = SubjectCategory.ALL
-) -> SearchResponse | ErrorResponse: ...
+    subject_category: SubjectCategory | Iterable[SubjectCategory] = SubjectCategory.ALL,
+    search_conditions: Iterable[SearchCondition] = None
+) -> WordResponse | DefinitionResponse | ExampleResponse | IdiomProverbResponse | ErrorResponse: ...
 ```
 !!! warning
     Use of any search type other than `SearchType.WORD` for the `search_type` parameter with advanced search is
@@ -42,27 +43,28 @@ def advanced_search(*,
 **Parameters:**
 
 - `query`: The search query.
-- `raise_api_errors`: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
-A value of `True` guarantees that the result is not an error object.
+- `raise_api_errors`: Sets whether a [`KRDictException`](other.md#krdictexception) will be raised if an API error occurs.
+A value of `True` guarantees that the result is not an [`ErrorResponse`](return_types.md#errorresponse).
 - `key`: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
 - `page`: The page at which the search should start `[1, 1000]`.
 - `per_page`: The maximum number of search results to return `[10, 100]`.
-- `sort` ([`SortMethod`](parameters.md#sortmethod)): The sort method that should be used.
-- `search_type` ([`SearchType`](parameters.md#searchtype)): The type of search to perform.
-- `translation_language` ([`TranslationLanguage`](parameters.md#translationlanguage)): A language for which translations should be included.
-- `search_target` ([`SearchTarget`](parameters.md#searchtarget)): The target field of the search query.
-- `target_language` ([`TargetLanguage`](parameters.md#targetlanguage)): The original language to search by. If `search_target`
+- `sort`: The sort method that should be used.
+- `search_type`: The type of search to perform.
+- `translation_language`: A language for which translations should be included.
+- `search_target`: The target field of the search query.
+- `target_language`: The original language to search by. If `search_target`
 is set to any value other than `'original_language'`, this parameter has no effect.
-- `search_method` ([`SearchMethod`](parameters.md#searchmethod)): The method used to match against the query.
-- `classification` ([`Classification`](parameters.md#classification)): An entry classification to filter by.
-- `origin_type` ([`OriginType`](parameters.md#origintype)): A word origin type to filter by.
-- `vocabulary_level` ([`VocabularyLevel`](parameters.md#vocabularylevel)): A vocabulary level to filter by.
-- `part_of_speech` ([`PartOfSpeech`](parameters.md#partofspeech)): A part of speech to filter by.
-- `multimedia_type` ([`MultimediaType`](parameters.md#multimediatype)): A multimedia type to filter by.
+- `search_method`: The method used to match against the query.
+- `classification`: An entry classification to filter by.
+- `origin_type`: A word origin type to filter by.
+- `vocabulary_level`: A vocabulary level to filter by.
+- `part_of_speech`: A part of speech to filter by.
+- `multimedia_type`: A multimedia type to filter by.
 - `min_syllables`: The minimum number of syllables in result words `[1, 80]`.
 - `max_syllables`: The maximum number of syllables in result words. A value of `0` denotes no maximum `[0, 80]`.
-- `semantic_category` ([`SemanticCategory`](parameters.md#semanticcategory)): The semantic category to filter by.
-- `subject_category` ([`SubjectCategory`](parameters.md#subjectcategory)): A subject category to filter by.
+- `semantic_category`: The semantic category to filter by.
+- `subject_category`: A subject category to filter by.
+- `search_conditions`: A list of dicts describing additional search conditions for the search.
 
 
 **Returns**:
@@ -91,20 +93,21 @@ def search(*,
     sort: SortMethod = SortMethod.ALPHABETICAL,
     search_type: SearchType = SearchType.WORD,
     translation_language: TranslationLanguage | Iterable[TranslationLanguage] = None
-) -> SearchResponse | ErrorResponse: ...
+) -> WordResponse | DefinitionResponse | ExampleResponse | IdiomProverbResponse | ErrorResponse: ...
 ```
 
 **Parameters:**
 
 - `query`: The search query.
-- `raise_api_errors`: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
-A value of `True` guarantees that the result is not an error object.
+- `raise_api_errors`: Sets whether a [`KRDictException`](other.md#krdictexception) will be raised if an API error occurs.
+A value of `True` guarantees that the result is not an [`ErrorResponse`](return_types.md#errorresponse).
 - `key`: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
 - `page`: The page at which the search should start `[1, 1000]`.
 - `per_page`: The maximum number of search results to return `[10, 100]`.
-- `sort` ([`SortMethod`](parameters.md#sortmethod)): The sort method that should be used.
-- `search_type` ([`SearchType`](parameters.md#searchtype)): The type of search to perform.
-- `translation_language` ([`TranslationLanguage`](parameters.md#translationlanguage)): A language for which translations should be included.
+- `sort`: The sort method that should be used.
+- `search_type`: The type of search to perform.
+- `translation_language`: A language
+for which translations should be included.
 
 
 **Returns**:
@@ -135,7 +138,7 @@ def set_key(key: str | None) -> None: ...
 
 ## view
 
-Performs a view query, which retrieves information about a particular entry, on the Korean Learners' Dictionary API.
+Performs a view query, which retrieves information about a particular entry on the Korean Learners' Dictionary API.
 
 ```python
 def view(*,
@@ -159,14 +162,8 @@ def view(*,
 - `query`: The search query.
 - `homograph_num`: The superscript number used to distinguish homographs.
 - `target_code`: The target code of the desired result.
-- `raise_api_errors`: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
-A value of `True` guarantees that the result is not an error object.
+- `raise_api_errors`: Sets whether a [`KRDictException`](other.md#krdictexception) will be raised if an API error occurs.
+A value of `True` guarantees that the result is not an [`ErrorResponse`](return_types.md#errorresponse).
 - `key`: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
-- `translation_language` ([`TranslationLanguage`](parameters.md#translationlanguage)): A language for which translations
+- `translation_language`: A language for which translations
 should be included.
-
-
-**Returns:**
-
-Depending on whether an error occurred, returns [`ViewResponse`](return_types.md#viewresponse) or
-[`ErrorResponse`](return_types.md#errorresponse).

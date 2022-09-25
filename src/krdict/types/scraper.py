@@ -66,7 +66,7 @@ class WordOfTheDayResponse(ResponseObject):
 
     def __init__(self, raw):
         self.data = WordOfTheDayData(raw['item'])
-        self.response_type = ScrapedResponseType.WORD_OF_THE_DAY
+        self.response_type = ScrapedResponseType.WORD_OF_THE_DAY.value
         self.raw: dict = raw
 
 
@@ -97,7 +97,7 @@ class ScrapedWordResponse(ResponseObject):
 
     def __init__(self, raw):
         self.data = ScrapedWordResponseData(raw)
-        self.response_type = ScrapedResponseType.WORD
+        self.response_type = ScrapedResponseType.WORD.value
         self.raw: dict = raw
 
 
@@ -123,7 +123,7 @@ class ScrapedDefinitionResponse(ResponseObject):
 
     def __init__(self, raw):
         self.data = ScrapedDefinitionResponseData(raw)
-        self.response_type = ScrapedResponseType.DEFINITION
+        self.response_type = ScrapedResponseType.DEFINITION.value
         self.raw: dict = raw
 
 
@@ -149,7 +149,7 @@ class ScrapedExampleResponse(ResponseObject):
 
     def __init__(self, raw):
         self.data = ScrapedExampleResponseData(raw)
-        self.response_type = ScrapedResponseType.EXAMPLE
+        self.response_type = ScrapedResponseType.EXAMPLE.value
         self.raw: dict = raw
 
 
@@ -178,7 +178,7 @@ class ScrapedIdiomProverbResponse(ResponseObject):
 
     def __init__(self, raw):
         self.data = ScrapedIdiomProverbResponseData(raw)
-        self.response_type = ScrapedResponseType.IDIOM_PROVERB
+        self.response_type = ScrapedResponseType.IDIOM_PROVERB.value
         self.raw: dict = raw
 
 
@@ -226,8 +226,8 @@ class ScrapedConjugationInfo(ResponseObject):
         self.pronunciation_info = list(map(
             ScrapedPronunciationInfo, info.get('pronunciation_info', [])))
 
-        abbr = raw.get('abbreviation_info', [])
-        self.abbreviation_info = list(map(ScrapedAbbreviationInfo, abbr))
+        self.abbreviation_info = list(map(ScrapedAbbreviationInfo,
+            raw.get('abbreviation_info', [])))
 
 class ScrapedDerivativeInfo(ResponseObject):
     """Contains information about a derivative of the entry."""
@@ -339,5 +339,5 @@ class ScrapedViewResponse(ResponseObject):
 
     def __init__(self, raw):
         self.data = ScrapedViewResponseData(raw)
-        self.response_type = ScrapedResponseType.VIEW
+        self.response_type = ScrapedResponseType.VIEW.value
         self.raw: dict = raw

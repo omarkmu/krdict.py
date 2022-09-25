@@ -2,6 +2,7 @@ site_name: krdict.py
 theme: readthedocs
 repo_url: https://github.com/omarkmu/krdict.py
 extra_css: [extra.css]
+extra_javascript: [extra.js]
 nav:
     - Home: index.md
     - Usage Examples: examples.md
@@ -9,11 +10,9 @@ nav:
         - Main: main.md
         - Scraper: scraper.md
     - Types:
-        - Parameter Types: parameters.md
-        - Semantic Category: semantic_category.md
-        - Subject Category: subject_category.md
+        - Enumeration Types: enums.md
         - Return Types: return_types.md
-        - Exceptions: exceptions.md
+        - Other Types: other.md
 markdown_extensions:
     - admonition
     - toc:

@@ -2,6 +2,7 @@
 Contains potential usage examples of the library.
 """
 
+from functools import reduce
 import os
 import sys
 import requests
@@ -16,32 +17,12 @@ except ImportError:
 
 krdict.set_key(os.getenv('KRDICT_KEY'))
 
-
-def _display_results(response):
-    data = response.data
-    print(f'Total Results: {data.total_results}')
-
-    for idx, result in enumerate(data.results):
-        first_dfn = (
-            result.definition_info
-            if isinstance(response, krdict.DefinitionResponse)
-            else result.definitions[0]
-        )
-
-        origin_info = f' ({result.origin})' if 'origin' in result and result.origin else ''
-        print(f'{idx + 1}. {result.word}{origin_info}: {first_dfn.definition}')
-
-        for translation in first_dfn.translations:
-            print(f'   {translation.word}: {translation.definition}')
-
-
 def _display_view_results(response):
     data = response.data
     result = data.results[0]
 
-    origin = []
-    for origin_obj in result.word_info.original_language_info:
-        origin.append(origin_obj.original_language)
+    origin = reduce(lambda x, y: x + y.original_language,
+        result.word_info.original_language_info, '')
 
     pronunciation = []
     for pronunciation_obj in result.word_info.pronunciation_info:
@@ -54,7 +35,7 @@ def _display_view_results(response):
 
     print(f'{result.word_info.word}'
         + f' 「{result.word_info.part_of_speech}」'
-        + (f' ({"".join(origin)})' if origin else '')
+        + (f' ({origin})' if origin else '')
         + (f' [{"".join(pronunciation)}]' if pronunciation else '')
     )
 
@@ -88,6 +69,27 @@ def _display_view_results(response):
                 print(f'   ► {",".join(multimedia.content_urls)} ({multimedia.type})')
             else:
                 print(f'   ► {multimedia.url} ({multimedia.type})')
+
+def _display_results(response):
+    if response.response_type in ('view', 'scraped_view'):
+        _display_view_results(response)
+        return
+
+    data = response.data
+    print(f'Total Results: {data.total_results}')
+
+    for idx, result in enumerate(data.results):
+        first_dfn = (
+            result.definition_info
+            if isinstance(response, krdict.DefinitionResponse)
+            else result.definitions[0]
+        )
+
+        origin_info = f' ({result.origin})' if 'origin' in result and result.origin else ''
+        print(f'{idx + 1}. {result.word}{origin_info}: {first_dfn.definition}')
+
+        for translation in first_dfn.translations:
+            print(f'   {translation.word}: {translation.definition}')
 
 
 # Example 1
@@ -125,7 +127,7 @@ def search_definitions():
         query='나무',
         # if you're using type checking,
         # setting the search_type parameter in a call with
-        # keyword arguments will define the type of the search result.
+        # keyword arguments will narrow the type of the return result.
         # when calling with an unpacked dictionary (**{...}),
         # the more specific type cannot be inferred.
         search_type=krdict.SearchType.DEFINITION,
@@ -176,6 +178,7 @@ def search_beginner_words_with_multimedia():
         # but because most definitions contain a period, it's possible to
         # achieve near-perfect results using the query '.' and the 'definition'
         # search target. in this example, all matches are returned.
+        # to perform an advanced search with no query in a more precise way, use the scraper.
         query='.',
         search_type=krdict.SearchType.WORD,
         search_target=krdict.SearchTarget.DEFINITION,
@@ -235,7 +238,7 @@ def view_query():
     #     raise_api_errors=True
     # )
 
-    _display_view_results(response)
+    _display_results(response)
 
 # Example 8
 def scraped_view_query():
@@ -250,7 +253,7 @@ def scraped_view_query():
         fetch_multimedia=True
     )
 
-    _display_view_results(response)
+    _display_results(response)
 
 # Example 9
 def word_of_the_day():
@@ -263,7 +266,7 @@ def word_of_the_day():
     )
 
     wotd_translation = ''
-    if 'translation' in wotd_response.data:
+    if wotd_response.data.translations:
         wotd_translation = f' ({wotd_response.data.translations[0].word})'
 
     print((f'Word of the Day: {wotd_response.data.word}{wotd_translation}'
@@ -279,7 +282,7 @@ def word_of_the_day():
     )
 
     print('\nExtended Info:')
-    _display_view_results(response)
+    _display_results(response)
 
 # Example 10
 def fetch_semantic_category():
@@ -327,6 +330,7 @@ def hanja_info():
         target_code=14951 # target code for 가감승제
     )
 
+    # the length of the results array for a view query is always 0 or 1
     assert len(response.data.results) == 1
 
     # filter out non-한자
@@ -381,4 +385,4 @@ if __name__ == '__main__':
     try:
         _run_examples()
     except (krdict.KRDictException, requests.RequestException) as exc:
-        sys.exit(exc)
+        sys.exit(str(exc))
