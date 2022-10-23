@@ -274,7 +274,7 @@ using the [`view`](main.md#view) function.
     As shown in the result below, the API has a bug which duplicates
     한자 (hanja) with multiple 음훈 (readings). This means that, instead of
     the correct 丹楓나무, the original language is returned as 丹丹楓나무.
-    This is corrected in view responses extended by
+    This is corrected in view responses returned by
     the scraper.
 
 ```python
@@ -316,7 +316,7 @@ https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=42075
 Displays the results of a view query obtained by scraping for the word 단풍나무
 using the scraper's [`view`](scraper.md#view) function.
 
-The scraper returns extended view queries that contain pronunciation URLs,
+The scraper returns results that contain pronunciation URLs,
 multimedia URLs, and extended information about 한자 such as readings, stroke count, and radicals.
 
 ```python
