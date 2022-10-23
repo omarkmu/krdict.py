@@ -12,11 +12,9 @@ krdict.set_key(os.getenv('KRDICT_KEY'))
 # displays a limited amount of information
 # returned from search and view responses.
 def _display_results(response): ...
-def _display_view_results(response): ...
 ```
 
-The definitions of `_display_results` and `_display_view_results` are omitted for
-brevity; for the full example file, see the
+The definition of `_display_results` is omitted for brevity; for the full example file, see the
 [source](https://github.com/omarkmu/krdict.py/blob/main/src/examples.py).
 
 ---
@@ -39,14 +37,14 @@ total_results = 0
 
 while has_next:
     response = krdict.search(query='나무', page=page, per_page=20, raise_api_errors=True)
-    data = response['data']
-    total_results = data['total_results']
+    data = response.data
+    total_results = data.total_results
 
     page += 1
-    results += data['results']
-    has_next = data['per_page'] * data['page'] < total_results
+    results += data.results
+    has_next = data.per_page * data.page < total_results
 
-    print((f'Collected {len(data["results"])} results from page {page - 1}. '
+    print((f'Collected {len(data.results)} results from page {page - 1}. '
         f'{"Querying next page." if has_next else "All results collected."}'))
 
 print(f'{len(results)} results collected. Total results: {total_results}.')
@@ -68,7 +66,7 @@ response = krdict.search(
     query='나무',
     # if you're using type checking,
     # setting the search_type parameter in a call with
-    # keyword arguments will define the type of the search result.
+    # keyword arguments will narrow the type of the search result.
     # when calling with an unpacked dictionary (**{...}),
     # the more specific type cannot be inferred.
     search_type=krdict.SearchType.DEFINITION,
@@ -114,8 +112,8 @@ response = krdict.search(
     raise_api_errors=True
 )
 
-for result in response['data']['results']:
-    print(f'• {result["example"]} (Word: {result["word"]})')
+for result in response.data.results:
+    print(f'• {result.example} (Word: {result.word})')
 ```
 ```md
 • 나무가 지나치게 단단하면 변형이 어려워 가공성이 떨어진다. (Word: 가공성)
@@ -181,11 +179,12 @@ response = krdict.advanced_search(
     # but because most definitions contain a period, it's possible to
     # achieve near-perfect results using the query '.' and the 'definition'
     # search target. in this example, all matches are returned.
+    # to perform an advanced search with no query in a more precise way, use the scraper.
     query='.',
     search_type=krdict.SearchType.WORD,
     search_target=krdict.SearchTarget.DEFINITION,
-    vocabulary_grade=krdict.VocabularyLevel.BEGINNER,
-    multimedia_info=(
+    vocabulary_level=krdict.VocabularyLevel.BEGINNER,
+    multimedia_type=(
         krdict.MultimediaType.PHOTO,
         krdict.MultimediaType.ILLUSTRATION,
         krdict.MultimediaType.VIDEO,
@@ -202,7 +201,7 @@ response = krdict.advanced_search(
 _display_results(response)
 ```
 ```md
-Total Results: 299
+Total Results: 295
 1. 가위: 종이나 천, 머리카락 등을 자르는 도구.
    scissors: A tool for cutting paper, fabric, hair, etc.
 2. 간장 (간醬): 음식의 간을 맞추는 데 쓰는, 짠맛이 나는 검은색 액체.
@@ -210,7 +209,8 @@ Total Results: 299
 3. 간호사 (看護師): 병원에서 의사를 도와 환자를 돌보는 것이 직업인 사람.
    nurse: A person whose job it is to assist doctors in taking care of patients at hospitals.
 4. 갈비: 음식의 재료로 쓰이는 소, 돼지, 닭 등의 가슴뼈와 거기에 붙은 살. 또는 그것으로 만든 음식.
-   ribs: Breastbones of cows, pigs, chickens, etc., and the flesh attached to these bones, used as an ingredient for food; or food made from these bones and their flesh.5. 갈비탕 (갈비湯): 소의 갈비를 잘라 넣고 오랫동안 끓인 국.
+   ribs: Breastbones of cows, pigs, chickens, etc., and the flesh attached to these bones, used as an ingredient for food; or food made from these bones and their flesh.
+5. 갈비탕 (갈비湯): 소의 갈비를 잘라 넣고 오랫동안 끓인 국.
    galbitang; short rib soup: Beef rib soup, made by boiling short beef ribs for long hours.
 6. 감: 둥글거나 둥글넓적하며 익기 전에는 떫지만 익으면 단맛이 나는 주황색 과일.
    persimmon: An orange-colored, round or roundish flat fruit, which is astringent when unripe but sweet when ripe.
@@ -274,7 +274,7 @@ using the [`view`](main.md#view) function.
     As shown in the result below, the API has a bug which duplicates
     한자 (hanja) with multiple 음훈 (readings). This means that, instead of
     the correct 丹楓나무, the original language is returned as 丹丹楓나무.
-    This is corrected in view responses extended by
+    This is corrected in view responses returned by
     the scraper.
 
 ```python
@@ -294,9 +294,9 @@ response = krdict.view(
 #     raise_api_errors=True
 # )
 
-_display_view_results(response)
+_display_results(response)
 ```
-```t
+```text
 단풍나무 「명사」 (丹丹楓나무) [단풍나무]
 https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=42075
 1. maple tree
@@ -311,29 +311,25 @@ https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=42075
    ► http://dicmedia.korean.go.kr:8899/front/search/searchResultView.do?file_no=97378 (사진)
 ```
 ---
-## 8. Perform an Enhanced View Query
+## 8. Perform a Scraped View Query
 
-Displays the results of a view query enhanced by scraping for the word 단풍나무
-using the [`view`](main.md#view) function.
+Displays the results of a view query obtained by scraping for the word 단풍나무
+using the scraper's [`view`](scraper.md#view) function.
 
-The scraper extends view queries with pronunciation URLs, multimedia URLs,
-and extended information about 한자 such as readings, stroke count, and radicals.
+The scraper returns results that contain pronunciation URLs,
+multimedia URLs, and extended information about 한자 such as readings, stroke count, and radicals.
 
 ```python
-response = krdict.view(
-    query='단풍나무',
-    homograph_num=0,
+response = krdict.scraper.view(
+    # scraper method can only query with target code, not query strings
+    target_code=42075,
     translation_language=krdict.TranslationLanguage.ENGLISH,
-    raise_api_errors=True,
-    # the scraper can be applied to the search and advanced_search
-    # functions similarly; for those functions, the only
-    # additional information retrieved is pronunciation URLs.
-    options={'use_scraper': True, 'fetch_multimedia': True}
+    fetch_multimedia=True
 )
 
-_display_view_results(response)
+_display_results(response)
 ```
-```t
+```text
 단풍나무 「명사」 (丹楓나무) [단풍나무 (https://dicmedia.korean.go.kr/multimedia/multimedia_files/convert/20120209/23784/SND000012487.mp3)]
 https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=42075
 1. maple tree
@@ -350,36 +346,36 @@ https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=42075
 ---
 ## 9. Word of the Day
 
-Fetches the word of the day with [`fetch_today_word`](scraper.md#fetch_today_word),
+Fetches the word of the day with the
+[`fetch_word_of_the_day`](scraper.md#fetch_word_of_the_day) function,
 then fetches extended information about the word of the day
-using the [`view`](main.md#view) function.
+using the scraper's [`view`](scraper.md#view) function.
 
 ```python
-wotd_response = krdict.scraper.fetch_today_word(
+wotd_response = krdict.scraper.fetch_word_of_the_day(
     translation_language=krdict.TranslationLanguage.ENGLISH
 )
 
 wotd_translation = ''
-if 'translation' in wotd_response['data']:
-    wotd_translation = f' ({wotd_response["data"]["translation"].get("word", "")})'
+if wotd_response.data.translations:
+    wotd_translation = f' ({wotd_response.data.translations[0].word})'
 
-print((f'Word of the Day: {wotd_response["data"]["word"]}{wotd_translation}'
-    f'\n{wotd_response["data"]["definition"]}'
-    f'\n{wotd_response["data"]["url"]}'))
+print((f'Word of the Day: {wotd_response.data.word}{wotd_translation}'
+    f'\n{wotd_response.data.definition}'
+    f'\n{wotd_response.data.url}'))
 
-response = krdict.view(
+response = krdict.scraper.view(
     # with the target code from the scraped word of the day response,
-    # we can use the API and the scraper to get extended information.
-    target_code=wotd_response['data']['target_code'],
+    # we can use the scraper to get extended information.
+    target_code=wotd_response.data.target_code,
     translation_language=krdict.TranslationLanguage.ENGLISH,
-    raise_api_errors=True,
-    options={'use_scraper': True, 'fetch_multimedia': True}
+    fetch_multimedia=True
 )
 
 print('\nExtended Info:')
-_display_view_results(response)
+_display_results(response)
 ```
-```t
+```text
 Word of the Day: 걱정거리 (cause of worry)
 걱정이 되는 일.
 https://krdict.korean.go.kr/eng/dicSearch/SearchView?ParaWordNo=21608&nation=eng&nationCode=6
@@ -398,17 +394,17 @@ https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=21608
    • ...
 ```
 ---
-## 10. Fetch Words in Meaning Category
+## 10. Fetch Words in Semantic Category
 
-Fetches words in the 인간 > 신체 부위 meaning category
-using the [`fetch_meaning_category_words`](scraper.md#fetch_meaning_category_words) function.
+Fetches words in the 인간 > 신체 부위 semantic category using the
+[`fetch_semantic_category_words`](scraper.md#fetch_semantic_category_words) function.
 
 ```python
-response = krdict.scraper.fetch_meaning_category_words(
-    # or: category=3,
-    # or: category='인간 > 신체 부위',
-    # or: category='human > body parts',
-    category=krdict.MeaningCategory.HUMAN_BODY_PARTS,
+response = krdict.scraper.fetch_semantic_category_words(
+    # equivalent: category=3,
+    # equivalent: category='인간 > 신체 부위',
+    # equivalent: category='human > body parts',
+    category=krdict.SemanticCategory.HUMAN_BODY_PARTS,
     translation_language=krdict.TranslationLanguage.ENGLISH
 )
 
@@ -448,9 +444,9 @@ response = krdict.scraper.fetch_subject_category_words(
     # category also accepts an array of multiple categories,
     # or krdict.SubjectCategory.ALL to retrieve all categories' words.
 
-    # or: category=1,
-    # or: category='인사하기',
-    # or: category='greeting',
+    # equivalent: category=1,
+    # equivalent: category='인사하기',
+    # equivalent: category='greeting',
     category=krdict.SubjectCategory.ELEMENTARY_GREETING,
     translation_language=krdict.TranslationLanguage.ENGLISH
 )
@@ -481,214 +477,52 @@ Total Results: 17
    old; ancient: Marked by a long duration of time since the start or formation of something.
 ```
 ---
-## 12. Using The `guarantee_keys` Parameter
+## 12. Get Hanja Information
 
-Demonstrates the use of the `guarantee_keys` keyword argument of
-the [`view`](main.md#view) function.
-
-A similar parameter exists for [`advanced_search`](main.md#advanced_search),
-[`search`](main.md#search),
-[`fetch_today_word`](scraper.md#fetch_today_word),
-[`fetch_meaning_category_words`](scraper.md#fetch_meaning_category_words), and
-[`fetch_subject_category_words`](scraper.md#fetch_subject_category_words).
+Displays information about the hanja characters in a
+scraped [`view`](main.md#view) response.
 
 ```python
-print('Default word_info:')
-response = krdict.view(
-    target_code=57557,
-    raise_api_errors=True
+response = krdict.scraper.view(
+    target_code=14951 # target code for 가감승제
 )
 
-# prints a result with plenty of "not required" keys missing.
-print(json.dumps(response['data']['results'][0]['word_info'], indent=2, ensure_ascii=False))
+# the length of the results array for a view query is always 0 or 1
+assert len(response.data.results) == 1
 
-
-print('\nWith guarantee_keys:')
-# same call as above, with guarantee_keys set to True.
-response = krdict.view(
-    target_code=57557,
-    guarantee_keys=True,
-    raise_api_errors=True
+# filter out non-한자
+lang_info = filter(
+    lambda info: info.language_type == '한자',
+    response.data.results[0].word_info.original_language_info
 )
 
-# prints a result with all "not required" keys included as default values,
-# including keys which can only be obtained from scraping, such as "hanja_info",
-# "url", and "media_urls".
-print(json.dumps(response['data']['results'][0]['word_info'], indent=2, ensure_ascii=False))
-```
-```t
-Default word_info:
-{
-  "word": "바위산",
-  "homograph_num": 0,
-  "word_unit": "단어",
-  "part_of_speech": "명사",       
-  "word_type": "혼종어",
-  "original_language_info": [     
-    {
-      "original_language": "바위",
-      "language_type": "고유어"   
-    },
-    {
-      "original_language": "山",  
-      "language_type": "한자"     
-    }
-  ],
-  "pronunciation_info": [
-    {
-      "pronunciation": "바위산"
-    }
-  ],
-  "vocabulary_grade": "없음",
-  "definition_info": [
-    {
-      "definition": "바위가 많아 풀과 나무가 자라지 못하는 산.",
-      "example_info": [
-        {
-          "type": "문장",
-          "example": "풀 한 포기 자라지 않는 바위산에 수도원을 지은 옛 사람들의 수고와 노력에 절로 머리가 숙여졌다."
-        },
-        {
-          "type": "문장",
-          "example": "깎아지른 듯 높은 바위산을 연결한 철교가 멋스럽게 펼쳐지자, 사람들은 철교를 보기 위해 위험을 무릅쓰고 바위 위에 올라섰다."
-        },
-        {
-          "type": "구",
-          "example": "거친 바위산."
-        },
-        {
-          "type": "구",
-          "example": "바위산에 오르다."
-        }
-      ],
-      "multimedia_info": [
-        {
-          "label": "바위산",
-          "type": "사진",
-          "url": "http://dicmedia.korean.go.kr:8899/front/search/searchResultView.do?file_no=104901"
-        }
-      ]
-    }
-  ]
-}
-
-With guarantee_keys:
-{
-  "word": "바위산",
-  "homograph_num": 0,
-  "word_unit": "단어",
-  "part_of_speech": "명사",
-  "word_type": "혼종어",
-  "original_language_info": [
-    {
-      "original_language": "바위",
-      "language_type": "고유어",
-      "hanja_info": []
-    },
-    {
-      "original_language": "山",
-      "language_type": "한자",
-      "hanja_info": []
-    }
-  ],
-  "pronunciation_info": [
-    {
-      "pronunciation": "바위산",
-      "url": ""
-    }
-  ],
-  "vocabulary_grade": "없음",
-  "definition_info": [
-    {
-      "definition": "바위가 많아 풀과 나무가 자라지 못하는 산.",
-      "example_info": [
-        {
-          "type": "문장",
-          "example": "풀 한 포기 자라지 않는 바위산에 수도원을 지은 옛 사람들의 수고와 노력에 절로 머리가 숙여졌다."
-        },
-        {
-          "type": "문장",
-          "example": "깎아지른 듯 높은 바위산을 연결한 철교가 멋스럽게 펼쳐지자, 사람들은 철교를 보기 위해 위험을 무릅쓰고 바위 위에 올라섰다."
-        },
-        {
-          "type": "구",
-          "example": "거친 바위산."
-        },
-        {
-          "type": "구",
-          "example": "바위산에 오르다."
-        }
-      ],
-      "multimedia_info": [
-        {
-          "label": "바위산",
-          "type": "사진",
-          "url": "http://dicmedia.korean.go.kr:8899/front/search/searchResultView.do?file_no=104901",
-          "media_urls": []
-        }
-      ]
-    }
-  ],
-  "allomorph": "",
-  "conjugation_info": [],
-  "derivative_info": [],
-  "reference_info": [],
-  "category_info": [],
-  "subword_info": []
-}
-```
----
-## 13. Get Hanja Information
-
-Displays information about the hanja characters in a [`view`](main.md#view)
-response using the scraper.
-
-```python
-response = krdict.view(
-    query='가감승제',
-    homograph_num=0,
-    raise_api_errors=True,
-    guarantee_keys=True,
-    options={'use_scraper': True}
-)
-
-# without guarantee_keys, a check for original_language_info would be necessary.
-# the length of response['data']['results'] should also be checked in careful code.
-lang_info = response['data']['results'][0]['word_info']['original_language_info']
-
-idx = 0
 for info in lang_info:
-    # filter out non-한자
-    if info['language_type'] != '한자':
-        continue
-
-    for h_info in info['hanja_info']:
-        print(f'Hanja {idx + 1}: {h_info["hanja"]}')
-        print(f'Radical: {h_info["radical"]}')
-        print(f'Stroke Count: {h_info["stroke_count"]}')
+    for idx, h_info in enumerate(info.hanja_info):
+        print(f'Hanja {idx + 1}: {h_info.hanja}')
+        print(f'Radical: {h_info.radical}')
+        print(f'Stroke Count: {h_info.stroke_count}')
         print('Readings:')
 
-        for reading in h_info['readings']:
+        for reading in h_info.readings:
             print(f'   {reading}')
 
         print()
-        idx += 1
 ```
 ```md
 Hanja 1: 加
-Radical: 力     
-Stroke Count: 5 
-Readings:       
-   더할 가      
+Radical: 力
+Stroke Count: 5
+Readings:
+   더할 가
 
-Hanja 2: 減     
-Radical: 水     
+Hanja 2: 減
+Radical: 水
 Stroke Count: 12
-Readings:       
-   덜 감        
+Readings:
+   덜 감
 
-Hanja 3: 乘     
-Radical: 丿     
+Hanja 3: 乘
+Radical: 丿
 Stroke Count: 10
 Readings:
    탈 승

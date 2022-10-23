@@ -76,7 +76,7 @@ class KRDictRequestTest(unittest.TestCase):
                 krdict.TranslationLanguage.SPANISH,
                 krdict.TranslationLanguage.JAPANESE
             ),
-            'vocabulary_grade': (
+            'vocabulary_level': (
                 krdict.VocabularyLevel.BEGINNER,
                 krdict.VocabularyLevel.INTERMEDIATE
             )
@@ -104,10 +104,10 @@ class KRDictRequestTest(unittest.TestCase):
             'search_method': krdict.SearchMethod.INCLUDE,
             'classification': krdict.Classification.WORD,
             'origin_type': krdict.OriginType.LOANWORD,
-            'vocabulary_grade': krdict.VocabularyLevel.ADVANCED,
+            'vocabulary_level': krdict.VocabularyLevel.ADVANCED,
             'part_of_speech': krdict.PartOfSpeech.NOUN,
-            'multimedia_info': krdict.MultimediaType.VIDEO,
-            'meaning_category': krdict.MeaningCategory.ANIMALS_AND_PLANTS_ALL,
+            'multimedia_type': krdict.MultimediaType.VIDEO,
+            'semantic_category': krdict.SemanticCategory.ANIMALS_AND_PLANTS_ALL,
             'subject_category': krdict.SubjectCategory.ADVANCED_ART
         })
 

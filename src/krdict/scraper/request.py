@@ -5,38 +5,80 @@ Handles making requests to the dictionary website.
 from os import path
 import requests
 from lxml import html
+from .constants import _VIEW_URL
+from ..types import (
+    isiterable,
+    Classification,
+    SemanticCategory,
+    MultimediaType,
+    OriginType,
+    PartOfSpeech,
+    SearchMethod,
+    SearchType,
+    SortMethod,
+    ScraperSearchTarget,
+    ScraperTargetLanguage,
+    ScraperTranslationLanguage,
+    ScraperVocabularyLevel,
+    SubjectCategory
+)
 
 _ADVANCED_SEARCH_URL = (
-    'https://krdict.korean.go.kr/dicSearchDetail/searchDetailWordsResult?'
-    'searchFlag=Y&searchOp=AND&syllablePosition='
+    'https://krdict.korean.go.kr{}/dicSearchDetail/searchDetailWordsResult?'
+    '{}searchFlag=Y&syllablePosition={}'
+)
+_BASE_URL = 'https://krdict.korean.go.kr{}/mainAction'
+_CAT_MEANING_URL = (
+    'https://krdict.korean.go.kr{}/dicSearchDetail/searchDetailSenseCategoryResult?'
+    '{}searchFlag=Y&currentPage={}&blockCount={}&sort={}{}'
+)
+_CAT_SUBJECT_URL = (
+    'https://krdict.korean.go.kr{}/dicSearchDetail/searchDetailActCategoryResult?'
+    '{}searchFlag=Y&currentPage={}&blockCount={}&sort={}{}'
+)
+_DEFAULT_ADVANCED_CONDITION = (
+    '&searchOp=AND&searchTarget=word&searchOrglanguage=all&wordCondition=wordAll&query='
 )
 _SEARCH_URL = (
-    'https://krdict.korean.go.kr/dicSearch/search?'
-    'mainSearchWord={}&currentPage={}&blockCount={}&sort={}')
+    'https://krdict.korean.go.kr{}/dicSearch/search?'
+    '{}mainSearchWord={}&currentPage={}&blockCount={}&sort={}&searchType={}'
+)
+_SEARCH_REQUEST_URL = (
+    'https://krdict.korean.go.kr{}/smallDic/searchResult?'
+    '{}mainSearchWord={}&currentPage={}&blockCount={}&sort={}&searchType={}'
+)
+_IMAGE_URL = (
+    'https://krdict.korean.go.kr/dicSearch/viewImageConfirm?'
+    'searchKindValue=image&ParaWordNo={}&ParaSenseSeq={}&multiMediaSeq={}'
+)
 _VIDEO_URL = (
     'https://krdict.korean.go.kr/dicSearch/viewMovieConfirm?'
     'searchKindValue=video&ParaWordNo={}&ParaSenseSeq={}&multiMediaSeq={}'
 )
 
-_ADVANCED_PARAM_MAP = {
-    'q': {
-        'name': 'query'
+_LANG_INFO = (
+    ('all', None, None),
+    ('eng', 6, '영어'),
+    ('jpn', 7, '일본어'),
+    ('fra', 8, '프랑스어'),
+    ('spa', 9, '스페인어'),
+    ('ara', 10, '아랍어'),
+    ('mon', 1, '몽골어'),
+    ('vie', 2, '베트남어'),
+    ('tha', 3, '타이어'),
+    ('ind', 4, '인도네시아어'),
+    ('rus', 5, '러시아어'),
+    ('chn', 11, '중국어')
+)
+
+_ADVANCED_CONDITION_MAP = {
+    'query': {
+        'name': 'query',
+        'default': ''
     },
-    'start': {
-        'name': 'currentPage'
-    },
-    'num': {
-        'name': 'blockCount'
-    },
-    'sort': {
-        'name': 'sort',
-        'value': {
-            'dict': 'W',
-            'popular': 'C'
-        }
-    },
-    'target': {
+    'search_target': {
         'name': 'searchTarget',
+        'type': ScraperSearchTarget,
         'default': '1',
         'value': {
             '1': 'word',
@@ -48,11 +90,15 @@ _ADVANCED_PARAM_MAP = {
             '7': 'shorten',
             '8': 'idiom',
             '9': 'proverb',
-            '10': 'reference'
+            '10': 'reference',
+            '11': 'trans_word',
+            '12': 'trans_word_def',
+            '13': 'trans_subword'
         }
     },
-    'lang': {
+    'target_language': {
         'name': 'searchOrglanguage',
+        'type': ScraperTargetLanguage,
         'default': '0',
         'value': {
             '0': 'all',
@@ -107,18 +153,36 @@ _ADVANCED_PARAM_MAP = {
             '49': '99'
         }
     },
-    'method': {
+    'search_method': {
         'name': 'wordCondition',
-        'default': 'exact',
+        'type': SearchMethod,
+        'default': 'include',
         'value': {
             'exact': 'wordSame',
             'include': 'wordAll',
             'start': 'wordStart',
             'end': 'wordEnd'
         }
+    }
+}
+_ADVANCED_PARAM_MAP = {
+    'page': {
+        'name': 'currentPage'
     },
-    'type1': {
+    'per_page': {
+        'name': 'blockCount'
+    },
+    'sort': {
+        'name': 'sort',
+        'type': SortMethod,
+        'value': {
+            'dict': 'W',
+            'popular': 'C'
+        }
+    },
+    'classification': {
         'name': 'gubun',
+        'type': Classification,
         'default': 'all',
         'value': {
             'word': 'W',
@@ -126,8 +190,9 @@ _ADVANCED_PARAM_MAP = {
             'expression': 'E'
         }
     },
-    'type2': {
+    'origin_type': {
         'name': 'wordNativeCode',
+        'type': OriginType,
         'default': 'all',
         'value': {
             'native': '1',
@@ -136,18 +201,20 @@ _ADVANCED_PARAM_MAP = {
             'hybrid': '0'
         }
     },
-    'level': {
+    'vocabulary_level': {
         'name': 'imcnt',
+        'type': ScraperVocabularyLevel,
         'default': 'all',
         'value': {
             'level1': '1',
             'level2': '2',
             'level3': '3',
-            '': '0'
+            'none': '0'
         }
     },
-    'pos': {
+    'part_of_speech': {
         'name': 'sp_code',
+        'type': PartOfSpeech,
         'all_value': '0',
         'default': '0',
         'value': {
@@ -168,8 +235,9 @@ _ADVANCED_PARAM_MAP = {
             '15': '27'
         }
     },
-    'multimedia': {
+    'multimedia_type': {
         'name': 'multimedia',
+        'type': MultimediaType,
         'all_value': '0',
         'default': '0',
         'value': {
@@ -181,18 +249,21 @@ _ADVANCED_PARAM_MAP = {
             '6': 'N'
         }
     },
-    'letter_s': {
+    'min_syllables': {
         'name': 'searchSyllableStart'
     },
-    'letter_e': {
+    'max_syllables': {
         'name': 'searchSyllableEnd',
         'value': {
             '0': '80'
         }
     },
-    'sense_cat': {
+    'semantic_category': {
+        'type': SemanticCategory,
+        'default': '0',
         'convert': lambda tup: f'&senseCategoryTop={tup[0]}&senseCategoryMiddle={tup[1]}',
         'value': {
+            '0': ('0', '1000'),
             '1': ('1', '1001'),
             '2': ('1', '1002'),
             '3': ('1', '1003'),
@@ -348,9 +419,11 @@ _ADVANCED_PARAM_MAP = {
             '153': ('14', '1253')
         }
     },
-    'subject_cat': {
+    'subject_category': {
         'name': 'actCategoryList',
+        'type': SubjectCategory,
         'all_value': '0',
+        'all_flag': False,
         'value': {
             '1': '20001',
             '2': '20002',
@@ -461,10 +534,16 @@ _ADVANCED_PARAM_MAP = {
         }
     }
 }
+_SEARCH_TYPE_MAP = {
+    'word': 'W',
+    'exam': 'E',
+    'dfn': 'S',
+    'ip': 'P'
+}
 
 _PEM_PATH = path.join(path.dirname(path.realpath(__file__)), path.pardir, 'korean-go-kr-chain.pem')
 
-def _get_advanced_param(adv_mapper, value, value_only=False):
+def _get_advanced_param(adv_mapper, value):
     if adv_mapper.get('name') != 'query' and ',' in value:
         params = []
 
@@ -480,10 +559,10 @@ def _get_advanced_param(adv_mapper, value, value_only=False):
     if 'value' in adv_mapper:
         value = adv_mapper['value'].get(value, value)
 
-    if 'convert' in adv_mapper and not value_only:
+    if 'convert' in adv_mapper:
         return adv_mapper['convert'](value)
 
-    return value if value_only else f'&{adv_mapper["name"]}={value}'
+    return f'&{adv_mapper["name"]}={value}'
 
 def _get_advanced_all_params(adv_mapper):
     if not 'all_params' in adv_mapper:
@@ -496,98 +575,366 @@ def _get_advanced_all_params(adv_mapper):
 
     return adv_mapper['all_params']
 
+def _convert_advanced_value(adv_key, adv_mapper, kwargs):
+    param_value = kwargs.get(adv_key, adv_mapper.get('default'))
 
-def _build_advanced_search_url(params):
-    url = [_ADVANCED_SEARCH_URL]
+    if param_value is None:
+        return None
 
+    if 'type' in adv_mapper:
+        return str(adv_mapper['type'].get_value(param_value, param_value))
+
+    return str(param_value)
+
+def _build_advanced_search_conditions(conditions):
+    query = []
+
+    for condition in conditions:
+        exclude = 'exclude' in condition and condition['exclude']
+        subquery = []
+        subquery.append(f'&searchOp={"NOT" if exclude else "AND"}')
+        empty = True
+
+        for adv_key, adv_mapper in _ADVANCED_CONDITION_MAP.items():
+            if condition.get(adv_key) is not None:
+                empty = False
+
+            param_value = _convert_advanced_value(adv_key, adv_mapper, condition)
+
+            if param_value is None:
+                continue
+
+            param = _get_advanced_param(adv_mapper, param_value)
+            if param is not None:
+                subquery.append(param)
+
+        if not empty:
+            query.extend(subquery)
+
+    return ''.join(query)
+
+def _build_advanced_search_url(kwargs, lang_info):
+    nation, code, _ = lang_info
+
+    if 'min_syllables' in kwargs and 'max_syllables' not in kwargs:
+        kwargs = kwargs.copy()
+        kwargs['max_syllables'] = 80
+    elif 'max_syllables' in kwargs and 'min_syllables' not in kwargs:
+        kwargs = kwargs.copy()
+        kwargs['min_syllables'] = 1
+
+    query = []
     for adv_key, adv_mapper in _ADVANCED_PARAM_MAP.items():
-        param_value = params.get(adv_key, adv_mapper.get('default'))
+        param_value = _convert_advanced_value(adv_key, adv_mapper, kwargs)
 
         if param_value is None:
             continue
 
-        param_value = str(param_value)
         use_all = 'all_value' in adv_mapper or adv_mapper.get('default') == 'all'
         all_value = adv_mapper.get('all_value', 'all')
 
         if use_all and param_value == all_value:
-            url.append(_get_advanced_all_params(adv_mapper))
+            if adv_mapper.get('all_flag', True):
+                query.append(f'&all_{adv_mapper["name"]}=ALL')
+            query.append(_get_advanced_all_params(adv_mapper))
             continue
 
         param = _get_advanced_param(adv_mapper, param_value)
         if param is not None:
-            url.append(param)
+            query.append(param)
 
-    return ''.join(url)
+    base_condition = _build_advanced_search_conditions((kwargs,))
+    conditions = _build_advanced_search_conditions(kwargs.get('search_conditions', ()))
 
-def _build_search_url(params):
-    return _SEARCH_URL.format(
-        params.get('q'),
-        params.get('start', 1),
-        params.get('num', 10),
-        'W' if params.get('sort') != 'popular' else 'C'
+    if base_condition or conditions:
+        query.append(base_condition)
+        query.append(conditions)
+    else:
+        query.append(_DEFAULT_ADVANCED_CONDITION)
+
+    query = ''.join(query)
+    return (
+        _ADVANCED_SEARCH_URL.format(*get_language_query(nation, code), query),
+        _ADVANCED_SEARCH_URL.format('', '', query)
     )
 
-def _build_video_url(target_code, dfn_idx, media_idx):
-    return _VIDEO_URL.format(target_code, dfn_idx + 1, media_idx + 1)
+def _build_search_url(kwargs, lang_info, search_type):
+    nation, code, _ = lang_info
 
+    query = kwargs.get('query')
+    page = kwargs.get('page', 1)
+    per_page = kwargs.get('per_page', 10)
 
-def map_advanced_param(param, value):
+    sort = 'C' if SortMethod.get_value(kwargs.get('sort')) == 'popular' else 'W'
+    search_type = _SEARCH_TYPE_MAP.get(search_type, 'W')
+
+    lang_query = get_language_query(nation, code)
+
+    url = _SEARCH_URL.format(
+        *lang_query,
+        query,
+        page,
+        per_page,
+        sort,
+        search_type
+    )
+    url_kr = _SEARCH_URL.format(
+        '',
+        '',
+        query,
+        page,
+        per_page,
+        sort,
+        search_type
+    )
+    req_url = _SEARCH_REQUEST_URL.format(
+        *lang_query,
+        query,
+        page,
+        per_page,
+        sort,
+        search_type
+    )
+
+    return url, url_kr, req_url
+
+def _build_sense_category_query(category):
+    category = SemanticCategory.get_value(category, category)
+
+    if category <= 0 or category > 153:
+        return '&lgCategoryCode=0&miCategoryCode=-1'
+
+    meaning_map = _ADVANCED_PARAM_MAP['semantic_category']['value']
+    code_large, code_mid = meaning_map[str(category)]
+
+    return f'&lgCategoryCode={code_large}&miCategoryCode={code_mid}'
+
+def _build_subject_category_query(category):
+    if not isiterable(category, exclude=(str,)):
+        category = (category,)
+
+    subject_map = _ADVANCED_PARAM_MAP['subject_category']['value']
+    value = []
+
+    for cat in category:
+        cat_value = SubjectCategory.get_value(cat, cat)
+
+        if cat_value == 0:
+            value = []
+
+            for i in range(1, 107):
+                value.append(f'&actCategory={subject_map[str(i)]}')
+
+            return ''.join(value)
+
+        value.append(f'&actCategory={subject_map[str(cat_value)]}')
+
+    return ''.join(value)
+
+def _build_category_url(kwargs, lang_info, response_type):
+    nation, code, _ = lang_info
+
+    page = kwargs.get('page', 1)
+    per_page = kwargs.get('per_page', 10)
+
+    is_semantic = response_type == 'semantic_category'
+    query_builder = (
+        _build_sense_category_query if is_semantic else _build_subject_category_query
+    )
+
+    base_url = _CAT_MEANING_URL if is_semantic else _CAT_SUBJECT_URL
+    sort = 'C' if SortMethod.get_value(kwargs.get('sort')) == 'popular' else 'W'
+    category_query = query_builder(kwargs.get('category', 0))
+
+    url = base_url.format(
+        *get_language_query(nation, code),
+        page,
+        per_page,
+        sort,
+        category_query
+    )
+
+    url_kr = base_url.format('', '', page, per_page, sort, category_query)
+    return url, url_kr
+
+def _build_translation_language_info(trans_lang, kwargs, response_type):
+    trans_language_info = []
+    trans_urls = []
+
+    info = get_language_info(trans_lang)
+
+    if isiterable(trans_lang, exclude=(str,)):
+        seen = set()
+
+        for lang in trans_lang:
+            info = get_language_info(lang)
+
+            if info[0] == 'all':
+                return _build_translation_language_info('all', kwargs, response_type)
+
+            if not info[0] or info[2] in seen:
+                continue
+
+            seen.add(info[2])
+
+            url_tuple = build_request_url(kwargs, response_type, info)
+            trans_language_info.append({
+                'lang_info': info,
+                'req_url': url_tuple[2]
+            })
+            trans_urls.append({
+                'url': url_tuple[0],
+                'language': info[2]
+            })
+
+        trans_language_info = trans_language_info[1:]
+        lang_info = get_language_info(trans_lang[0] if trans_lang else None)
+    elif info[0] == 'all':
+        lang_info = _LANG_INFO[1]
+        for info in _LANG_INFO[2:]:
+            url_tuple = build_request_url(kwargs, response_type, info)
+            trans_language_info.append({
+                'lang_info': info,
+                'req_url': url_tuple[2]
+            })
+            trans_urls.append({
+                'url': url_tuple[0],
+                'language': info[2]
+            })
+    else:
+        url_tuple = build_request_url(kwargs, response_type, info)
+        lang_info = get_language_info(trans_lang)
+        if lang_info[0] is not None:
+            trans_urls.append({
+                'url': url_tuple[0],
+                'language': info[2]
+            })
+
+    return lang_info, trans_language_info, trans_urls
+
+def build_request_url(kwargs, response_type, lang_info) -> tuple[str, str, str]:
     """
-    Maps an advanced parameter value to
-    the value expected on the krdict website.
+    Builds a Korean Learners' Dictionary URL and a request URL given
+    request parameters.
     """
 
-    return _get_advanced_param(_ADVANCED_PARAM_MAP[param], str(value), True)
+    url: str
+    url_kr: str
+    req_url = ''
 
-def send_request(url, raise_errors):
+    if response_type == 'advanced':
+        url, url_kr = _build_advanced_search_url(kwargs, lang_info)
+
+    elif response_type == 'view':
+        nation, code, _ = lang_info
+        target_code = kwargs.get('target_code')
+        lang_query = get_language_query(nation, code)
+
+        url_kr = _VIEW_URL.format('', '', target_code)
+        url = _VIEW_URL.format(*lang_query, target_code)
+        req_url = url
+
+    elif response_type == 'word_of_the_day':
+        nation, *_ = lang_info
+
+        url_kr = _BASE_URL.format('')
+        url = _BASE_URL.format(f'/{nation}' if nation else '')
+
+    elif response_type in ('word', 'exam', 'dfn', 'ip'):
+        url, url_kr, req_url = _build_search_url(kwargs, lang_info, response_type)
+
+    elif response_type in ('semantic_category', 'subject_category'):
+        url, url_kr = _build_category_url(kwargs, lang_info, response_type)
+
+    else:
+        raise ValueError
+
+    return url, url_kr, req_url or url
+
+def get_language_info(lang):
     """
-    Sends a request to a URL and parses the response with lxml.
+    Returns a tuple with information about a scraper translation language.
+    """
+
+    lang = ScraperTranslationLanguage.get_value(lang)
+
+    if lang is None:
+        return (None, 0, None)
+
+    return _LANG_INFO[lang]
+
+def get_language_query(nation, code):
+    """
+    Returns query strings given a nation and nation code.
+    """
+
+    if not nation:
+        return '', ''
+
+    return f'/{nation}', f'nation={nation}&nationCode={code}&'
+
+def send_scrape_request(url):
+    """
+    Sends a request to a URL with the necessary headers for scraping,
+    and returns an lxml node.
     """
 
     try:
         response = requests.get(url, headers={'Accept-Language': '*'}, verify=_PEM_PATH)
         response.raise_for_status()
-        doc = html.fromstring(response.text)
+        return html.fromstring(response.text)
+    except requests.exceptions.RequestException as exc:
+        raise exc
 
-        return doc
-    except requests.exceptions.RequestException:
-        if raise_errors:
-            raise
-
-        return None
-
-def send_extend_request(request_type, response, raise_errors):
+def send_request(kwargs, response_type):
     """
-    Sends a request from an existing response and parses the response with lxml.
+    Sends a request to a URL based on input parameters.
     """
 
-    if len(response['data']['results']) == 0:
-        return None, None, request_type, response
+    response_type = SearchType.get_value(response_type, response_type)
 
-    url = None
-    if request_type == 'advanced':
-        url = _build_advanced_search_url(response['request_params'])
-    elif request_type == 'search':
-        url = _build_search_url(response['request_params'])
-    elif request_type == 'view':
-        url = response['data']['url']
+    trans_lang = kwargs.get('translation_language')
 
-    return send_request(url, raise_errors), url, request_type, response
+    lang_info, trans_language_info, trans_urls = _build_translation_language_info(
+        trans_lang,
+        kwargs,
+        response_type
+    )
 
-def send_image_request(multimedia, raise_errors):
+    url, url_kr, req_url = build_request_url(kwargs, response_type, lang_info)
+
+    return (
+        send_scrape_request(req_url),
+        'word' if response_type == 'advanced' else response_type,
+        url_kr,
+        kwargs,
+        lang_info,
+        (
+            trans_urls if trans_urls
+            else ([{'url': url, 'language': lang_info[2]}] if lang_info[0] else [])
+        ),
+        trans_language_info
+    )
+
+def send_multimedia_request(kwargs):
     """
-    Sends a request for image multimedia information and parses the response with lxml.
+    Sends a request to retrieve multimedia information.
     """
 
-    if 'url' not in multimedia:
-        return None
+    media_type = MultimediaType.get_value(kwargs.get('multimedia_type'))
 
-    return send_request(multimedia['url'], raise_errors)
+    if media_type not in (1, 2, 3, 4):
+        raise ValueError
 
-def send_video_request(target_code, dfn_idx, media_idx, raise_errors):
-    """
-    Sends a request for video multimedia information and parses the response with lxml.
-    """
+    url = (_IMAGE_URL if media_type in (1, 2) else _VIDEO_URL).format(
+        kwargs.get('target_code'),
+        kwargs.get('definition_order'),
+        kwargs.get('media_order')
+    )
 
-    return send_request(_build_video_url(target_code, dfn_idx + 1, media_idx + 1), raise_errors)
+    try:
+        response = requests.get(url, headers={'Accept-Language': '*'}, verify=_PEM_PATH)
+        response.raise_for_status()
+        return html.fromstring(response.text)
+    except requests.exceptions.RequestException as exc:
+        raise exc

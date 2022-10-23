@@ -5,7 +5,7 @@ from .main import TSearchType
 def send_request(
     kwargs: dict[str, Any], 
     advanced: bool = False, 
-    search_type: TSearchType | Literal['view'] = None
+    search_type: TSearchType | Literal['view'] | None = None
 ) -> Tuple[Response, dict[str, Any], str]: ...
 
 def set_key(key: str | None) -> None: ...

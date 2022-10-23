@@ -2,9 +2,9 @@
 Contains potential usage examples of the library.
 """
 
+from functools import reduce
 import os
 import sys
-import json
 import requests
 import krdict
 
@@ -17,83 +17,79 @@ except ImportError:
 
 krdict.set_key(os.getenv('KRDICT_KEY'))
 
-
-def _display_results(response):
-    data = response['data']
-    print(f'Total Results: {data["total_results"]}')
-
-    for idx, result in enumerate(data['results']):
-        first_dfn = result['definitions'][0]
-
-        # note: get is used instead of indexing because 'origin' is not a required key.
-        # the same is true for the below calls to get.
-        # this can be avoided using the guarantee_keys parameter (see example 12).
-        origin = result.get('origin')
-        origin_info = f' ({origin})' if origin else ''
-        print(f'{idx + 1}. {result["word"]}{origin_info}: {first_dfn["definition"]}')
-
-        for translation in first_dfn.get('translations', []):
-            print(f'   {translation.get("word")}: {translation["definition"]}')
-
-        # scraped word responses (e.g. from category scraping) return only one translation.
-        if 'translation' in first_dfn:
-            translation = first_dfn['translation']
-            print(f'   {translation.get("word")}: {translation["definition"]}')
-
-
 def _display_view_results(response):
-    data = response['data']
-    result = data['results'][0]
+    data = response.data
+    result = data.results[0]
 
-    origin = []
-    for origin_obj in result['word_info'].get('original_language_info', []):
-        origin.append(origin_obj['original_language'])
+    origin = reduce(lambda x, y: x + y.original_language,
+        result.word_info.original_language_info, '')
 
     pronunciation = []
-    for pronunciation_obj in result['word_info'].get('pronunciation_info', []):
+    for pronunciation_obj in result.word_info.pronunciation_info:
         if pronunciation:
             pronunciation.append('/')
 
-        pronunciation.append(pronunciation_obj['pronunciation'])
+        pronunciation.append(pronunciation_obj.pronunciation)
         if 'url' in pronunciation_obj:
-            pronunciation.append(f' ({pronunciation_obj["url"]})')
+            pronunciation.append(f' ({pronunciation_obj.url})')
 
-    print(f'{result["word_info"]["word"]}'
-        + f' 「{result["word_info"]["part_of_speech"]}」'
-        + (f' ({"".join(origin)})' if origin else '')
+    print(f'{result.word_info.word}'
+        + f' 「{result.word_info.part_of_speech}」'
+        + (f' ({origin})' if origin else '')
         + (f' [{"".join(pronunciation)}]' if pronunciation else '')
     )
 
-    print(data['url'])
+    print(data.url)
 
-    for idx, dfn in enumerate(result['word_info']['definition_info']):
-        lines = [dfn['definition']]
+    for idx, dfn in enumerate(result.word_info.definition_info):
+        lines = [dfn.definition]
 
-        # present if at least one translation language is specified.
-        if 'translations' in dfn:
-            translation = dfn['translations'][0]
-            lines = [translation['word']] if 'word' in translation else []
-            lines.append(f'\n   {dfn["definition"]}')
-            lines.append(f'\n   {dfn["translations"][0]["definition"]}')
+        # populated if at least one translation language is specified.
+        if dfn.translations:
+            translation = dfn.translations[0]
+            lines = [translation.word] if 'word' in translation else []
+            lines.append(f'\n   {dfn.definition}')
+            lines.append(f'\n   {dfn.translations[0].definition}')
 
         print(f'{idx + 1}. {"".join(lines)}')
 
-        for i, example in enumerate(dfn.get('example_info', [])):
+        for i, example in enumerate(dfn.example_info):
             if i == 5:
                 print('   • ...')
                 break
-            print(f'   • {example["example"]}')
+            print(f'   • {example.example}')
 
-        for i, multimedia in enumerate(dfn.get('multimedia_info', [])):
+        for i, multimedia in enumerate(dfn.multimedia_info):
             if i == 5:
                 print('   ► ...')
                 break
 
-            # present if scraping is enabled and the fetch_multimedia option is set to True.
-            if 'media_urls' in multimedia:
-                print(f'   ► {",".join(multimedia["media_urls"])} ({multimedia["type"]})')
+            # populated in scraped responses if the fetch_multimedia option is set to True.
+            if 'content_urls' in multimedia and multimedia.content_urls:
+                print(f'   ► {",".join(multimedia.content_urls)} ({multimedia.type})')
             else:
-                print(f'   ► {multimedia["url"]} ({multimedia["type"]})')
+                print(f'   ► {multimedia.url} ({multimedia.type})')
+
+def _display_results(response):
+    if response.response_type in ('view', 'scraped_view'):
+        _display_view_results(response)
+        return
+
+    data = response.data
+    print(f'Total Results: {data.total_results}')
+
+    for idx, result in enumerate(data.results):
+        first_dfn = (
+            result.definition_info
+            if isinstance(response, krdict.DefinitionResponse)
+            else result.definitions[0]
+        )
+
+        origin_info = f' ({result.origin})' if 'origin' in result and result.origin else ''
+        print(f'{idx + 1}. {result.word}{origin_info}: {first_dfn.definition}')
+
+        for translation in first_dfn.translations:
+            print(f'   {translation.word}: {translation.definition}')
 
 
 # Example 1
@@ -109,14 +105,14 @@ def pagination():
 
     while has_next:
         response = krdict.search(query='나무', page=page, per_page=20, raise_api_errors=True)
-        data = response['data']
-        total_results = data['total_results']
+        data = response.data
+        total_results = data.total_results
 
         page += 1
-        results += data['results']
-        has_next = data['per_page'] * data['page'] < total_results
+        results += data.results
+        has_next = data.per_page * data.page < total_results
 
-        print((f'Collected {len(data["results"])} results from page {page - 1}. '
+        print((f'Collected {len(data.results)} results from page {page - 1}. '
             f'{"Querying next page." if has_next else "All results collected."}'))
 
     print(f'{len(results)} results collected. Total results: {total_results}.')
@@ -131,7 +127,7 @@ def search_definitions():
         query='나무',
         # if you're using type checking,
         # setting the search_type parameter in a call with
-        # keyword arguments will define the type of the search result.
+        # keyword arguments will narrow the type of the return result.
         # when calling with an unpacked dictionary (**{...}),
         # the more specific type cannot be inferred.
         search_type=krdict.SearchType.DEFINITION,
@@ -153,8 +149,8 @@ def search_examples():
         raise_api_errors=True
     )
 
-    for result in response['data']['results']:
-        print(f'• {result["example"]} (Word: {result["word"]})')
+    for result in response.data.results:
+        print(f'• {result.example} (Word: {result.word})')
 
 # Example 4
 def search_idioms():
@@ -182,11 +178,12 @@ def search_beginner_words_with_multimedia():
         # but because most definitions contain a period, it's possible to
         # achieve near-perfect results using the query '.' and the 'definition'
         # search target. in this example, all matches are returned.
+        # to perform an advanced search with no query in a more precise way, use the scraper.
         query='.',
         search_type=krdict.SearchType.WORD,
         search_target=krdict.SearchTarget.DEFINITION,
-        vocabulary_grade=krdict.VocabularyLevel.BEGINNER,
-        multimedia_info=(
+        vocabulary_level=krdict.VocabularyLevel.BEGINNER,
+        multimedia_type=(
             krdict.MultimediaType.PHOTO,
             krdict.MultimediaType.ILLUSTRATION,
             krdict.MultimediaType.VIDEO,
@@ -241,26 +238,22 @@ def view_query():
     #     raise_api_errors=True
     # )
 
-    _display_view_results(response)
+    _display_results(response)
 
 # Example 8
-def view_query_enhanced():
+def scraped_view_query():
     """
-    Displays the results of a view query for the word 단풍나무 with results enhanced from scraping.
+    Displays the results of a scraped view query for the word 단풍나무.
     """
 
-    response = krdict.view(
-        query='단풍나무',
-        homograph_num=0,
+    response = krdict.scraper.view(
+        # scraper method can only query with target code, not query strings
+        target_code=42075,
         translation_language=krdict.TranslationLanguage.ENGLISH,
-        raise_api_errors=True,
-        # the scraper can be applied to the search and advanced_search
-        # functions similarly; for those functions, the only
-        # additional information retrieved is pronunciation URLs.
-        options={'use_scraper': True, 'fetch_multimedia': True}
+        fetch_multimedia=True
     )
 
-    _display_view_results(response)
+    _display_results(response)
 
 # Example 9
 def word_of_the_day():
@@ -268,41 +261,40 @@ def word_of_the_day():
     Fetches the word of the day, then fetches extended information using the result.
     """
 
-    wotd_response = krdict.scraper.fetch_today_word(
+    wotd_response = krdict.scraper.fetch_word_of_the_day(
         translation_language=krdict.TranslationLanguage.ENGLISH
     )
 
     wotd_translation = ''
-    if 'translation' in wotd_response['data']:
-        wotd_translation = f' ({wotd_response["data"]["translation"].get("word", "")})'
+    if wotd_response.data.translations:
+        wotd_translation = f' ({wotd_response.data.translations[0].word})'
 
-    print((f'Word of the Day: {wotd_response["data"]["word"]}{wotd_translation}'
-        f'\n{wotd_response["data"]["definition"]}'
-        f'\n{wotd_response["data"]["url"]}'))
+    print((f'Word of the Day: {wotd_response.data.word}{wotd_translation}'
+        f'\n{wotd_response.data.definition}'
+        f'\n{wotd_response.data.url}'))
 
-    response = krdict.view(
+    response = krdict.scraper.view(
         # with the target code from the scraped word of the day response,
-        # we can use the API and the scraper to get extended information.
-        target_code=wotd_response['data']['target_code'],
+        # we can use the scraper to get extended information.
+        target_code=wotd_response.data.target_code,
         translation_language=krdict.TranslationLanguage.ENGLISH,
-        raise_api_errors=True,
-        options={'use_scraper': True, 'fetch_multimedia': True}
+        fetch_multimedia=True
     )
 
     print('\nExtended Info:')
-    _display_view_results(response)
+    _display_results(response)
 
 # Example 10
-def fetch_meaning_category():
+def fetch_semantic_category():
     """
-    Fetches words in the 인간 > 신체 부위 meaning category.
+    Fetches words in the 인간 > 신체 부위 semantic category.
     """
 
-    response = krdict.scraper.fetch_meaning_category_words(
-        # or: category=3,
-        # or: category='인간 > 신체 부위',
-        # or: category='human > body parts',
-        category=krdict.MeaningCategory.HUMAN_BODY_PARTS,
+    response = krdict.scraper.fetch_semantic_category_words(
+        # equivalent: category=3,
+        # equivalent: category='인간 > 신체 부위',
+        # equivalent: category='human > body parts',
+        category=krdict.SemanticCategory.HUMAN_BODY_PARTS,
         translation_language=krdict.TranslationLanguage.ENGLISH
     )
 
@@ -318,9 +310,9 @@ def fetch_subject_category():
         # category also accepts an array of multiple categories,
         # or krdict.SubjectCategory.ALL to retrieve all categories' words.
 
-        # or: category=1,
-        # or: category='인사하기',
-        # or: category='greeting',
+        # equivalent: category=1,
+        # equivalent: category='인사하기',
+        # equivalent: category='greeting',
         category=krdict.SubjectCategory.ELEMENTARY_GREETING,
         translation_language=krdict.TranslationLanguage.ENGLISH
     )
@@ -328,70 +320,36 @@ def fetch_subject_category():
     _display_results(response)
 
 # Example 12
-def guarantee_keys():
-    """
-    Compares results without and with guaranteed keys.
-    """
-
-    print('Default word_info:')
-    response = krdict.view(
-        target_code=57557,
-        raise_api_errors=True
-    )
-
-    # prints a result with plenty of "not required" keys missing.
-    print(json.dumps(response['data']['results'][0]['word_info'], indent=2, ensure_ascii=False))
-
-
-    print('\nWith guarantee_keys:')
-    # same call as above, with guarantee_keys set to True.
-    response = krdict.view(
-        target_code=57557,
-        guarantee_keys=True,
-        raise_api_errors=True
-    )
-
-    # prints a result with all "not required" keys included as default values,
-    # including keys which can only be obtained from scraping, such as "hanja_info",
-    # "url", and "media_urls".
-    print(json.dumps(response['data']['results'][0]['word_info'], indent=2, ensure_ascii=False))
-
-# Example 13
 def hanja_info():
     """
-    Displays information about hanja in an
-    extended view response.
+    Displays information about hanja in a
+    scraped view response.
     """
 
-    response = krdict.view(
-        query='가감승제',
-        homograph_num=0,
-        raise_api_errors=True,
-        guarantee_keys=True,
-        options={'use_scraper': True}
+    response = krdict.scraper.view(
+        target_code=14951 # target code for 가감승제
     )
 
-    # without guarantee_keys, a check for original_language_info would be necessary.
-    # the length of response['data']['results'] should also be checked in careful code.
-    lang_info = response['data']['results'][0]['word_info']['original_language_info']
+    # the length of the results array for a view query is always 0 or 1
+    assert len(response.data.results) == 1
 
-    idx = 0
+    # filter out non-한자
+    lang_info = filter(
+        lambda info: info.language_type == '한자',
+        response.data.results[0].word_info.original_language_info
+    )
+
     for info in lang_info:
-        # filter out non-한자
-        if info['language_type'] != '한자':
-            continue
-
-        for h_info in info['hanja_info']:
-            print(f'Hanja {idx + 1}: {h_info["hanja"]}')
-            print(f'Radical: {h_info["radical"]}')
-            print(f'Stroke Count: {h_info["stroke_count"]}')
+        for idx, h_info in enumerate(info.hanja_info):
+            print(f'Hanja {idx + 1}: {h_info.hanja}')
+            print(f'Radical: {h_info.radical}')
+            print(f'Stroke Count: {h_info.stroke_count}')
             print('Readings:')
 
-            for reading in h_info['readings']:
+            for reading in h_info.readings:
                 print(f'   {reading}')
 
             print()
-            idx += 1
 
 
 _EXAMPLE_FUNCS = [
@@ -402,11 +360,10 @@ _EXAMPLE_FUNCS = [
     search_beginner_words_with_multimedia,
     search_words_with_hanja,
     view_query,
-    view_query_enhanced,
+    scraped_view_query,
     word_of_the_day,
-    fetch_meaning_category,
+    fetch_semantic_category,
     fetch_subject_category,
-    guarantee_keys,
     hanja_info
 ]
 
@@ -428,4 +385,4 @@ if __name__ == '__main__':
     try:
         _run_examples()
     except (krdict.KRDictException, requests.RequestException) as exc:
-        sys.exit(exc)
+        sys.exit(str(exc))

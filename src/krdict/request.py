@@ -8,7 +8,7 @@ import requests
 from .types import (
     isiterable,
     Classification,
-    MeaningCategory,
+    SemanticCategory,
     MultimediaType,
     PartOfSpeech,
     SearchMethod,
@@ -66,7 +66,7 @@ _PARAM_MAPS = {
         'name': 'type2',
         'type': OriginType
     },
-    'vocabulary_grade': {
+    'vocabulary_level': {
         'name': 'level',
         'type': VocabularyLevel
     },
@@ -74,7 +74,7 @@ _PARAM_MAPS = {
         'name': 'pos',
         'type': PartOfSpeech
     },
-    'multimedia_info': {
+    'multimedia_type': {
         'name': 'multimedia',
         'type': MultimediaType
     },
@@ -84,9 +84,9 @@ _PARAM_MAPS = {
     'max_syllables': {
         'name': 'letter_e'
     },
-    'meaning_category': {
+    'semantic_category': {
         'name': 'sense_cat',
-        'type': MeaningCategory
+        'type': SemanticCategory
     },
     'subject_category': {
         'name': 'subject_cat',
@@ -99,23 +99,6 @@ _PARAM_MAPS = {
 _DEFAULTS = { 'API_KEY': '' }
 _PEM_PATH = path.join(path.dirname(path.realpath(__file__)), 'korean-go-kr-chain.pem')
 
-
-def _get_search_type(search_type):
-    value = SearchType.get_value(search_type)
-
-    if value == 'ip':
-        return 'idiom_proverb'
-
-    if value == 'dfn':
-        return 'definition'
-
-    if value == 'exam':
-        return 'example'
-
-    if value == 'word':
-        return value
-
-    return str(search_type)
 
 def _map_value(mapper, value):
     if isiterable(value, exclude=(str,)):
@@ -133,10 +116,6 @@ def _transform_params(params, search_type):
         params['key'] = _DEFAULTS['API_KEY']
     if 'raise_api_errors' in params:
         del params['raise_api_errors']
-    if 'guarantee_keys' in params:
-        del params['guarantee_keys']
-    if 'options' in params:
-        del params['options']
 
     if search_type == 'view':
         transform_view_params(params)
@@ -157,7 +136,11 @@ def send_request(kwargs, advanced=False, search_type=None):
     - ``search_type``: The type of search which should be performed.
     """
 
-    search_type = _get_search_type(search_type or kwargs.get('search_type', 'word'))
+    search_type = SearchType.get_value(
+        search_type or kwargs.get('search_type', 'word'),
+        search_type
+    )
+
     url = _VIEW_URL if search_type == 'view' else _SEARCH_URL
 
     params = _transform_params(kwargs, search_type)

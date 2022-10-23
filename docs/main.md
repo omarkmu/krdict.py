@@ -1,9 +1,9 @@
-A summary of the provided functions in the `krdict` module and the arguments they expect.
-With the exception of [`set_key`](#set_key) and [`set_default`](#set_default),
+A summary of the provided functions in the `krdict` package and the arguments they expect.
+With the exception of [`set_key`](#set_key),
 all of the functions listed below expect keyword arguments.
 
-The `krdict` module also exports all of the enumerations described in
-the [parameter types](#parameters) of the functions below.
+The `krdict` package also directly exports all of the enumerations described in
+the [parameter types](enums.md) of the functions below.
 
 ---
 ## advanced_search
@@ -14,7 +14,6 @@ Performs an advanced search on the Korean Learners' Dictionary API.
 def advanced_search(*,
     query: str,
     raise_api_errors: bool = False,
-    guarantee_keys: bool = False,
     key: str = None,
     page: int = 1,
     per_page: int = 10,
@@ -26,15 +25,15 @@ def advanced_search(*,
     search_method: SearchMethod = SearchMethod.EXACT,
     classification: Classification | Iterable[Classification] = Classification.ALL,
     origin_type: OriginType | Iterable[OriginType] = OriginType.ALL,
-    vocabulary_grade: VocabularyLevel | Iterable[VocabularyLevel] = VocabularyLevel.ALL,
+    vocabulary_level: VocabularyLevel | Iterable[VocabularyLevel] = VocabularyLevel.ALL,
     part_of_speech: PartOfSpeech | Iterable[PartOfSpeech] = PartOfSpeech.ALL,
-    multimedia_info: MultimediaType | Iterable[MultimediaType] = MultimediaType.ALL,
+    multimedia_type: MultimediaType | Iterable[MultimediaType] = MultimediaType.ALL,
     min_syllables: int = 1,
     max_syllables: int = 0,
-    meaning_category: MeaningCategory = MeaningCategory.ALL,
+    semantic_category: SemanticCategory = SemanticCategory.ALL,
     subject_category: SubjectCategory | Iterable[SubjectCategory] = SubjectCategory.ALL,
-    options: OptionsDict = None
-) -> SearchResponse | KRDictError: ...
+    search_conditions: Iterable[SearchCondition] = None
+) -> WordResponse | DefinitionResponse | ExampleResponse | IdiomProverbResponse | ErrorResponse: ...
 ```
 !!! warning
     Use of any search type other than `SearchType.WORD` for the `search_type` parameter with advanced search is
@@ -44,44 +43,39 @@ def advanced_search(*,
 **Parameters:**
 
 - `query`: The search query.
-- `raise_api_errors`: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
-A value of `True` guarantees that the result is not an error object.
-- `guarantee_keys`: Sets whether keys that are missing from the response should be inserted with default values. A value of `True`
-guarantees that every key marked as *not required* is included, including keys set by the scraper. Default values:
-    - The empty string `""` for string values.
-    - Zero `0` for integer values.
-    - An empty list `[]` for list values.
+- `raise_api_errors`: Sets whether a [`KRDictException`](other.md#krdictexception) will be raised if an API error occurs.
+A value of `True` guarantees that the result is not an [`ErrorResponse`](return_types.md#errorresponse).
 - `key`: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
 - `page`: The page at which the search should start `[1, 1000]`.
 - `per_page`: The maximum number of search results to return `[10, 100]`.
-- `sort` ([`SortMethod`](parameters.md#sortmethod)): The sort method that should be used.
-- `search_type` ([`SearchType`](parameters.md#searchtype)): The type of search to perform.
-- `translation_language` ([`TranslationLanguage`](parameters.md#translationlanguage)): A language for which translations should be included.
-- `search_target` ([`SearchTarget`](parameters.md#searchtarget)): The target field of the search query.
-- `target_language` ([`TargetLanguage`](parameters.md#targetlanguage)): The original language to search by. If `search_target`
+- `sort`: The sort method that should be used.
+- `search_type`: The type of search to perform.
+- `translation_language`: A language for which translations should be included.
+- `search_target`: The target field of the search query.
+- `target_language`: The original language to search by. If `search_target`
 is set to any value other than `'original_language'`, this parameter has no effect.
-- `search_method` ([`SearchMethod`](parameters.md#searchmethod)): The method used to match against the query.
-- `classification` ([`Classification`](parameters.md#classification)): An entry classification to filter by.
-- `origin_type` ([`OriginType`](parameters.md#origintype)): A word origin type to filter by.
-- `vocabulary_grade` ([`VocabularyLevel`](parameters.md#vocabularygrade)): A vocabulary level to filter by.
-- `part_of_speech` ([`PartOfSpeech`](parameters.md#partofspeech)): A part of speech to filter by.
-- `multimedia_info` ([`MultimediaType`](parameters.md#multimediatype)): A multimedia type to filter by.
+- `search_method`: The method used to match against the query.
+- `classification`: An entry classification to filter by.
+- `origin_type`: A word origin type to filter by.
+- `vocabulary_level`: A vocabulary level to filter by.
+- `part_of_speech`: A part of speech to filter by.
+- `multimedia_type`: A multimedia type to filter by.
 - `min_syllables`: The minimum number of syllables in result words `[1, 80]`.
-- `max_syllables`: The maximum number of syllables in results words. A value of `0` denotes no maximum `[0, 80]`.
-- `meaning_category` ([`MeaningCategory`](parameters.md#meaningcategory)): The meaning category to filter by.
-- `subject_category` ([`SubjectCategory`](parameters.md#subjectcategory)): A subject category to filter by.
-- `options` ([`OptionsDict`](parameters.md#optionsdict)): Additional options to apply.
+- `max_syllables`: The maximum number of syllables in result words. A value of `0` denotes no maximum `[0, 80]`.
+- `semantic_category`: The semantic category to filter by.
+- `subject_category`: A subject category to filter by.
+- `search_conditions`: A list of dicts describing additional search conditions for the search.
 
 
 **Returns**:
 
 Depending on the value of `search_type` and whether an error occurred, returns one of:
 
-- [`WordSearchResponse`](return_types.md#wordsearchresponse)
-- [`DefinitionSearchResponse`](return_types.md#definitionsearchresponse) **(potentially empty or incomplete)**
-- [`ExampleSearchResponse`](return_types.md#examplesearchresponse) **(potentially empty or incomplete)**
-- [`IdiomProverbSearchResponse`](return_types.md#idiomproverbsearchresponse) **(potentially empty or incomplete)**
-- [`KRDictError`](return_types.md#krdicterror)
+- [`WordResponse`](return_types.md#wordresponse)
+- [`DefinitionResponse`](return_types.md#definitionresponse) **(potentially empty or incomplete)**
+- [`ExampleResponse`](return_types.md#exampleresponse) **(potentially empty or incomplete)**
+- [`IdiomProverbResponse`](return_types.md#idiomproverbresponse) **(potentially empty or incomplete)**
+- [`ErrorResponse`](return_types.md#errorresponse)
 
 ---
 
@@ -93,64 +87,38 @@ Performs a basic search on the Korean Learners' Dictionary API.
 def search(*,
     query: str,
     raise_api_errors: bool = False,
-    guarantee_keys: bool = False,
     key: str = None,
     page: int = 1,
     per_page: int = 10,
     sort: SortMethod = SortMethod.ALPHABETICAL,
     search_type: SearchType = SearchType.WORD,
-    translation_language: TranslationLanguage | Iterable[TranslationLanguage] = None,
-    options: OptionsDict = None
-) -> SearchResponse | KRDictError: ...
+    translation_language: TranslationLanguage | Iterable[TranslationLanguage] = None
+) -> WordResponse | DefinitionResponse | ExampleResponse | IdiomProverbResponse | ErrorResponse: ...
 ```
 
 **Parameters:**
 
 - `query`: The search query.
-- `raise_api_errors`: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
-A value of `True` guarantees that the result is not an error object.
-- `guarantee_keys`: Sets whether keys that are missing from the response should be inserted with default values. A value of `True`
-guarantees that every key marked as *not required* is included, including keys set by the scraper. Default values:
-    - The empty string `""` for string values.
-    - Zero `0` for integer values.
-    - An empty list `[]` for list values.
+- `raise_api_errors`: Sets whether a [`KRDictException`](other.md#krdictexception) will be raised if an API error occurs.
+A value of `True` guarantees that the result is not an [`ErrorResponse`](return_types.md#errorresponse).
 - `key`: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
 - `page`: The page at which the search should start `[1, 1000]`.
 - `per_page`: The maximum number of search results to return `[10, 100]`.
-- `sort` ([`SortMethod`](parameters.md#sortmethod)): The sort method that should be used.
-- `search_type` ([`SearchType`](parameters.md#searchtype)): The type of search to perform.
-- `translation_language` ([`TranslationLanguage`](parameters.md#translationlanguage)): A language for which translations should be included.
-- `options` ([`OptionsDict`](parameters.md#optionsdict)): Additional options to apply.
+- `sort`: The sort method that should be used.
+- `search_type`: The type of search to perform.
+- `translation_language`: A language
+for which translations should be included.
 
 
 **Returns**:
 
 Depending on the value of `search_type` and whether an error occurred, returns one of:
 
-- [`WordSearchResponse`](return_types.md#wordsearchresponse)
-- [`DefinitionSearchResponse`](return_types.md#definitionsearchresponse)
-- [`ExampleSearchResponse`](return_types.md#examplesearchresponse)
-- [`IdiomProverbSearchResponse`](return_types.md#idiomproverbsearchresponse)
-- [`KRDictError`](return_types.md#krdicterror)
-
----
-
-## set_default
-
-Sets a default value for a library [option](parameters.md#optionsdict).
-
-```python
-def set_default(name: Option, value: bool) -> None: ...
-```
-
-**Parameters:**
-
-- `name`: The name of the option to set. Accepted values:
-    - `'fetch_multimedia'`: Controls whether multimedia is scraped during view queries. No effect unless the `'use_scraper'` option is `True`.
-    - `'fetch_page_data'`: Controls whether pronunciation URLs and extended language information are scraped. No effect unless the `'use_scraper'` option is `True`.
-    - `'raise_scraper_errors'`: Controls whether errors that occur during scraping are raised. No effect unless the `'use_scraper'` option is `True`.
-    - `'use_scraper'`: Controls whether the scraper should be used to fetch more information.
-- `value`: The new default value of the option.
+- [`WordResponse`](return_types.md#wordresponse)
+- [`DefinitionResponse`](return_types.md#definitionresponse)
+- [`ExampleResponse`](return_types.md#exampleresponse)
+- [`IdiomProverbResponse`](return_types.md#idiomproverbresponse)
+- [`ErrorResponse`](return_types.md#errorresponse)
 
 ---
 
@@ -170,27 +138,23 @@ def set_key(key: str | None) -> None: ...
 
 ## view
 
-Performs a view query, which retrieves information about a particular entry, on the Korean Learners' Dictionary API.
+Performs a view query, which retrieves information about a particular entry on the Korean Learners' Dictionary API.
 
 ```python
 def view(*,
     query: str,
     homograph_num: int = 0,
     raise_api_errors: bool = False,
-    guarantee_keys: bool = False,
     key: str = None,
-    translation_language: TranslationLanguage | Iterable[TranslationLanguage] = None,
-    options: OptionsDict = None
-) -> ViewResponse | KRDictError: ...
+    translation_language: TranslationLanguage | Iterable[TranslationLanguage] = None
+) -> ViewResponse | ErrorResponse: ...
 
 def view(*,
     target_code: int,
     raise_api_errors: bool = False,
-    guarantee_keys: bool = False,
     key: str = None,
-    translation_language: TranslationLanguage | Iterable[TranslationLanguage] = None,
-    options: OptionsDict = None
-) -> ViewResponse | KRDictError: ...
+    translation_language: TranslationLanguage | Iterable[TranslationLanguage] = None
+) -> ViewResponse | ErrorResponse: ...
 ```
 
 **Parameters:**
@@ -198,20 +162,8 @@ def view(*,
 - `query`: The search query.
 - `homograph_num`: The superscript number used to distinguish homographs.
 - `target_code`: The target code of the desired result.
-- `raise_api_errors`: Sets whether a [`KRDictException`](exceptions.md#krdictexception) will be raised if an API error occurs.
-A value of `True` guarantees that the result is not an error object.
-- `guarantee_keys`: Sets whether keys that are missing from the response should be inserted with default values. A value of `True`
-guarantees that every key marked as *not required* is included, including keys set by the scraper. Default values:
-    - The empty string `""` for string values.
-    - Zero `0` for integer values.
-    - An empty list `[]` for list values.
+- `raise_api_errors`: Sets whether a [`KRDictException`](other.md#krdictexception) will be raised if an API error occurs.
+A value of `True` guarantees that the result is not an [`ErrorResponse`](return_types.md#errorresponse).
 - `key`: The API key. If a key was set with [`set_key`](#set_key), this can be omitted.
-- `translation_language` ([`TranslationLanguage`](parameters.md#translationlanguage)): A language for which translations
+- `translation_language`: A language for which translations
 should be included.
-- `options` ([`OptionsDict`](parameters.md#optionsdict)): Additional options to apply.
-
-
-**Returns:**
-
-Depending on whether an error occurred, returns [`ViewResponse`](return_types.md#viewresponse) or
-[`KRDictError`](return_types.md#krdicterror).
