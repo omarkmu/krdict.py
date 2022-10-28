@@ -142,7 +142,7 @@ function linkify() {
 
                     // prevent function definitions from becoming too busy
                     // but still link to enums from example code
-                    if (subpage !== 'examples') {
+                    if (subpage === 'examples') {
                         const end = token.indexOf('.');
                         if (end !== -1) {
                             token = token.slice(0, end);
