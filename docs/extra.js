@@ -51,11 +51,25 @@ const scraperFunctions = new Set([
     'krdict.scraper.search',
     'krdict.scraper.view',
 ]);
+const subpages = new Set([
+    'enums',
+    'examples',
+    'main',
+    'other',
+    'return_types',
+    'scraper'
+]);
 const splitRegex = /[^A-Za-z\._]+/;
 
 
 function linkify() {
     const codeBlocks = document.getElementsByTagName('pre');
+    const pathElements = document.location.pathname.split('/').filter(x => x != '');
+    let subpage = pathElements[pathElements.length - 1];
+
+    if (!subpages.has(subpage)) {
+        subpage = undefined;
+    }
 
     if (!codeBlocks || codeBlocks.length === 0) {
         return;
@@ -126,9 +140,9 @@ function linkify() {
                         idx += 8;
                     }
 
-                    // prevent the function definitions from becoming too busy
-                    // but still link to enums from the example code
-                    if (document.location.pathname.indexOf('examples') !== -1) {
+                    // prevent function definitions from becoming too busy
+                    // but still link to enums from example code
+                    if (subpage === 'examples') {
                         const end = token.indexOf('.');
                         if (end !== -1) {
                             token = token.slice(0, end);
@@ -152,9 +166,10 @@ function linkify() {
                 const rightSplit = node.textContent.slice(idx + token.length);
 
                 const anchor = document.createElement('a');
+                const base = subpage ? '..' : '.';
                 anchor.textContent = token;
                 anchor.classList.add('code-anchor');
-                anchor.href = `../${page}/#${token.toLowerCase()}`;
+                anchor.href = `${base}/${page}/#${token.toLowerCase()}`;
 
                 const leftNode = document.createTextNode(leftSplit);
 
