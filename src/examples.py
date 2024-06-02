@@ -271,7 +271,7 @@ def word_of_the_day():
 
     print((f'Word of the Day: {wotd_response.data.word}{wotd_translation}'
         f'\n{wotd_response.data.definition}'
-        f'\n{wotd_response.data.url}'))
+        f'\n{wotd_response.data.translation_urls[0].url}'))
 
     response = krdict.scraper.view(
         # with the target code from the scraped word of the day response,

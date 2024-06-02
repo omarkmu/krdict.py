@@ -12,7 +12,7 @@ try:
 except ImportError:
     pass
 
-_BASE_VIEW_URL = 'https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo={}'
+_BASE_VIEW_URL = 'https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo={}'
 
 class KRDictTest(unittest.TestCase):
     """Contains test cases for the main module."""
@@ -98,7 +98,7 @@ class KRDictTest(unittest.TestCase):
         self.assertIn('data', response)
         data = response.data
 
-        self.assertEqual(data.total_results, 493)
+        self.assertEqual(data.total_results, 495)
 
         for result in data.results:
             self.assertIn('word', result)

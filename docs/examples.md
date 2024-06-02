@@ -77,7 +77,7 @@ response = krdict.search(
 _display_results(response)
 ```
 ```md
-Total Results: 493
+Total Results: 495
 1. 가랑잎: 나무에서 떨어진 마른 잎.
    fallen leaf; dead leaf: A dry leaf fallen from a tree.
 2. 가로수: 길을 따라 줄지어 심은 나무.
@@ -209,9 +209,9 @@ Total Results: 295
 3. 간호사 (看護師): 병원에서 의사를 도와 환자를 돌보는 것이 직업인 사람.
    nurse: A person whose job it is to assist doctors in taking care of patients at hospitals.
 4. 갈비: 음식의 재료로 쓰이는 소, 돼지, 닭 등의 가슴뼈와 거기에 붙은 살. 또는 그것으로 만든 음식.
-   ribs: Breastbones of cows, pigs, chickens, etc., and the flesh attached to these bones, used as an ingredient for food; or food made from these bones and their flesh.
+   galbi: Short ribs of cows, pigs, chickens, etc., and the flesh attached to these bones, used as an ingredient for food; or food made from these bones and their flesh.
 5. 갈비탕 (갈비湯): 소의 갈비를 잘라 넣고 오랫동안 끓인 국.
-   galbitang; short rib soup: Beef rib soup, made by boiling short beef ribs for long hours.
+   galbitang: A soup, made by boiling galbi, short ribs of beef, for long hours.
 6. 감: 둥글거나 둥글넓적하며 익기 전에는 떫지만 익으면 단맛이 나는 주황색 과일.
    persimmon: An orange-colored, round or roundish flat fruit, which is astringent when unripe but sweet when ripe.
 7. 감자: 껍질은 연한 갈색이며 속은 연한 노란색인, 땅속에서 자라는 둥근 덩이 모양의 줄기.
@@ -244,7 +244,7 @@ _display_results(response)
 ```md
 Total Results: 170
 1. 건조기 (乾燥機/乾燥器): 열을 가하거나 뜨거운 바람을 보내거나 물기를 흡수하는 약을 써서 물체에 있는 물기를 말리는 기계.
-   drier; drying machine: A machine which dries something by using heat, hot wind, dehydrating agents, etc.
+   dryer; drying machine: A machine which dries something by using heat, hot wind, dehydrating agents, etc.
 2. 검사기 (檢査機): 검사를 하는 데 쓰이는 기계.
    testing machine: Machinery used to conduct testing.
 3. 게임기 (game機): 게임을 할 수 있도록 만든 전자 기계.
@@ -270,13 +270,6 @@ Total Results: 170
 Displays the results of a view query for the word 단풍나무
 using the [`view`](main.md#view) function.
 
-!!! warning
-    As shown in the result below, the API has a bug which duplicates
-    한자 (hanja) with multiple 음훈 (readings). This means that, instead of
-    the correct 丹楓나무, the original language is returned as 丹丹楓나무.
-    This is corrected in view responses returned by
-    the scraper.
-
 ```python
 response = krdict.view(
     query='단풍나무',
@@ -297,7 +290,7 @@ response = krdict.view(
 _display_results(response)
 ```
 ```text
-단풍나무 「명사」 (丹丹楓나무) [단풍나무]
+단풍나무 「명사」 (丹楓나무) [단풍나무]
 https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=42075
 1. maple tree
    손바닥 모양의 잎이 가을에 빨갛게 물드는 나무.
@@ -308,7 +301,7 @@ https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=42075
    • 그러게. 단풍나무가 붉게 물들었구나.
    • 붉게 물든 단풍나무.
    • ...
-   ► http://dicmedia.korean.go.kr:8899/front/search/searchResultView.do?file_no=97378 (사진)
+   ► https://krdicmedia.korean.go.kr/front/search/searchResultView.do?file_no=97378 (사진)
 ```
 ---
 ## 8. Perform a Scraped View Query
@@ -330,18 +323,18 @@ response = krdict.scraper.view(
 _display_results(response)
 ```
 ```text
-단풍나무 「명사」 (丹楓나무) [단풍나무 (https://dicmedia.korean.go.kr/multimedia/multimedia_files/convert/20120209/23784/SND000012487.mp3)]
-https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=42075
+단풍나무 「명사」 (丹楓나무) [단풍나무 (https://krdicmedia.korean.go.kr/multimedia/multimedia_files/convert/20120209/23784/SND000012487.mp3)]
+https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=42075
 1. maple tree
    손바닥 모양의 잎이 가을에 빨갛게 물드는 나무.
    The tree whose palm-shaped leaves turn red in the fall.
-   • 가을이 되자 교정의 단풍나무들이 빨갛게 물들었다.
-   • 우리 고장에는 가을이 되면 단풍나무가 아름답게 물드는 산들이 많다.
-   • 어머, 저것 좀 봐. 벌써 가을이 성큼 다가왔네.
-   • 그러게. 단풍나무가 붉게 물들었구나.
    • 붉게 물든 단풍나무.
+   • 단풍나무의 잎.
+   • 단풍나무가 물들다.
+   • 단풍나무를 심다.
+   • 가을이 되자 교정의 단풍나무들이 빨갛게 물들었다.
    • ...
-   ► https://dicmedia.korean.go.kr/multimedia/multimedia_files/convert/20120106/3530//IMG000097378_700X466.jpg (사진)
+   ► https://krdicmedia.korean.go.kr/multimedia/multimedia_files/convert/20120106/3530/IMG000097378_700X466.jpg (사진)
 ```
 ---
 ## 9. Word of the Day
@@ -362,7 +355,7 @@ if wotd_response.data.translations:
 
 print((f'Word of the Day: {wotd_response.data.word}{wotd_translation}'
     f'\n{wotd_response.data.definition}'
-    f'\n{wotd_response.data.url}'))
+    f'\n{wotd_response.data.translation_urls[0].url}'))
 
 response = krdict.scraper.view(
     # with the target code from the scraped word of the day response,
@@ -378,11 +371,11 @@ _display_results(response)
 ```text
 Word of the Day: 걱정거리 (cause of worry)
 걱정이 되는 일.
-https://krdict.korean.go.kr/eng/dicSearch/SearchView?ParaWordNo=21608&nation=eng&nationCode=6
+https://krdict.korean.go.kr/eng/dicSearch/SearchView?nation=eng&nationCode=6&ParaWordNo=21608
 
 Extended Info:
-걱정거리 「명사」 [걱쩡꺼리 (https://dicmedia.korean.go.kr/multimedia/multimedia_files/convert/20120224/32989/SND000021692.mp3)]
-https://krdict.korean.go.kr/dicSearch/SearchView?ParaWordNo=21608
+걱정거리 「명사」 [걱쩡꺼리 (https://krdicmedia.korean.go.kr/multimedia/multimedia_files/convert/20120224/32989/SND000021692.mp3)]
+https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=21608
 1. cause of worry
    걱정이 되는 일.
    Something that causes concern.
@@ -414,24 +407,24 @@ _display_results(response)
 Total Results: 113
 1. 가슴: 인간이나 동물의 목과 배 사이에 있는 몸의 앞 부분.
    chest: The front part of a human or animal's body, between the neck and the abdomen.
-2. 고개: 목을 포함한 머리 부분.
+2. 간 (肝): 사람이나 동물의 몸속에서 해독 작용을 하는 기관.
+   liver: An organ in a human or animal's body, that detoxifies ingested substance.
+3. 겨드랑이: 어깨에서 이어진 양 팔 밑의 오목한 곳.
+   armpit: The sunken part under an arm, joined to the shoulder.
+4. 고개: 목을 포함한 머리 부분.
    head: A word referring to one's head, including the neck.
-3. 귀: 사람이나 동물의 머리 양옆에 있어 소리를 듣는 몸의 한 부분.
+5. 골머리: (속된 말로) 머리.
+   head: (slang) One's head.
+6. 골치: (속된 말로) 머리.
+   head: (slang) One's head.
+7. 관절 (關節): 뼈와 뼈가 서로 맞닿아 이어지는 부분.
+   joint: The connecting part where two bones meet.
+8. 귀: 사람이나 동물의 머리 양옆에 있어 소리를 듣는 몸의 한 부분.
    ear: The part of a human or animal's body that hears sounds, located on both sides of the head.
-4. 눈: 사람이나 동물의 얼굴에 있으며 빛의 자극을 받아 물체를 볼 수 있는 감각 기관.
-   eye: The sensory organ on the face of a person or animal that can see an object when stimulated by the light.
-5. 다리: 사람이나 동물의 몸통 아래에 붙어, 서고 걷고 뛰는 일을 하는 신체 부위.
-   leg: A body part attached to the bottom of the torso of a person or animal that is used to walk or run.
-6. 등: 사람이나 동물의 몸에서 가슴과 배의 반대쪽 부분.
-   back: The part that is opposite the chest and belly on the body of a human or animal.
-7. 머리: 사람이나 동물의 몸에서 얼굴과 머리털이 있는 부분을 모두 포함한 목 위의 부분.
-   head: A part of the human or animal body above the neck that includes the face and hair.
-8. 머리카락: 머리털 하나하나.
-   hair: Each and every hair.
-9. 목: 사람이나 동물의 머리와 몸통을 잇는 잘록한 부분.
-   neck: The narrow part of the human or animal body that connects the head and the torso.
-10. 몸: 사람이나 동물의 모습을 이루는 머리부터 발까지의 전체. 또는 그것의 상태.
-   body: The entire length of the human or animal body from the head to the feet, or its state.
+9. 근육 (筋肉): 사람이나 동물의 몸을 움직이게 하는 힘줄과 살.
+   muscle: The tendons and flesh which move the body of an animal or person.
+10. 낯: 눈, 코, 입 등이 있는 얼굴의 바닥.
+   face; mug: The face or the surface of the front of the head where the eyes, the nose and the mouth are located.
 ```
 ---
 ## 11. Fetch Words in Subject Category
