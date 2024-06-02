@@ -97,7 +97,6 @@ _PARAM_MAPS = {
     }
 }
 _DEFAULTS = { 'API_KEY': '' }
-_PEM_PATH = path.join(path.dirname(path.realpath(__file__)), 'korean-go-kr-chain.pem')
 
 
 def _map_value(mapper, value):
@@ -148,7 +147,7 @@ def send_request(kwargs, advanced=False, search_type=None):
         params['advanced'] = 'y'
 
     try:
-        response = requests.get(url, params, verify=_PEM_PATH)
+        response = requests.get(url, params)
         response.raise_for_status()
         return (response, params, search_type)
     except requests.exceptions.RequestException as exc:

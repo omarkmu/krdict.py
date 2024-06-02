@@ -541,8 +541,6 @@ _SEARCH_TYPE_MAP = {
     'ip': 'P'
 }
 
-_PEM_PATH = path.join(path.dirname(path.realpath(__file__)), path.pardir, 'korean-go-kr-chain.pem')
-
 def _get_advanced_param(adv_mapper, value):
     if adv_mapper.get('name') != 'query' and ',' in value:
         params = []
@@ -880,7 +878,7 @@ def send_scrape_request(url):
     """
 
     try:
-        response = requests.get(url, headers={'Accept-Language': '*'}, verify=_PEM_PATH)
+        response = requests.get(url, headers={'Accept-Language': '*'})
         response.raise_for_status()
         return html.fromstring(response.text)
     except requests.exceptions.RequestException as exc:
@@ -933,7 +931,7 @@ def send_multimedia_request(kwargs):
     )
 
     try:
-        response = requests.get(url, headers={'Accept-Language': '*'}, verify=_PEM_PATH)
+        response = requests.get(url, headers={'Accept-Language': '*'})
         response.raise_for_status()
         return html.fromstring(response.text)
     except requests.exceptions.RequestException as exc:
