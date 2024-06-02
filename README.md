@@ -2,7 +2,7 @@
 
 [![PyPI](https://img.shields.io/pypi/v/krdict.py)](https://pypi.org/project/krdict.py)
 [![Documentation](https://img.shields.io/readthedocs/krdictpy/stable)](https://krdictpy.readthedocs.io/en/stable)
-[![Tests](https://img.shields.io/github/workflow/status/omarkmu/krdict.py/Test?label=tests)](https://github.com/omarkmu/krdict.py/actions/workflows/test.yml)  
+[![Tests](https://img.shields.io/github/actions/workflow/status/omarkmu/krdict.py/test.yml?branch=main&label=tests)](https://github.com/omarkmu/krdict.py/actions/workflows/test.yml)  
 [![krdict.js](https://img.shields.io/npm/v/krdict.js?label=krdict.js)](https://github.com/Fox-Islam/krdict.js)
 
 A python package that helps to query the [API](https://krdict.korean.go.kr/openApi/openApiInfo) of the
