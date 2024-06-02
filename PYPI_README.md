@@ -58,4 +58,4 @@ Assuming an error does not occur, the output will be similar to:
 }
 ```
 
-For more information and usage examples, please check the [documentation](https://krdictpy.readthedocs.io/en/v3.0.0).
+For more information and usage examples, please check the [documentation](https://krdictpy.readthedocs.io/en/v3.0.2).
