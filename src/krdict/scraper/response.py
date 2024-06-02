@@ -75,7 +75,7 @@ def _get_base_result(a_elem, word_text, lang_info):
     result = {
         'target_code': target_code,
         'word': word_text,
-        'link': _VIEW_URL.format('', '', target_code)
+        'link': _VIEW_URL.format('/kor', '', target_code)
     }
 
     if lang_info[0]:
@@ -310,7 +310,7 @@ def _read_wotd(doc, lang_info, result=None):
             'definition': dd_elems[dfn_idx].text_content().strip()
         }
 
-        result['link'] = _VIEW_URL.format('', '', result['target_code'])
+        result['link'] = _VIEW_URL.format('/kor', '', result['target_code'])
         result['sup_no'] = int(sup_elems[0].text_content() or 0 if len(sup_elems) > 0 else 0)
 
     if nation:
@@ -435,7 +435,7 @@ def _read_related_info(parent_el, lang_info, container=None, key=None, type_=Non
                 obj = {
                     'word': (elem.text or '').strip(),
                     'link_target_code': target_code,
-                    'link': _VIEW_URL.format('', '', target_code),
+                    'link': _VIEW_URL.format('/kor', '', target_code),
                     'trans_link': [{
                         'url': _VIEW_URL.format(
                             *get_language_query(*lang_info[:2]),
@@ -733,7 +733,7 @@ def _read_search_results(doc, response_type, lang_info, results=None):
     is_translation = results is not None
     results = results or []
     search_results = doc.cssselect('div.search_result > dl')
-    total_text = doc.cssselect('.search_tit > em')
+    total_text = doc.cssselect('.search_tit > span')
 
     trans_order = 0
     for result_elem in search_results:
@@ -771,7 +771,7 @@ def _read_search_results(doc, response_type, lang_info, results=None):
 def _read_examples(doc, lang_info):
     results = []
     search_results = doc.cssselect('div.search_result > ul > li > a')
-    total_text = doc.cssselect('span.search_tit > em')
+    total_text = doc.cssselect('span.search_tit > span')
 
     for result_elem in search_results:
         text = result_elem.text_content().strip()

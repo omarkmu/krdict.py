@@ -2,7 +2,6 @@
 Handles making requests to the dictionary website.
 """
 
-from os import path
 import requests
 from lxml import html
 from .constants import _VIEW_URL
@@ -29,30 +28,30 @@ _ADVANCED_SEARCH_URL = (
 )
 _BASE_URL = 'https://krdict.korean.go.kr{}/mainAction'
 _CAT_MEANING_URL = (
-    'https://krdict.korean.go.kr{}/dicSearchDetail/searchDetailSenseCategoryResult?'
+    'https://krdict.korean.go.kr{}/dicSearch/searchDetailSenseCategory?'
     '{}searchFlag=Y&currentPage={}&blockCount={}&sort={}{}'
 )
 _CAT_SUBJECT_URL = (
-    'https://krdict.korean.go.kr{}/dicSearchDetail/searchDetailActCategoryResult?'
+    'https://krdict.korean.go.kr{}/dicSearch/searchDetailActCategory?'
     '{}searchFlag=Y&currentPage={}&blockCount={}&sort={}{}'
 )
 _DEFAULT_ADVANCED_CONDITION = (
     '&searchOp=AND&searchTarget=word&searchOrglanguage=all&wordCondition=wordAll&query='
 )
 _SEARCH_URL = (
-    'https://krdict.korean.go.kr{}/dicSearch/search?'
+    'https://krdict.korean.go.kr{}/dicMarinerSearch/search?'
     '{}mainSearchWord={}&currentPage={}&blockCount={}&sort={}&searchType={}'
 )
 _SEARCH_REQUEST_URL = (
-    'https://krdict.korean.go.kr{}/smallDic/searchResult?'
-    '{}mainSearchWord={}&currentPage={}&blockCount={}&sort={}&searchType={}'
+    'https://krdict.korean.go.kr{}/dicMarinerSearch/search?'
+    '{}mainSearchWord={}&currentPage={}&blockCount={}&sort={}&searchType={}&isSmallDic=Y'
 )
 _IMAGE_URL = (
-    'https://krdict.korean.go.kr/dicSearch/viewImageConfirm?'
+    'https://krdict.korean.go.kr/kor/dicSearch/viewImageConfirm?'
     'searchKindValue=image&ParaWordNo={}&ParaSenseSeq={}&multiMediaSeq={}'
 )
 _VIDEO_URL = (
-    'https://krdict.korean.go.kr/dicSearch/viewMovieConfirm?'
+    'https://krdict.korean.go.kr/kor/dicSearch/viewMovieConfirm?'
     'searchKindValue=video&ParaWordNo={}&ParaSenseSeq={}&multiMediaSeq={}'
 )
 
@@ -176,8 +175,8 @@ _ADVANCED_PARAM_MAP = {
         'name': 'sort',
         'type': SortMethod,
         'value': {
-            'dict': 'W',
-            'popular': 'C'
+            'dict': '2',
+            'popular': '1'
         }
     },
     'classification': {
@@ -653,7 +652,7 @@ def _build_advanced_search_url(kwargs, lang_info):
     query = ''.join(query)
     return (
         _ADVANCED_SEARCH_URL.format(*get_language_query(nation, code), query),
-        _ADVANCED_SEARCH_URL.format('', '', query)
+        _ADVANCED_SEARCH_URL.format('/kor', '', query)
     )
 
 def _build_search_url(kwargs, lang_info, search_type):
@@ -677,7 +676,7 @@ def _build_search_url(kwargs, lang_info, search_type):
         search_type
     )
     url_kr = _SEARCH_URL.format(
-        '',
+        '/kor',
         '',
         query,
         page,
@@ -741,7 +740,7 @@ def _build_category_url(kwargs, lang_info, response_type):
     )
 
     base_url = _CAT_MEANING_URL if is_semantic else _CAT_SUBJECT_URL
-    sort = 'C' if SortMethod.get_value(kwargs.get('sort')) == 'popular' else 'W'
+    sort = '2' if SortMethod.get_value(kwargs.get('sort')) == 'popular' else '1'
     category_query = query_builder(kwargs.get('category', 0))
 
     url = base_url.format(
@@ -752,7 +751,7 @@ def _build_category_url(kwargs, lang_info, response_type):
         category_query
     )
 
-    url_kr = base_url.format('', '', page, per_page, sort, category_query)
+    url_kr = base_url.format('/kor', '', page, per_page, sort, category_query)
     return url, url_kr
 
 def _build_translation_language_info(trans_lang, kwargs, response_type):
@@ -828,15 +827,14 @@ def build_request_url(kwargs, response_type, lang_info) -> tuple[str, str, str]:
         target_code = kwargs.get('target_code')
         lang_query = get_language_query(nation, code)
 
-        url_kr = _VIEW_URL.format('', '', target_code)
+        url_kr = _VIEW_URL.format('/kor', '', target_code)
         url = _VIEW_URL.format(*lang_query, target_code)
-        req_url = url
 
     elif response_type == 'word_of_the_day':
         nation, *_ = lang_info
 
-        url_kr = _BASE_URL.format('')
-        url = _BASE_URL.format(f'/{nation}' if nation else '')
+        url_kr = _BASE_URL.format('/kor')
+        url = _BASE_URL.format(f'/{nation}' if nation else '/kor')
 
     elif response_type in ('word', 'exam', 'dfn', 'ip'):
         url, url_kr, req_url = _build_search_url(kwargs, lang_info, response_type)
@@ -867,7 +865,7 @@ def get_language_query(nation, code):
     """
 
     if not nation:
-        return '', ''
+        return '/kor', ''
 
     return f'/{nation}', f'nation={nation}&nationCode={code}&'
 
